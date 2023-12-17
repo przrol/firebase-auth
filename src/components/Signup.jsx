@@ -22,10 +22,13 @@ export default function Signup() {
 
     try {
       setError("");
+      setLoading(true);
       await signup(emailRef.current.value, passwordRef.current.value);
-    } catch {
+    } catch (error) {
       setError("Failed to create an account");
+      console.error(error);
     }
+    setLoading(false);
   }
 
   return (
