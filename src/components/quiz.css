@@ -98,3 +98,7 @@
   cursor: pointer;
   text-align: center;
 }
+
+.disabled-answer {
+  pointer-events: none;
+}

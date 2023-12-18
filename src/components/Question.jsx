@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { QuizContext } from "../contexts/QuizContext";
 import { replaceWithBr } from "../helpers";
 import Answer from "./Answer";
-import { Button, Col, Row } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 
 const Question = () => {
   const { reducer } = useContext(QuizContext);
@@ -20,31 +20,34 @@ const Question = () => {
           ></div>
         </Col>
       </Row>
-      <div>
-        {quizState.answers.map((answer, index) => (
-          <Answer
-            answerText={answer}
-            key={index}
-            index={index}
-            currentAnswer={quizState.currentAnswer}
-            correctAnswer={currentQuestion.correctAnswer}
-            onSelectAnswer={(answerText) =>
-              dispatch({ type: "SELECT_ANSWER", payload: answerText })
-            }
-          />
-        ))}
-      </div>
-      <Row className="mt-2">
-        <Col className="text-center">
-          <Button
-            variant="dark"
-            size="lg"
-            onClick={() => dispatch({ type: "NEXT_QUESTION" })}
-          >
-            Nächste Frage
-          </Button>
-        </Col>
-      </Row>
+      <Form>
+        <div>
+          {quizState.answers.map((answer, index) => (
+            <Answer
+              answerText={answer}
+              key={index}
+              index={index}
+              currentAnswer={quizState.currentAnswer}
+              correctAnswer={currentQuestion.correctAnswer}
+              onSelectAnswer={(answerText) =>
+                dispatch({ type: "SELECT_ANSWER", payload: answerText })
+              }
+            />
+          ))}
+        </div>
+        <Row className="mt-2">
+          <Col className="text-center">
+            <Button
+              type="button"
+              variant="dark"
+              size="lg"
+              onClick={() => dispatch({ type: "NEXT_QUESTION" })}
+            >
+              Nächste Frage
+            </Button>
+          </Col>
+        </Row>
+      </Form>
       {quizState.showExplanation && (
         <div>
           <div className="explanation">
