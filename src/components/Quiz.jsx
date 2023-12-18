@@ -1,9 +1,11 @@
 import { useContext } from "react";
 import { QuizContext, QuizProvider } from "../contexts/QuizContext";
 import Question from "./Question";
+import "./quiz.css";
 
 const Quiz = () => {
-  const [quizState, dispatch] = useContext(QuizContext);
+  const { reducer, questions } = useContext(QuizContext);
+  const [quizState, dispatch] = reducer;
   console.log(quizState);
   return (
     <div className="quiz">
@@ -18,7 +20,7 @@ const Quiz = () => {
             </div>
             <div
               className="next-button"
-              onClick={() => dispatch({ type: "RESTART" })}
+              onClick={() => dispatch({ type: "RESTART", payload: questions })}
             >
               Restart
             </div>

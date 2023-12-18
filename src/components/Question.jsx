@@ -4,7 +4,8 @@ import { replaceWithBr } from "../helpers";
 import Answer from "./Answer";
 
 const Question = () => {
-  const [quizState, dispatch] = useContext(QuizContext);
+  const { reducer } = useContext(QuizContext);
+  const [quizState, dispatch] = reducer;
   const currentQuestion = quizState.questions[quizState.currentQuestionIndex];
   const questionWithBr = replaceWithBr(currentQuestion.question);
 

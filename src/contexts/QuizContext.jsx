@@ -14,7 +14,7 @@ const initialState = {
   showExplanation: false,
 };
 
-const reducer = (state, action) => {
+const quizReducer = (state, action) => {
   console.log("reducer", state, action);
   switch (action.type) {
     case "SELECT_ANSWER": {
@@ -65,19 +65,21 @@ export const QuizContext = createContext();
 
 export const QuizProvider = ({ children }) => {
   const [questions, setQuestions] = useState([]);
-  const value = useReducer(reducer, initialState);
-  const [state, dispatch] = value;
+  const reducer = useReducer(quizReducer, initialState);
+  const [state, dispatch] = reducer;
 
   useEffect(() => {
     const getQuestions = async () => {
       const data = await getQuestionsAndDocuments();
       console.log(data);
-      //   setQuestions(data);
+      setQuestions(data);
       dispatch({ type: "RESTART", payload: data });
     };
 
     getQuestions();
   }, []);
+
+  const value = { reducer, questions };
 
   return <QuizContext.Provider value={value}>{children}</QuizContext.Provider>;
 };
