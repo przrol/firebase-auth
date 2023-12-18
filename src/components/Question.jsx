@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { QuizContext } from "../contexts/QuizContext";
 import { replaceWithBr } from "../helpers";
 import Answer from "./Answer";
+import { Button, Col, Row } from "react-bootstrap";
 
 const Question = () => {
   const { reducer } = useContext(QuizContext);
@@ -11,11 +12,15 @@ const Question = () => {
 
   return (
     <div>
-      <div
-        className="question"
-        dangerouslySetInnerHTML={{ __html: questionWithBr }}
-      />
-      <div className="answers">
+      <Row>
+        <Col>
+          <div
+            className="bg-primary text-white text-center py-3 mb-2"
+            dangerouslySetInnerHTML={{ __html: questionWithBr }}
+          ></div>
+        </Col>
+      </Row>
+      <div>
         {quizState.answers.map((answer, index) => (
           <Answer
             answerText={answer}
@@ -29,12 +34,17 @@ const Question = () => {
           />
         ))}
       </div>
-      <div
-        className="next-button"
-        onClick={() => dispatch({ type: "NEXT_QUESTION" })}
-      >
-        Nächste Frage
-      </div>
+      <Row className="mt-2">
+        <Col className="text-center">
+          <Button
+            variant="dark"
+            size="lg"
+            onClick={() => dispatch({ type: "NEXT_QUESTION" })}
+          >
+            Nächste Frage
+          </Button>
+        </Col>
+      </Row>
       {quizState.showExplanation && (
         <div>
           <div className="explanation">

@@ -1,4 +1,17 @@
-.score {
+.pointer-cursor {
+  cursor: pointer;
+}
+
+.hover-border {
+  border: 2px solid transparent; /* Invisible border by default */
+  transition: border-color 0.3s ease; /* Smooth transition for the border */
+}
+
+.hover-border:hover {
+  border-color: #007bff; /* Example solid blue border color on hover */
+}
+
+.scoree {
   background: #fff;
   color: 000;
   font-size: 18px;

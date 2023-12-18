@@ -1,3 +1,5 @@
+import { Col, Row } from "react-bootstrap";
+
 const Answer = ({
   answerText,
   index,
@@ -13,16 +15,19 @@ const Answer = ({
   const wrongAnswerClass = isWrongAnswer ? "wrong-answer" : "";
   const disabledClass = currentAnswer ? "disabled-answer" : "";
   return (
-    <div
-      className={`answer ${correctAnswerClass} ${wrongAnswerClass} ${disabledClass}`}
+    <Row
+      className={`${correctAnswerClass} ${wrongAnswerClass} ${disabledClass}`}
       onClick={() => onSelectAnswer(answerText)}
     >
-      <div className="answer-letter">{letterMapping[index]}</div>
-      <div
-        className="answer-text"
-        dangerouslySetInnerHTML={{ __html: answerText }}
-      />
-    </div>
+      <Col>
+        <div
+          className="pointer-cursor hover-border py-3"
+          dangerouslySetInnerHTML={{
+            __html: `${letterMapping[index]}) ${answerText}`,
+          }}
+        />
+      </Col>
+    </Row>
   );
 };
 
