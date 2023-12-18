@@ -15,12 +15,12 @@ const Question = () => {
       <Row>
         <Col>
           <div
-            className="bg-primary text-white text-center py-3 mb-2"
+            className="bg-primary text-white text-center py-3"
             dangerouslySetInnerHTML={{ __html: questionWithBr }}
           ></div>
         </Col>
       </Row>
-      <Form>
+      <Form className="bg-light">
         <div>
           {quizState.answers.map((answer, index) => (
             <Answer
@@ -35,18 +35,21 @@ const Question = () => {
             />
           ))}
         </div>
-        <Row className="mt-2">
-          <Col className="text-center">
-            <Button
-              type="button"
-              variant="dark"
-              size="lg"
-              onClick={() => dispatch({ type: "NEXT_QUESTION" })}
-            >
-              Nächste Frage
-            </Button>
-          </Col>
-        </Row>
+        {quizState.showExplanation && (
+          <Row className="mt-2 pb-4">
+            <Col className="text-center">
+              <Button
+                className="text-uppercase"
+                type="button"
+                variant="dark"
+                size="lg"
+                onClick={() => dispatch({ type: "NEXT_QUESTION" })}
+              >
+                Nächste Frage
+              </Button>
+            </Col>
+          </Row>
+        )}
       </Form>
       {quizState.showExplanation && (
         <div>
