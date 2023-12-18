@@ -4,6 +4,7 @@ import { getQuestionsAndDocuments } from "../firebase";
 
 const initialState = {
   //   questions: questions.sort(() => Math.random() - 0.5),
+  //   shuffleAnswers(questions[0]
   questions: [],
   currentQuestionIndex: 0,
   showResults: false,
@@ -48,7 +49,11 @@ const reducer = (state, action) => {
       };
     }
     case "RESTART": {
-      return action.payload;
+      return {
+        ...initialState,
+        questions: action.payload,
+        answers: shuffleAnswers(action.payload[0]),
+      };
     }
     default: {
       return state;
