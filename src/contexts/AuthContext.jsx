@@ -4,6 +4,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  updatePassword,
+  updateEmail,
 } from "firebase/auth";
 
 const AuthContext = React.createContext();
@@ -17,6 +19,14 @@ export function AuthProvider({ children }) {
 
   function signup(email, password) {
     return createUserWithEmailAndPassword(auth, email, password);
+  }
+
+  function updateCurrentUserEmail(newEmail) {
+    return updateEmail(auth.currentUser, newEmail);
+  }
+
+  function updateCurrentUserPassword(newPassword) {
+    return updatePassword(auth.currentUser, newPassword);
   }
 
   async function logout() {
@@ -40,6 +50,8 @@ export function AuthProvider({ children }) {
     signup,
     login,
     logout,
+    updateCurrentUserEmail,
+    updateCurrentUserPassword,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
