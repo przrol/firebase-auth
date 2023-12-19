@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { QuizContext } from "../contexts/QuizContext";
 import { replaceWithBr } from "../helpers";
-import Answer from "./Answer";
+import Answer from "./answer/answer.component";
 import { Button, Col, Form, Row } from "react-bootstrap";
 
 const Question = () => {
@@ -38,10 +38,14 @@ const Question = () => {
               answerText={answer}
               key={index}
               index={index}
-              currentAnswer={quizState.currentAnswer}
-              correctAnswer={currentQuestion.correctAnswer}
-              onSelectAnswer={(answerText) =>
-                dispatch({ type: "SELECT_ANSWER", payload: answerText })
+              currentAnswers={quizState.currentAnswers}
+              correctAnswers={currentQuestion.correctAnswers}
+              onSelectAnswer={(answerText, checked) =>
+                dispatch({
+                  type: "SELECT_ANSWER",
+                  payload: answerText,
+                  checked,
+                })
               }
             />
           ))}

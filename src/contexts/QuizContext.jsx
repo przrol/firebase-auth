@@ -1,5 +1,5 @@
 import { createContext, useEffect, useReducer, useState } from "react";
-import { shuffleAnswers } from "../helpers";
+import { arraysContainSameStrings, shuffleAnswers } from "../helpers";
 import { getQuestionsAndDocuments } from "../firebase";
 
 const initialState = {
@@ -10,7 +10,7 @@ const initialState = {
   showResults: false,
   correctAnswerCount: 0,
   answers: [],
-  currentAnswer: "",
+  currentAnswers: [],
   showExplanation: false,
 };
 
@@ -18,16 +18,23 @@ const quizReducer = (state, action) => {
   // console.log("reducer", state, action);
   switch (action.type) {
     case "SELECT_ANSWER": {
-      const correctAnswerCount =
-        action.payload ===
-        state.questions[state.currentQuestionIndex].correctAnswer
-          ? state.correctAnswerCount + 1
-          : state.correctAnswerCount;
+      // payload -> "answerText"
+      const currentAnswers = action.checked
+        ? [state.currentAnswers, action.payload]
+        : state.currentAnswers.filter((item) => item !== action.payload);
+      const correctAnswerCount = arraysContainSameStrings(
+        currentAnswers,
+        state.questions[state.currentQuestionIndex].correctAnswers
+      )
+        ? state.correctAnswerCount + 1
+        : state.correctAnswerCount;
       return {
         ...state,
-        currentAnswer: action.payload,
+        currentAnswers,
         correctAnswerCount,
-        showExplanation: true,
+        showExplanation:
+          currentAnswers.length >=
+          state.questions[state.currentQuestionIndex].correctAnswers.length,
       };
     }
     case "NEXT_QUESTION": {
@@ -44,7 +51,7 @@ const quizReducer = (state, action) => {
         currentQuestionIndex,
         showResults,
         answers,
-        currentAnswer: "",
+        currentAnswers: [],
         showExplanation: false,
       };
     }

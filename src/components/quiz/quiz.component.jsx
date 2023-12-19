@@ -32,10 +32,6 @@ const Quiz = () => {
                 <div className="fs-5 text-center pt-3 pb-2">
                   You have completed the quiz.
                 </div>
-                {/* <div className="text-center">
-                You've got {quizState.correctAnswerCount} of{" "}
-                {quizState.questions.length} right.
-              </div> */}
               </Col>
             </Row>
             <Row>
