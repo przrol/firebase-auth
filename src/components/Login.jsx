@@ -31,7 +31,7 @@ export default function Login() {
 
   return (
     <>
-      <Card className="mx-auto" style={{ width: "400px" }}>
+      <Card className="mx-auto mt-5" style={{ width: "400px" }}>
         <Card.Body>
           <h2 className="text-center mb-4">Log In</h2>
           {error && <Alert variant="danger">{error}</Alert>}

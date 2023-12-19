@@ -5,6 +5,7 @@ import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import Navigation from "./Navigation";
 
 export default function Signup() {
   const emailRef = useRef();
@@ -36,7 +37,8 @@ export default function Signup() {
 
   return (
     <>
-      <Card style={{ width: "400px" }}>
+      <Navigation />
+      <Card className="mx-auto mt-3" style={{ width: "400px" }}>
         <Card.Body>
           <h2 className="text-center mb-4">Sign Up</h2>
           {error && <Alert variant="danger">{error}</Alert>}
