@@ -11,11 +11,8 @@ import { QuizProvider } from "../contexts/QuizContext";
 
 function App() {
   return (
-    <Container
-      className="d-flex align-items-center justify-content-center"
-      style={{ minHeight: "100vh" }}
-    >
-      <div className="w-100">
+    <Container style={{ minHeight: "100vh" }}>
+      <div>
         <BrowserRouter>
           <AuthProvider>
             <QuizProvider>

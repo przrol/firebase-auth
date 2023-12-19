@@ -8,34 +8,30 @@ const Answer = ({
   onSelectAnswer,
   currentAnswers,
   correctAnswers,
+  solveQuestion,
 }) => {
   const [checked, setChecked] = useState(false);
 
   const handleChange = () => {
-    setChecked(!checked);
+    setChecked((prevChecked) => !prevChecked);
   };
 
   const letterMapping = ["A", "B", "C", "D"];
-  const isCorrectAnswer =
-    currentAnswers.length >= correctAnswers.length &&
-    correctAnswers.includes(answerText);
-  const isWrongAnswer =
-    currentAnswers.length >= correctAnswers.length &&
-    !correctAnswers.includes(answerText);
+  const isCorrectAnswer = solveQuestion && correctAnswers.includes(answerText);
+  const isWrongAnswer = solveQuestion && !correctAnswers.includes(answerText);
   const correctAnswerClass = isCorrectAnswer ? "correct-answer" : "";
-  const wrongAnswerClass = isWrongAnswer ? "wrong-answer" : "";
-  const disabledClass =
-    currentAnswers.length >= correctAnswers.length ? "disabled-answer" : "";
+  const wrongAnswerClass = checked && isWrongAnswer ? "wrong-answer" : "";
+  const disabledClass = solveQuestion ? "disabled-answer" : "";
   return (
     <Row>
       <Col>
         <Form.Check
-          className={`${correctAnswerClass} ${wrongAnswerClass} ${disabledClass} pointer-cursor hover-border ps-5 py-3`}
+          className={`${correctAnswerClass} ${wrongAnswerClass} ${disabledClass} hover-border ps-5 py-3`}
           type="checkbox"
           checked={checked}
           onChange={() => {
             handleChange();
-            onSelectAnswer(answerText, checked);
+            onSelectAnswer(answerText);
           }}
           id={`checkRadio-${index}`}
           label={answerText}

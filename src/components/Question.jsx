@@ -39,54 +39,66 @@ const Question = () => {
               key={index}
               index={index}
               currentAnswers={quizState.currentAnswers}
+              solveQuestion={quizState.solveQuestion}
               correctAnswers={currentQuestion.correctAnswers}
-              onSelectAnswer={(answerText, checked) =>
+              onSelectAnswer={(answerText) =>
                 dispatch({
                   type: "SELECT_ANSWER",
                   payload: answerText,
-                  checked,
                 })
               }
             />
           ))}
         </div>
-        {quizState.showExplanation && (
-          <Row className="mt-2 pb-4">
-            <Col className="text-center">
-              <Button
-                className="text-uppercase"
-                type="button"
-                variant="success"
-                size="sm"
-                onClick={() => dispatch({ type: "NEXT_QUESTION" })}
-              >
-                Nächste Frage
-              </Button>
-            </Col>
-          </Row>
-        )}
+        <Row className="mt-2 pb-4">
+          <Col className="text-center">
+            <Button
+              className="text-uppercase me-2"
+              type="button"
+              variant="warning"
+              size="sm"
+              onClick={() => dispatch({ type: "EXPLANATION" })}
+            >
+              Erklärung
+            </Button>
+            <Button
+              className="text-uppercase"
+              type="button"
+              variant="success"
+              size="sm"
+              onClick={() =>
+                dispatch({
+                  type: "NEXT_QUESTION",
+                  solveQuestion: !quizState.solveQuestion,
+                })
+              }
+            >
+              Nächste Frage
+            </Button>
+          </Col>
+        </Row>
       </Form>
-      {quizState.showExplanation && (
+      {/* {quizState.showExplanation && ( */}
+      <div className="explanation" hidden={!quizState.showExplanation}>
         <div>
-          <div className="explanation">
-            <div>
-              <p style={{ fontWeight: "bold" }}>Erklärung (ChatGPT)</p>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: replaceWithBr(currentQuestion.explanationChatGPT),
-                }}
-              />
-            </div>
+          <div>
+            <p style={{ fontWeight: "bold" }}>Erklärung (ChatGPT)</p>
+            <p
+              dangerouslySetInnerHTML={{
+                __html: replaceWithBr(currentQuestion.explanationChatGPT),
+              }}
+            />
           </div>
-
-          <div
-            className="explanation"
-            dangerouslySetInnerHTML={{
-              __html: replaceWithBr(currentQuestion.explanationUdemy),
-            }}
-          />
         </div>
-      )}
+
+        <div
+          className="explanation"
+          dangerouslySetInnerHTML={{
+            __html: replaceWithBr(currentQuestion.explanationUdemy),
+          }}
+        />
+      </div>
+      {/* )} */}
     </div>
   );
 };

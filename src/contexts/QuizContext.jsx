@@ -12,6 +12,7 @@ const initialState = {
   answers: [],
   currentAnswers: [],
   showExplanation: false,
+  solveQuestion: false,
 };
 
 const quizReducer = (state, action) => {
@@ -20,7 +21,7 @@ const quizReducer = (state, action) => {
     case "SELECT_ANSWER": {
       // payload -> "answerText"
       const currentAnswers = action.checked
-        ? [state.currentAnswers, action.payload]
+        ? [...state.currentAnswers, action.payload]
         : state.currentAnswers.filter((item) => item !== action.payload);
       const correctAnswerCount = arraysContainSameStrings(
         currentAnswers,
@@ -32,27 +33,37 @@ const quizReducer = (state, action) => {
         ...state,
         currentAnswers,
         correctAnswerCount,
-        showExplanation:
-          currentAnswers.length >=
-          state.questions[state.currentQuestionIndex].correctAnswers.length,
+        showExplanation: false,
+        // currentAnswers.length >=
+        // state.questions[state.currentQuestionIndex].correctAnswers.length,
       };
     }
     case "NEXT_QUESTION": {
       const showResults =
+        !action.solveQuestion &&
         state.currentQuestionIndex === state.questions.length - 1;
-      const currentQuestionIndex = showResults
-        ? state.currentQuestionIndex
-        : state.currentQuestionIndex + 1;
-      const answers = showResults
-        ? []
-        : shuffleAnswers(state.questions[currentQuestionIndex]);
+      const currentQuestionIndex =
+        showResults || action.solveQuestion
+          ? state.currentQuestionIndex
+          : state.currentQuestionIndex + 1;
+      const answers =
+        showResults || action.solveQuestion
+          ? state.answers
+          : shuffleAnswers(state.questions[currentQuestionIndex]);
       return {
         ...state,
         currentQuestionIndex,
         showResults,
+        solveQuestion: action.solveQuestion,
         answers,
-        currentAnswers: [],
-        showExplanation: false,
+        currentAnswers: action.solveQuestion ? state.currentAnswers : [],
+        showExplanation: action.solveQuestion,
+      };
+    }
+    case "EXPLANATION": {
+      return {
+        ...state,
+        showExplanation: !state.showExplanation,
       };
     }
     case "RESTART": {
