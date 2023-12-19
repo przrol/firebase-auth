@@ -6,7 +6,7 @@ import Container from "react-bootstrap/Container";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import UpdateProfile from "./UpdateProfile";
-import Quiz from "./Quiz";
+import Quiz from "./quiz/quiz.component";
 import { QuizProvider } from "../contexts/QuizContext";
 
 function App() {

@@ -1,20 +1,27 @@
 import { useContext } from "react";
-import { QuizContext, QuizProvider } from "../contexts/QuizContext";
-import Question from "./Question";
-import "./quiz.css";
+import { QuizContext, QuizProvider } from "../../contexts/QuizContext";
+import Question from "../Question";
+import "./quiz.styles.css";
 import { Button, Col, Row } from "react-bootstrap";
+import Navigation from "../Navigation";
 
 const Quiz = () => {
   const { reducer, questions } = useContext(QuizContext);
   const [quizState, dispatch] = reducer;
-  console.log(quizState);
+  // console.log(quizState);
   return (
-    <div className="quiz">
+    <div>
+      <Navigation />
+      <Row>
+        <Col>
+          <div className="bg-light py-2"></div>
+        </Col>
+      </Row>
       {quizState.showResults && (
         <div>
           <Row>
             <Col>
-              <div className="bg-primary fs-4 text-white text-center py-3">
+              <div className="bg-primary fs-4 text-white text-center py-2">
                 Congratulations!
               </div>
             </Col>
@@ -44,8 +51,8 @@ const Quiz = () => {
                 <Button
                   className="text-uppercase"
                   type="button"
-                  variant="dark"
-                  size="lg"
+                  variant="success"
+                  size="sm"
                   onClick={() =>
                     dispatch({ type: "RESTART", payload: questions })
                   }
@@ -57,17 +64,7 @@ const Quiz = () => {
           </div>
         </div>
       )}
-      {!quizState.showResults && (
-        <div>
-          <Row>
-            <Col className="text-center fs-5 fw-bold mb-3">
-              Frage {quizState.currentQuestionIndex + 1} von{" "}
-              {quizState.questions.length}
-            </Col>
-          </Row>
-          <Question />
-        </div>
-      )}
+      {!quizState.showResults && <Question />}
     </div>
   );
 };

@@ -21,6 +21,7 @@ const Answer = ({
           className={`${correctAnswerClass} ${wrongAnswerClass} ${disabledClass} pointer-cursor hover-border ps-5 py-3`}
           type="checkbox"
           checked={currentAnswer === answerText}
+          onChange={(e) => {}}
           id={`checkRadio-${index}`}
           label={answerText}
         />

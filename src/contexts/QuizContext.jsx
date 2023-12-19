@@ -15,7 +15,7 @@ const initialState = {
 };
 
 const quizReducer = (state, action) => {
-  console.log("reducer", state, action);
+  // console.log("reducer", state, action);
   switch (action.type) {
     case "SELECT_ANSWER": {
       const correctAnswerCount =
@@ -71,7 +71,7 @@ export const QuizProvider = ({ children }) => {
   useEffect(() => {
     const getQuestions = async () => {
       const data = await getQuestionsAndDocuments();
-      console.log(data);
+      // console.log(data);
       setQuestions(data);
       dispatch({ type: "RESTART", payload: data });
     };

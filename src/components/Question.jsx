@@ -14,10 +14,21 @@ const Question = () => {
     <div>
       <Row>
         <Col>
-          <div
-            className="bg-primary text-white text-center py-3"
-            dangerouslySetInnerHTML={{ __html: questionWithBr }}
-          ></div>
+          <div className="bg-primary text-white ps-3 py-3">
+            <span className="me-2 text-black fw-bold">{`${
+              quizState.currentQuestionIndex + 1
+            }/${quizState.questions.length})`}</span>
+            <span
+              dangerouslySetInnerHTML={{
+                __html: questionWithBr,
+              }}
+            ></span>
+          </div>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <div className="bg-light py-2"></div>
         </Col>
       </Row>
       <Form className="bg-light">
@@ -41,8 +52,8 @@ const Question = () => {
               <Button
                 className="text-uppercase"
                 type="button"
-                variant="dark"
-                size="lg"
+                variant="success"
+                size="sm"
                 onClick={() => dispatch({ type: "NEXT_QUESTION" })}
               >
                 Nächste Frage
