@@ -54,7 +54,7 @@ export default function UpdateProfile() {
   return (
     <>
       <Navigation />
-      <Card className="mx-auto mt-3" style={{ width: "400px" }}>
+      <Card className="mx-auto mt-3" style={{ maxWidth: "400px" }}>
         <Card.Body>
           <h2 className="text-center mb-4">Update Profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
