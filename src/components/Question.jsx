@@ -14,10 +14,10 @@ const Question = () => {
     <div>
       <Row>
         <Col>
-          <div className="bg-primary text-white ps-3 py-3">
-            <span className="me-2 text-black fw-bold">{`${
+          <div className="bg-primary text-white px-3 py-3">
+            <div className="me-2 text-black fw-bold">{`${
               quizState.currentQuestionIndex + 1
-            }/${quizState.questions.length})`}</span>
+            }/${quizState.questions.length})`}</div>
             <span
               dangerouslySetInnerHTML={{
                 __html: questionWithBr,
