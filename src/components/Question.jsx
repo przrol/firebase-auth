@@ -15,9 +15,9 @@ const Question = () => {
       <Row>
         <Col>
           <div className="bg-primary text-white px-3 py-3">
-            <div className="me-2 text-black fw-bold">{`${
+            <div className="me-2 mb-2 text-black fw-bold">{`Frage ${
               quizState.currentQuestionIndex + 1
-            }/${quizState.questions.length})`}</div>
+            } von ${quizState.questions.length}`}</div>
             <span
               dangerouslySetInnerHTML={{
                 __html: questionWithBr,
