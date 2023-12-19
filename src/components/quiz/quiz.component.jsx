@@ -12,11 +12,11 @@ const Quiz = () => {
   return (
     <div>
       <Navigation />
-      <Row>
+      {/* <Row>
         <Col>
           <div className="bg-light py-2"></div>
         </Col>
-      </Row>
+      </Row> */}
       {quizState.showResults && (
         <div>
           <Row>

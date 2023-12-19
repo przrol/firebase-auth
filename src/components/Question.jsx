@@ -15,7 +15,7 @@ const Question = () => {
       <Row>
         <Col>
           <div className="bg-primary text-white px-3 py-3">
-            <div className="me-2 mb-2 text-black fw-bold">{`Frage ${
+            <div className="me-2 mb-1 text-black fw-bold">{`Frage ${
               quizState.currentQuestionIndex + 1
             } von ${quizState.questions.length}`}</div>
             <span
