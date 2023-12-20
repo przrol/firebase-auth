@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 // import "./answer.styles.css";
 
@@ -10,17 +9,18 @@ const Answer = ({
   correctAnswers,
   solveQuestion,
 }) => {
-  const [checked, setChecked] = useState(false);
+  // const [checked, setChecked] = useState(false);
 
-  const handleChange = () => {
-    setChecked((prevChecked) => !prevChecked);
-  };
+  // const handleChange = () => {
+  //   setChecked((prevChecked) => !prevChecked);
+  // };
 
   const letterMapping = ["A", "B", "C", "D"];
   const isCorrectAnswer = solveQuestion && correctAnswers.includes(answerText);
   const isWrongAnswer = solveQuestion && !correctAnswers.includes(answerText);
   const correctAnswerClass = isCorrectAnswer ? "correct-answer" : "";
-  const wrongAnswerClass = checked && isWrongAnswer ? "wrong-answer" : "";
+  const wrongAnswerClass =
+    currentAnswers.includes(answerText) && isWrongAnswer ? "wrong-answer" : "";
   const disabledClass = solveQuestion ? "disabled-answer" : "";
   return (
     <Row>
@@ -28,10 +28,10 @@ const Answer = ({
         <Form.Check
           className={`${correctAnswerClass} ${wrongAnswerClass} ${disabledClass} hover-border ps-5 py-3`}
           type="checkbox"
-          checked={checked}
-          onChange={() => {
-            handleChange();
-            onSelectAnswer(answerText);
+          checked={currentAnswers.includes(answerText)}
+          onChange={(e) => {
+            // handleChange();
+            onSelectAnswer(e.target.checked, answerText);
           }}
           id={`checkRadio-${index}`}
           label={answerText}

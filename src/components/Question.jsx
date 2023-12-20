@@ -41,10 +41,11 @@ const Question = () => {
               currentAnswers={quizState.currentAnswers}
               solveQuestion={quizState.solveQuestion}
               correctAnswers={currentQuestion.correctAnswers}
-              onSelectAnswer={(answerText) =>
+              onSelectAnswer={(checked, answerText) =>
                 dispatch({
                   type: "SELECT_ANSWER",
                   payload: answerText,
+                  checked,
                 })
               }
             />
@@ -78,27 +79,16 @@ const Question = () => {
           </Col>
         </Row>
       </Form>
-      {/* {quizState.showExplanation && ( */}
-      <div className="explanation" hidden={!quizState.showExplanation}>
-        <div>
-          <div>
-            <p style={{ fontWeight: "bold" }}>Erklärung (ChatGPT)</p>
-            <p
-              dangerouslySetInnerHTML={{
-                __html: replaceWithBr(currentQuestion.explanationChatGPT),
-              }}
-            />
-          </div>
-        </div>
-
-        <div
-          className="explanation"
-          dangerouslySetInnerHTML={{
-            __html: replaceWithBr(currentQuestion.explanationUdemy),
-          }}
-        />
-      </div>
-      {/* )} */}
+      <Row className="mt-3" hidden={!quizState.showExplanation}>
+        <Col>
+          <div
+            className="explanation"
+            dangerouslySetInnerHTML={{
+              __html: replaceWithBr(currentQuestion.explanation),
+            }}
+          />
+        </Col>
+      </Row>
     </div>
   );
 };
