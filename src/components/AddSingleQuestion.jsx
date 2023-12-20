@@ -3,25 +3,19 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
-import { useAuth } from "../contexts/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Navigation from "./Navigation";
-import { InputGroup, Row } from "react-bootstrap";
 import NewAnswer from "./newAnswer/newAnswer.component";
+import { addNewDocument } from "../firebase";
 
 export default function AddSingleQuestion() {
   const questionRef = useRef();
   const explanationRef = useRef();
   const defaultAnswer = { checked: false, answerText: "" };
   const [answers, setAnswers] = useState([defaultAnswer]);
-  // const [correctAnswers, setCorrectAnswers] = useState([]);
-  // const [incorrectAnswers, setIncorrectAnswers] = useState([]);
-  const { currentUser, updateCurrentUserEmail, updateCurrentUserPassword } =
-    useAuth();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleNewAnswer = () => {
     setAnswers((prevAnswers) => [...prevAnswers, defaultAnswer]);
@@ -52,30 +46,31 @@ export default function AddSingleQuestion() {
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      return setError("Password do not match");
-    }
-
-    const promises = [];
+    // if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+    //   return setError("Password do not match");
+    // }
     setLoading(true);
     setError("");
     setSuccess("");
 
-    if (questionRef.current.value !== currentUser.email) {
-      promises.push(updateCurrentUserEmail(questionRef.current.value));
-    }
+    const correctAnswers = answers
+      .filter((element) => element.checked)
+      .map((answer) => answer.answerText);
+    const incorrectAnswers = answers
+      .filter((element) => !element.checked)
+      .map((answer) => answer.answerText);
 
-    if (passwordRef.current.value) {
-      promises.push(updateCurrentUserPassword(passwordRef.current.value));
-    }
-
-    Promise.all(promises)
+    addNewDocument(
+      questionRef.current.value,
+      correctAnswers,
+      incorrectAnswers,
+      explanationRef.current.value
+    )
       .then(() => {
-        // navigate("/");
-        setSuccess("The update was successful");
+        setSuccess("The question was successful added");
       })
-      .catch(() => {
-        setError("Failed to update account");
+      .catch((e) => {
+        setError(e.message);
       })
       .finally(() => {
         setLoading(false);

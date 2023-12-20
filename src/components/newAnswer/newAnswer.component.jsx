@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { Trash3 } from "react-bootstrap-icons";
 // import "./answer.styles.css";
@@ -12,17 +11,6 @@ const NewAnswer = ({
   checked,
   isLastAnswer,
 }) => {
-  // const [checked, setChecked] = useState(false);
-  // const [answerText, setAnswerText] = useState("");
-
-  // const handleChange = (e) => {
-  //   setChecked((prevChecked) => !prevChecked);
-  // };
-
-  // const handleAnswerText = (e) => {
-  //   setAnswerText((prevText) => e.target.value);
-  // };
-
   return (
     <InputGroup
       id={`answerText-${index}`}

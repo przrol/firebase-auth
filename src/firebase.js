@@ -1,6 +1,12 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { collection, getDocs, getFirestore, query } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  addDoc,
+} from "firebase/firestore";
 
 const app = initializeApp({
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -12,6 +18,21 @@ const app = initializeApp({
 });
 
 export const db = getFirestore();
+
+export const addNewDocument = async (
+  question,
+  correctAnswers,
+  incorrectAnswers,
+  explanation
+) => {
+  const collectionRef = collection(db, "questions");
+  await addDoc(collectionRef, {
+    question,
+    correctAnswers,
+    incorrectAnswers,
+    explanation,
+  });
+};
 
 export const getQuestionsAndDocuments = async () => {
   const collectionRef = collection(db, "questions");
