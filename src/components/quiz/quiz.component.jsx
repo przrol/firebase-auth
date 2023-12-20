@@ -1,8 +1,10 @@
 import { useContext } from "react";
-import { QuizContext, QuizProvider } from "../../contexts/QuizContext";
+import { QuizContext } from "../../contexts/QuizContext";
 import Question from "../Question";
 import "./quiz.styles.css";
-import { Button, Col, Row } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 import Navigation from "../Navigation";
 
 const Quiz = () => {

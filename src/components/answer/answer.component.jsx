@@ -1,4 +1,6 @@
-import { Col, Form, Row } from "react-bootstrap";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
 // import "./answer.styles.css";
 
 const Answer = ({
@@ -27,7 +29,7 @@ const Answer = ({
       <Col>
         <Form.Check
           className={`${correctAnswerClass} ${wrongAnswerClass} ${disabledClass} hover-border ps-5 py-3`}
-          type="checkbox"
+          type={correctAnswers.length === 1 ? "radio" : "checkbox"}
           checked={currentAnswers.includes(answerText)}
           onChange={(e) => {
             // handleChange();

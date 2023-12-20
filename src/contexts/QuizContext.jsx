@@ -20,12 +20,17 @@ const quizReducer = (state, action) => {
   switch (action.type) {
     case "SELECT_ANSWER": {
       // payload -> "answerText"
-      const currentAnswers = action.checked
-        ? [...state.currentAnswers, action.payload]
-        : state.currentAnswers.filter((item) => item !== action.payload);
+      const questionCorrectAnswers =
+        state.questions[state.currentQuestionIndex].correctAnswers;
+      const currentAnswers =
+        questionCorrectAnswers.length === 1
+          ? [action.payload]
+          : action.checked
+          ? [...state.currentAnswers, action.payload]
+          : state.currentAnswers.filter((item) => item !== action.payload);
       const correctAnswerCount = arraysContainSameStrings(
         currentAnswers,
-        state.questions[state.currentQuestionIndex].correctAnswers
+        questionCorrectAnswers
       )
         ? state.correctAnswerCount + 1
         : state.correctAnswerCount;

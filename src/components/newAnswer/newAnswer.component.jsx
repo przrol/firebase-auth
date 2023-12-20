@@ -1,4 +1,6 @@
-import { Button, Form, InputGroup } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
 import { Trash3 } from "react-bootstrap-icons";
 // import "./answer.styles.css";
 
