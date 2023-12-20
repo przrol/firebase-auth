@@ -25,12 +25,13 @@ export default function Navigation() {
   }
 
   return (
-    <Navbar bg="dark" data-bs-theme="dark">
+    <Navbar bg="dark" expand="sm" data-bs-theme="dark">
       <Container>
         <Navbar.Brand as={Link} to="/">
           Quiz
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
+
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <NavDropdown title="Profile" id="basic-nav-dropdown">
