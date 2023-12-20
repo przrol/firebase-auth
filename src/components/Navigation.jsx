@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { Container, Navbar, Nav, Form, Button } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
+import Form from "react-bootstrap/Form";
+import NavDropdown from "react-bootstrap/NavDropdown";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -28,12 +33,19 @@ export default function Navigation() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/update-profile">
-              Profile
-            </Nav.Link>
-            <Nav.Link as={Link} to="/signup">
-              Sign Up
-            </Nav.Link>
+            <NavDropdown title="Profile" id="basic-nav-dropdown">
+              <NavDropdown.Item as={Link} to="/update-profile">
+                Update
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/signup">
+                Sign Up
+              </NavDropdown.Item>
+            </NavDropdown>
+            <NavDropdown title="Learn" id="basic-nav-dropdown">
+              <NavDropdown.Item as={Link} to="/update-profile">
+                Add Question
+              </NavDropdown.Item>
+            </NavDropdown>
           </Nav>
           <Form className="d-flex align-items-center">
             <div>
