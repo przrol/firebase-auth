@@ -8,7 +8,7 @@ import PrivateRoute from "./PrivateRoute";
 import UpdateProfile from "./UpdateProfile";
 import Quiz from "./quiz/quiz.component";
 import { QuizProvider } from "../contexts/QuizContext";
-import AddSingle from "./AddSingle";
+import AddSingleQuestion from "./AddSingleQuestion";
 
 function App() {
   return (
@@ -28,7 +28,10 @@ function App() {
                   <Route path="/signup" element={<Signup />} />
                 </Route>
                 <Route element={<PrivateRoute />}>
-                  <Route path="/addsingle" element={<AddSingle />} />
+                  <Route
+                    path="/addsinglequestion"
+                    element={<AddSingleQuestion />}
+                  />
                 </Route>
                 <Route path="/login" element={<Login />} />
               </Routes>

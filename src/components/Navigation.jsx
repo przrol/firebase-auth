@@ -43,7 +43,7 @@ export default function Navigation() {
               </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown title="Questions" id="basic-nav-dropdown">
-              <NavDropdown.Item as={Link} to="/addsingle">
+              <NavDropdown.Item as={Link} to="/addsingleQuestion">
                 Add Single
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/Import">

@@ -9,14 +9,14 @@ import Navigation from "./Navigation";
 import { InputGroup, Row } from "react-bootstrap";
 import NewAnswer from "./newAnswer/newAnswer.component";
 
-export default function AddSingle() {
+export default function AddSingleQuestion() {
   const questionRef = useRef();
   const explanationRef = useRef();
   const defaultAnswer = { checked: false, answerText: "" };
   const [answers, setAnswers] = useState([
-    defaultAnswer,
-    defaultAnswer,
-    defaultAnswer,
+    { id: 0, checked: false, answerText: "aa" },
+    { id: 1, checked: false, answerText: "ss" },
+    { id: 2, checked: false, answerText: "dd" },
   ]);
   // const [correctAnswers, setCorrectAnswers] = useState([]);
   // const [incorrectAnswers, setIncorrectAnswers] = useState([]);
@@ -31,7 +31,19 @@ export default function AddSingle() {
     setAnswers((prevAnswers) => [...prevAnswers, defaultAnswer]);
   };
 
-  const handleChange = () => {};
+  const handleNewAnswerChange = (index, newText) => {
+    setAnswers((prevAnswers) =>
+      prevAnswers.map((element, i) => {
+        return i === index ? { ...element, answerText: newText } : element;
+      })
+    );
+  };
+
+  const handleDeleteAnswer = (indexToRemove) => {
+    setAnswers((prevAnswers) =>
+      prevAnswers.filter((element) => element.id !== indexToRemove)
+    );
+  };
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -82,7 +94,13 @@ export default function AddSingle() {
             <Form.Label>Answers</Form.Label>
 
             {answers.map((answer, index) => (
-              <NewAnswer key={index} index={index} />
+              <NewAnswer
+                answerText={answer.answerText}
+                key={index}
+                index={answer.id}
+                onDeleteAnswer={handleDeleteAnswer}
+                onChangeAnswer={handleNewAnswerChange}
+              />
             ))}
 
             <Button className="ps-1" variant="link" onClick={handleNewAnswer}>
