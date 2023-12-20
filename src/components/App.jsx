@@ -23,7 +23,9 @@ function App() {
                 <Route element={<PrivateRoute />}>
                   <Route path="/update-profile" element={<UpdateProfile />} />
                 </Route>
-                <Route path="/signup" element={<Signup />} />
+                <Route element={<PrivateRoute />}>
+                  <Route path="/signup" element={<Signup />} />
+                </Route>
                 <Route path="/login" element={<Login />} />
               </Routes>
             </QuizProvider>
