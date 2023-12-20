@@ -42,9 +42,15 @@ export default function Navigation() {
                 Sign Up
               </NavDropdown.Item>
             </NavDropdown>
-            <NavDropdown title="Learn" id="basic-nav-dropdown">
-              <NavDropdown.Item as={Link} to="/update-profile">
-                Add Question
+            <NavDropdown title="Questions" id="basic-nav-dropdown">
+              <NavDropdown.Item as={Link} to="/addsingle">
+                Add Single
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/Import">
+                Import
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/Export">
+                Export
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>
