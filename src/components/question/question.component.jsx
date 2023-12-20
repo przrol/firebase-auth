@@ -1,11 +1,12 @@
 import { useContext } from "react";
-import { QuizContext } from "../contexts/QuizContext";
-import { replaceWithBr } from "../helpers";
-import Answer from "./answer/answer.component";
+import { QuizContext } from "../../contexts/QuizContext";
+import { replaceWithBr } from "../../helpers";
+import Answer from "../answer/answer.component";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
+// import "./question.styles.css";
 
 const Question = () => {
   const { reducer } = useContext(QuizContext);

@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { QuizContext } from "../../contexts/QuizContext";
-import Question from "../Question";
+import Question from "../question/question.component";
 import "./quiz.styles.css";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
