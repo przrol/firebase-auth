@@ -13,11 +13,7 @@ export default function AddSingleQuestion() {
   const questionRef = useRef();
   const explanationRef = useRef();
   const defaultAnswer = { checked: false, answerText: "" };
-  const [answers, setAnswers] = useState([
-    { id: 0, checked: false, answerText: "aa" },
-    { id: 1, checked: false, answerText: "ss" },
-    { id: 2, checked: false, answerText: "dd" },
-  ]);
+  const [answers, setAnswers] = useState([defaultAnswer]);
   // const [correctAnswers, setCorrectAnswers] = useState([]);
   // const [incorrectAnswers, setIncorrectAnswers] = useState([]);
   const { currentUser, updateCurrentUserEmail, updateCurrentUserPassword } =
@@ -41,7 +37,15 @@ export default function AddSingleQuestion() {
 
   const handleDeleteAnswer = (indexToRemove) => {
     setAnswers((prevAnswers) =>
-      prevAnswers.filter((element) => element.id !== indexToRemove)
+      prevAnswers.filter((element, index) => index !== indexToRemove)
+    );
+  };
+
+  const handleCheckboxChange = (index, checked) => {
+    setAnswers((prevAnswers) =>
+      prevAnswers.map((element, i) => {
+        return i === index ? { ...element, checked } : element;
+      })
     );
   };
 
@@ -97,9 +101,12 @@ export default function AddSingleQuestion() {
               <NewAnswer
                 answerText={answer.answerText}
                 key={index}
-                index={answer.id}
+                index={index}
+                checked={answer.checked}
                 onDeleteAnswer={handleDeleteAnswer}
                 onChangeAnswer={handleNewAnswerChange}
+                onChangeCheckbox={handleCheckboxChange}
+                isLastAnswer={index === answers.length - 1}
               />
             ))}
 

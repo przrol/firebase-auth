@@ -3,21 +3,37 @@ import { Button, Form, InputGroup } from "react-bootstrap";
 import { Trash3 } from "react-bootstrap-icons";
 // import "./answer.styles.css";
 
-const NewAnswer = ({ index, onDeleteAnswer, onChangeAnswer, answerText }) => {
-  const [checked, setChecked] = useState(false);
+const NewAnswer = ({
+  index,
+  onDeleteAnswer,
+  onChangeAnswer,
+  onChangeCheckbox,
+  answerText,
+  checked,
+  isLastAnswer,
+}) => {
+  // const [checked, setChecked] = useState(false);
   // const [answerText, setAnswerText] = useState("");
 
-  const handleChange = (e) => {
-    setChecked((prevChecked) => !prevChecked);
-  };
+  // const handleChange = (e) => {
+  //   setChecked((prevChecked) => !prevChecked);
+  // };
 
   // const handleAnswerText = (e) => {
   //   setAnswerText((prevText) => e.target.value);
   // };
 
   return (
-    <InputGroup id={`answerText-${index}`} className="mb-3">
-      <InputGroup.Checkbox checked={checked} onChange={handleChange} />
+    <InputGroup
+      id={`answerText-${index}`}
+      className={isLastAnswer ? "" : "mb-3"}
+    >
+      <InputGroup.Checkbox
+        checked={checked}
+        onChange={(e) => {
+          onChangeCheckbox(index, e.target.checked);
+        }}
+      />
       <Form.Control
         as="textarea"
         rows={2}
