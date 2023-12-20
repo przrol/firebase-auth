@@ -38,7 +38,7 @@ export default function Signup() {
   return (
     <>
       <Navigation />
-      <Card className="mx-auto mt-3" style={{ maxWidth: "400px" }}>
+      <Card className="mx-auto mt-1" bg="light" style={{ maxWidth: "800px" }}>
         <Card.Body>
           <h2 className="text-center mb-4">Sign Up</h2>
           {error && <Alert variant="danger">{error}</Alert>}

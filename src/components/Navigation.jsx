@@ -55,7 +55,7 @@ export default function Navigation() {
             </NavDropdown>
           </Nav>
           <Form className="d-flex align-items-center">
-            <div>
+            <div className="text-end">
               <Form.Label className="text-muted mb-0 fw-bold me-1">
                 Signed in as:
               </Form.Label>

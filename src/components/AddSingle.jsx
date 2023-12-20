@@ -6,17 +6,32 @@ import Alert from "react-bootstrap/Alert";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import Navigation from "./Navigation";
+import { InputGroup, Row } from "react-bootstrap";
+import NewAnswer from "./newAnswer/newAnswer.component";
 
 export default function AddSingle() {
-  const emailRef = useRef();
-  const passwordRef = useRef();
-  const passwordConfirmRef = useRef();
+  const questionRef = useRef();
+  const explanationRef = useRef();
+  const defaultAnswer = { checked: false, answerText: "" };
+  const [answers, setAnswers] = useState([
+    defaultAnswer,
+    defaultAnswer,
+    defaultAnswer,
+  ]);
+  // const [correctAnswers, setCorrectAnswers] = useState([]);
+  // const [incorrectAnswers, setIncorrectAnswers] = useState([]);
   const { currentUser, updateCurrentUserEmail, updateCurrentUserPassword } =
     useAuth();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const handleNewAnswer = () => {
+    setAnswers((prevAnswers) => [...prevAnswers, defaultAnswer]);
+  };
+
+  const handleChange = () => {};
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -30,8 +45,8 @@ export default function AddSingle() {
     setError("");
     setSuccess("");
 
-    if (emailRef.current.value !== currentUser.email) {
-      promises.push(updateCurrentUserEmail(emailRef.current.value));
+    if (questionRef.current.value !== currentUser.email) {
+      promises.push(updateCurrentUserEmail(questionRef.current.value));
     }
 
     if (passwordRef.current.value) {
@@ -54,35 +69,33 @@ export default function AddSingle() {
   return (
     <>
       <Navigation />
-      <Card className="mx-auto mt-3" style={{ maxWidth: "800px" }}>
+      <Card className="mx-auto mt-1" bg="light" style={{ maxWidth: "800px" }}>
         <Card.Body>
           <h2 className="text-center mb-4">Add Single Question</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           {success && <Alert variant="success">{success}</Alert>}
           <Form onSubmit={handleSubmit}>
-            <Form.Group id="email" className="mb-3">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                ref={emailRef}
-                required
-                defaultValue={currentUser.email}
-              />
+            <Form.Group id="singleQuestion" className="mb-3">
+              <Form.Label>Question</Form.Label>
+              <Form.Control as="textarea" rows={3} ref={questionRef} required />
             </Form.Group>
-            <Form.Group id="password" className="mb-3">
-              <Form.Label>Password</Form.Label>
+            <Form.Label>Answers</Form.Label>
+
+            {answers.map((answer, index) => (
+              <NewAnswer key={index} index={index} />
+            ))}
+
+            <Button className="ps-1" variant="link" onClick={handleNewAnswer}>
+              Add Answer
+            </Button>
+
+            <Form.Group id="explanation" className="mt-4 mb-3">
+              <Form.Label>Explanation</Form.Label>
               <Form.Control
-                type="password"
-                ref={passwordRef}
-                placeholder="Leave blank to keep the same"
-              />
-            </Form.Group>
-            <Form.Group id="password-confirm" className="mb-4">
-              <Form.Label>Password Confirmation</Form.Label>
-              <Form.Control
-                type="password"
-                ref={passwordConfirmRef}
-                placeholder="Leave blank to keep the same"
+                as="textarea"
+                rows={3}
+                placeholder="e.g. explanation of ChatGPT"
+                ref={explanationRef}
               />
             </Form.Group>
             <Button disabled={loading} className="w-100" type="submit">
