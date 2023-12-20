@@ -5,7 +5,7 @@ import { useAuth } from "../contexts/AuthContext";
 
 export default function Navigation() {
   const [error, setError] = useState("");
-  const { logout } = useAuth();
+  const { logout, currentUser } = useAuth();
   const navigate = useNavigate();
 
   async function handleLogout() {
@@ -35,7 +35,15 @@ export default function Navigation() {
               Sign Up
             </Nav.Link>
           </Nav>
-          <Form>
+          <Form className="d-flex align-items-center">
+            <div>
+              <Form.Label className="text-muted mb-0 fw-bold me-1">
+                Signed in as:
+              </Form.Label>
+              <Form.Label className="text-muted mb-0">
+                {currentUser.email}
+              </Form.Label>
+            </div>
             <Button variant="link" onClick={handleLogout}>
               Log Out
             </Button>
