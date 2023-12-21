@@ -1,5 +1,5 @@
 import { createContext, useEffect, useReducer, useState } from "react";
-import { arraysContainSameStrings, shuffleAnswers } from "../helpers";
+import { arraysContainSameStrings, shuffle, shuffleAnswers } from "../helpers";
 import { getQuestionsAndDocuments } from "../firebase";
 
 const initialState = {
@@ -84,7 +84,7 @@ const quizReducer = (state, action) => {
       return {
         ...initialState,
         isDarkMode: state.isDarkMode,
-        questions: action.payload,
+        questions: action.payload.sort(() => Math.random() - 0.5),
         answers: shuffleAnswers(action.payload[0]),
       };
     }
@@ -97,15 +97,12 @@ const quizReducer = (state, action) => {
 export const QuizContext = createContext();
 
 export const QuizProvider = ({ children }) => {
-  // const [questions, setQuestions] = useState([]);
   const value = useReducer(quizReducer, initialState);
   const [state, dispatch] = value;
 
   useEffect(() => {
     const getQuestions = async () => {
       const data = await getQuestionsAndDocuments();
-      // console.log(data);
-      // setQuestions(data);
       dispatch({ type: "RESTART", payload: data });
     };
 

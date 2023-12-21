@@ -40,7 +40,7 @@ const Answer = ({
           id={`checkRadio-${index}`}
           label={
             <>
-              <span className="me-2">{letterMapping[index]}.</span>
+              <span className="me-1">{letterMapping[index]}.</span>
               {answerText}
             </>
           }
