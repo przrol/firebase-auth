@@ -13,8 +13,7 @@ const initialState = {
   currentAnswers: [],
   showExplanation: false,
   solveQuestion: false,
-  isDarkMode: false,
-  bgColor: "bg-light",
+  isDarkMode: localStorage.getItem("theme") === "dark",
 };
 
 const quizReducer = (state, action) => {
@@ -79,14 +78,12 @@ const quizReducer = (state, action) => {
       return {
         ...state,
         isDarkMode: action.isDarkMode,
-        bgColor: action.isDarkMode ? "bg-dark" : "bg-light",
       };
     }
     case "RESTART": {
       return {
         ...initialState,
         isDarkMode: state.isDarkMode,
-        bgColor: state.bgColor,
         questions: action.payload,
         answers: shuffleAnswers(action.payload[0]),
       };
@@ -118,20 +115,14 @@ export const QuizProvider = ({ children }) => {
   // Effect to toggle the attribute on the <html> tag
   useEffect(() => {
     const htmlElement = document.documentElement;
-    const isDarkMode = localStorage.getItem("theme") === "dark";
 
-    if (isDarkMode) {
+    if (state.isDarkMode) {
       // Add the attribute when the button is clicked (state is true)
       htmlElement.setAttribute("data-bs-theme", "dark");
     } else {
       // Remove the attribute when the button is clicked again (state is false)
       htmlElement.removeAttribute("data-bs-theme");
     }
-
-    dispatch({
-      type: "DARK_MODE",
-      isDarkMode,
-    });
   }, [state.isDarkMode]); // Run the effect whenever the state changes
 
   const value = { reducer, questions };
