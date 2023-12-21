@@ -35,6 +35,7 @@ const NewAnswer = ({
       <Button
         className="pe-0 text-danger"
         variant="link"
+        title="Delete answer"
         onClick={() => {
           onDeleteAnswer(index);
         }}
