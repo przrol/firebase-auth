@@ -72,6 +72,9 @@ export default function AddSingleQuestion() {
     )
       .then(() => {
         setSuccess("The question was successful added");
+        questionRef.current.value = "";
+        explanationRef.current.value = "";
+        setAnswers((prev) => [defaultAnswer]);
       })
       .catch((e) => {
         setError(e.message);
