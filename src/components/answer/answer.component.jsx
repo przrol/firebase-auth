@@ -11,7 +11,7 @@ const Answer = ({
   correctAnswers,
   solveQuestion,
 }) => {
-  const letterMapping = ["A", "B", "C", "D"];
+  const letterMapping = ["A", "B", "C", "D", "E", "F"];
   const isCorrectAnswer = solveQuestion && correctAnswers.includes(answerText);
   const isWrongAnswer = solveQuestion && !correctAnswers.includes(answerText);
   const correctAnswerClass = isCorrectAnswer ? "correct-answer" : "";
@@ -38,14 +38,19 @@ const Answer = ({
             onSelectAnswer(e.target.checked, answerText);
           }}
           id={`checkRadio-${index}`}
-          label={answerText}
-        />
-        {/* <div
+          label={
+            <>
+              <span className="me-2">{letterMapping[index]}.</span>
+              {answerText}
+            </>
+          }
+          /* <div
           className="pointer-cursor hover-border py-3"
           dangerouslySetInnerHTML={{
             __html: `${letterMapping[index]}) ${answerText}`,
           }}
-        /> */}
+        /> */
+        />
       </Col>
     </Row>
   );

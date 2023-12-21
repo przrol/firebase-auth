@@ -39,7 +39,10 @@ export const getQuestionsAndDocuments = async () => {
   const q = query(collectionRef);
 
   const querySnapshot = await getDocs(q);
-  const questions = querySnapshot.docs.map((doc) => ({ ...doc.data() }));
+  const questions = querySnapshot.docs.map((doc) => ({
+    ...doc.data(),
+    id: doc.id,
+  }));
 
   return questions;
 };
