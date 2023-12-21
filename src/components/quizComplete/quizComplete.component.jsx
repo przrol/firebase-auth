@@ -1,19 +1,17 @@
 import React, { useContext } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import { useNavigate } from "react-router-dom";
 import { QuizContext } from "../../contexts/QuizContext";
 
-export default function QuizComplete() {
+const QuizComplete = () => {
   const { reducer, questions } = useContext(QuizContext);
   const [state, dispatch] = reducer;
-  const navigate = useNavigate();
 
   const handleRestart = (e) => {
     e.preventDefault();
 
     dispatch({ type: "RESTART", payload: questions });
-    navigate("/");
+    // navigate("/");
   };
 
   return (
@@ -25,7 +23,6 @@ export default function QuizComplete() {
       >
         <Card.Header>Congratulations!</Card.Header>
         <Card.Body>
-          {/* <Card.Title className="mb-3">Congratulations!</Card.Title> */}
           <Card.Text>You have completed the quiz.</Card.Text>
           <Card.Text>
             You've got {state.correctAnswerCount} of {state.questions.length}{" "}
@@ -43,4 +40,6 @@ export default function QuizComplete() {
       </Card>
     </>
   );
-}
+};
+
+export default QuizComplete;
