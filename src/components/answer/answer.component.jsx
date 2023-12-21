@@ -11,12 +11,6 @@ const Answer = ({
   correctAnswers,
   solveQuestion,
 }) => {
-  // const [checked, setChecked] = useState(false);
-
-  // const handleChange = () => {
-  //   setChecked((prevChecked) => !prevChecked);
-  // };
-
   const letterMapping = ["A", "B", "C", "D"];
   const isCorrectAnswer = solveQuestion && correctAnswers.includes(answerText);
   const isWrongAnswer = solveQuestion && !correctAnswers.includes(answerText);
@@ -24,6 +18,14 @@ const Answer = ({
   const wrongAnswerClass =
     currentAnswers.includes(answerText) && isWrongAnswer ? "wrong-answer" : "";
   const disabledClass = solveQuestion ? "disabled-answer" : "";
+
+  // const [isMounted, setIsMounted] = useState(false);
+
+  // // When the component mounts, set isMounted to true
+  // useEffect(() => {
+  //   setIsMounted(true);
+  // }, [answerText]);
+
   return (
     <Row>
       <Col>

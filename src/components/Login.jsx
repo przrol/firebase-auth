@@ -1,10 +1,12 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import DarkMode from "./darkMode/darkMode.component";
+import { QuizContext } from "../contexts/QuizContext";
 
 export default function Login() {
   const emailRef = useRef();
@@ -13,6 +15,8 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { reducer } = useContext(QuizContext);
+  const [state, dispatch] = reducer;
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -31,7 +35,12 @@ export default function Login() {
 
   return (
     <>
-      <Card className="mx-auto mt-5" style={{ maxWidth: "400px" }}>
+      <Card
+        // data-bs-theme="dark"
+        bg={state.isDarkMode ? "dark" : "light"}
+        className="mx-auto mt-5"
+        style={{ maxWidth: "400px" }}
+      >
         <Card.Body>
           <h2 className="text-center mb-4">Log In</h2>
           {error && <Alert variant="danger">{error}</Alert>}
@@ -50,6 +59,7 @@ export default function Login() {
           </Form>
         </Card.Body>
       </Card>
+      <DarkMode />
     </>
   );
 }
