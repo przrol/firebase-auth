@@ -83,6 +83,8 @@ const quizReducer = (state, action) => {
     case "RESTART": {
       return {
         ...initialState,
+        isDarkMode: state.isDarkMode,
+        bgColor: state.bgColor,
         questions: action.payload,
         answers: shuffleAnswers(action.payload[0]),
       };

@@ -43,12 +43,12 @@ export default function Signup() {
     <>
       <Navigation />
       <Card
-        className="mx-auto mt-1"
+        className="mx-auto"
         bg={state.isDarkMode ? "dark" : "light"}
         style={{ maxWidth: "800px" }}
       >
+        <Card.Header className="text-center">Sign Up</Card.Header>
         <Card.Body>
-          <h2 className="text-center mb-4">Sign Up</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSubmit}>
             <Form.Group id="email" className="mb-3">

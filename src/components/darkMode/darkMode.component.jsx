@@ -25,7 +25,7 @@ export default function DarkMode() {
           className={`${state.bgColor} py-1 border rounded-4 d-flex justify-content-center`}
         >
           <Button
-            className="rounded-4 px-4 ms-1 d-flex align-items-center"
+            className="rounded-4 px-4 mx-1 d-flex align-items-center"
             type="button"
             variant={state.isDarkMode ? "info" : "light"}
             onClick={() =>

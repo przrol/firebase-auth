@@ -28,9 +28,9 @@ const Answer = ({
 
   return (
     <Row>
-      <Col>
+      <Col className="answerColumn">
         <Form.Check
-          className={`${correctAnswerClass} ${wrongAnswerClass} ${disabledClass} hover-border ps-5 py-3`}
+          className={`${correctAnswerClass} ${wrongAnswerClass} ${disabledClass} hover-border py-3`}
           type={correctAnswers.length === 1 ? "radio" : "checkbox"}
           checked={currentAnswers.includes(answerText)}
           onChange={(e) => {

@@ -3,12 +3,12 @@ import { QuizContext } from "../../contexts/QuizContext";
 import Question from "../question/question.component";
 import "./quiz.styles.css";
 import QuizComplete from "../quizComplete/quizComplete.component";
-import DarkMode from "../darkMode/darkMode.component";
 import Navigation from "../Navigation";
+import DarkMode from "../darkMode/darkMode.component";
 
 const Quiz = () => {
-  const { reducer, questions } = useContext(QuizContext);
-  const [quizState, dispatch] = reducer;
+  const { reducer } = useContext(QuizContext);
+  const [quizState] = reducer;
 
   return (
     <div>

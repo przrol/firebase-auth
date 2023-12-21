@@ -86,11 +86,11 @@ export default function AddSingleQuestion() {
       <Navigation />
       <Card
         bg={state.isDarkMode ? "dark" : "light"}
-        className="mx-auto mt-1"
+        className="mx-auto"
         style={{ maxWidth: "800px" }}
       >
+        <Card.Header className="text-center">Add Single Question</Card.Header>
         <Card.Body>
-          <h2 className="text-center mb-4">Add Single Question</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           {success && <Alert variant="success">{success}</Alert>}
           <Form onSubmit={handleSubmit}>

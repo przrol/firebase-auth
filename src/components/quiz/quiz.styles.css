@@ -8,23 +8,24 @@
   cursor: pointer;
 }
 
-.hover-border {
+.answerColumn .hover-border {
   border: 2px solid transparent; /* Invisible border by default */
   transition: border-color 0.3s ease; /* Smooth transition for the border */
+  padding-left: 2.2em;
 }
 
-.hover-border:hover {
+.answerColumn .hover-border:hover {
   border-color: #007bff; /* Example solid blue border color on hover */
 }
 
-.correct-answer {
+.answerColumn .correct-answer {
   border: 2px solid #1ea55b;
 }
 
-.wrong-answer {
+.answerColumn .wrong-answer {
   border: 2px solid #dc0a0a;
 }
 
-.disabled-answer {
+.answerColumn .disabled-answer {
   pointer-events: none;
 }

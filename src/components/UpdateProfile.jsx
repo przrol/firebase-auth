@@ -59,11 +59,11 @@ export default function UpdateProfile() {
       <Navigation />
       <Card
         bg={state.isDarkMode ? "dark" : "light"}
-        className="mx-auto mt-1"
+        className="mx-auto"
         style={{ maxWidth: "800px" }}
       >
+        <Card.Header className="text-center">Update Profile</Card.Header>
         <Card.Body>
-          <h2 className="text-center mb-4">Update Profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           {success && <Alert variant="success">{success}</Alert>}
           <Form onSubmit={handleSubmit}>

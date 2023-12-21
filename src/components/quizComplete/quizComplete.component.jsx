@@ -9,7 +9,9 @@ export default function QuizComplete() {
   const [state, dispatch] = reducer;
   const navigate = useNavigate();
 
-  const handleRestart = () => {
+  const handleRestart = (e) => {
+    e.preventDefault();
+
     dispatch({ type: "RESTART", payload: questions });
     navigate("/");
   };
@@ -18,15 +20,16 @@ export default function QuizComplete() {
     <>
       <Card
         bg={state.isDarkMode ? "dark" : "light"}
-        className="mx-auto mt-1"
+        className="mx-auto text-center"
         style={{ maxWidth: "800px" }}
       >
+        <Card.Header>Congratulations!</Card.Header>
         <Card.Body>
-          <h2 className="text-center mb-4">Congratulations!</h2>
-          <Card.Title>Congratulations!</Card.Title>
+          {/* <Card.Title className="mb-3">Congratulations!</Card.Title> */}
+          <Card.Text>You have completed the quiz.</Card.Text>
           <Card.Text>
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
+            You've got {state.correctAnswerCount} of {state.questions.length}{" "}
+            right.
           </Card.Text>
           <Button
             variant="success"
