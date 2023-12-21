@@ -9,8 +9,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
 const Quiz = () => {
-  const { reducer, questions } = useContext(QuizContext);
-  const [state, dispatch] = reducer;
+  const [state, dispatch] = useContext(QuizContext);
 
   return (
     <div>
@@ -33,7 +32,7 @@ const Quiz = () => {
               className="w-100"
               type="button"
               onClick={() => {
-                dispatch({ type: "RESTART", payload: questions });
+                dispatch({ type: "RESTART", payload: state.questions });
               }}
             >
               RESTART

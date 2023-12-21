@@ -6,8 +6,7 @@ import { Moon, Sun } from "react-bootstrap-icons";
 import { QuizContext } from "../../contexts/QuizContext";
 
 export default function DarkMode() {
-  const { reducer } = useContext(QuizContext);
-  const [state, dispatch] = reducer;
+  const [state, dispatch] = useContext(QuizContext);
 
   return (
     <Row className="mt-3">

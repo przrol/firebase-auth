@@ -10,8 +10,7 @@ import { QuizContext } from "../contexts/QuizContext";
 import DarkMode from "./darkMode/darkMode.component";
 
 export default function UpdateProfile() {
-  const { reducer } = useContext(QuizContext);
-  const [state] = reducer;
+  const [state] = useContext(QuizContext);
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();

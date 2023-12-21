@@ -97,15 +97,15 @@ const quizReducer = (state, action) => {
 export const QuizContext = createContext();
 
 export const QuizProvider = ({ children }) => {
-  const [questions, setQuestions] = useState([]);
-  const reducer = useReducer(quizReducer, initialState);
-  const [state, dispatch] = reducer;
+  // const [questions, setQuestions] = useState([]);
+  const value = useReducer(quizReducer, initialState);
+  const [state, dispatch] = value;
 
   useEffect(() => {
     const getQuestions = async () => {
       const data = await getQuestionsAndDocuments();
       // console.log(data);
-      setQuestions(data);
+      // setQuestions(data);
       dispatch({ type: "RESTART", payload: data });
     };
 
@@ -125,7 +125,7 @@ export const QuizProvider = ({ children }) => {
     }
   }, [state.isDarkMode]); // Run the effect whenever the state changes
 
-  const value = { reducer, questions };
+  // const value = { reducer, questions: state.questions };
 
   return <QuizContext.Provider value={value}>{children}</QuizContext.Provider>;
 };

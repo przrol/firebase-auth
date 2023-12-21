@@ -4,13 +4,12 @@ import Card from "react-bootstrap/Card";
 import { QuizContext } from "../../contexts/QuizContext";
 
 const QuizComplete = () => {
-  const { reducer, questions } = useContext(QuizContext);
-  const [state, dispatch] = reducer;
+  const [state, dispatch] = useContext(QuizContext);
 
   const handleRestart = (e) => {
     e.preventDefault();
 
-    dispatch({ type: "RESTART", payload: questions });
+    dispatch({ type: "RESTART", payload: state.questions });
     // navigate("/");
   };
 

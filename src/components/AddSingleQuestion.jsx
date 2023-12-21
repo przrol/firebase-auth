@@ -18,8 +18,7 @@ export default function AddSingleQuestion() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const { reducer } = useContext(QuizContext);
-  const [state] = reducer;
+  const [state] = useContext(QuizContext);
 
   const handleNewAnswer = () => {
     setAnswers((prevAnswers) => [...prevAnswers, defaultAnswer]);

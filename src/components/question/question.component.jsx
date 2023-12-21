@@ -10,8 +10,7 @@ import Card from "react-bootstrap/Card";
 // import "./question.styles.css";
 
 const Question = () => {
-  const { reducer } = useContext(QuizContext);
-  const [quizState, dispatch] = reducer;
+  const [quizState, dispatch] = useContext(QuizContext);
   const currentQuestion = quizState.questions[quizState.currentQuestionIndex];
   const questionWithBr = replaceWithBr(currentQuestion.question);
 

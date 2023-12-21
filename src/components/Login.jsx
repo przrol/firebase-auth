@@ -15,8 +15,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { reducer } = useContext(QuizContext);
-  const [state] = reducer;
+  const [state] = useContext(QuizContext);
 
   async function handleSubmit(e) {
     e.preventDefault();
