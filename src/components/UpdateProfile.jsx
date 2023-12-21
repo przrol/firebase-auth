@@ -1,13 +1,17 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
 import { useAuth } from "../contexts/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Navigation from "./Navigation";
+import { QuizContext } from "../contexts/QuizContext";
+import DarkMode from "./darkMode/darkMode.component";
 
 export default function UpdateProfile() {
+  const { reducer } = useContext(QuizContext);
+  const [state] = reducer;
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
@@ -16,7 +20,6 @@ export default function UpdateProfile() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -54,7 +57,11 @@ export default function UpdateProfile() {
   return (
     <>
       <Navigation />
-      <Card className="mx-auto mt-1" bg="light" style={{ maxWidth: "800px" }}>
+      <Card
+        bg={state.isDarkMode ? "dark" : "light"}
+        className="mx-auto mt-1"
+        style={{ maxWidth: "800px" }}
+      >
         <Card.Body>
           <h2 className="text-center mb-4">Update Profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
@@ -94,6 +101,7 @@ export default function UpdateProfile() {
       <div className="w-100 text-center mt-2">
         <Link to="/">Cancel</Link>
       </div>
+      <DarkMode />
     </>
   );
 }

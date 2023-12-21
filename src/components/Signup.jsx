@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
@@ -6,6 +6,8 @@ import Alert from "react-bootstrap/Alert";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import Navigation from "./Navigation";
+import { QuizContext } from "../contexts/QuizContext";
+import DarkMode from "./darkMode/darkMode.component";
 
 export default function Signup() {
   const emailRef = useRef();
@@ -15,6 +17,8 @@ export default function Signup() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { reducer } = useContext(QuizContext);
+  const [state] = reducer;
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -38,7 +42,11 @@ export default function Signup() {
   return (
     <>
       <Navigation />
-      <Card className="mx-auto mt-1" bg="light" style={{ maxWidth: "800px" }}>
+      <Card
+        className="mx-auto mt-1"
+        bg={state.isDarkMode ? "dark" : "light"}
+        style={{ maxWidth: "800px" }}
+      >
         <Card.Body>
           <h2 className="text-center mb-4">Sign Up</h2>
           {error && <Alert variant="danger">{error}</Alert>}
@@ -64,6 +72,7 @@ export default function Signup() {
       <div className="w-100 text-center mt-2">
         Already have an account? <Link to="../login">Log In</Link>
       </div>
+      <DarkMode />
     </>
   );
 }

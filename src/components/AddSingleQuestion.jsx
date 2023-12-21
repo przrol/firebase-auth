@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import Navigation from "./Navigation";
 import NewAnswer from "./newAnswer/newAnswer.component";
 import { addNewDocument } from "../firebase";
+import { QuizContext } from "../contexts/QuizContext";
+import DarkMode from "./darkMode/darkMode.component";
 
 export default function AddSingleQuestion() {
   const questionRef = useRef();
@@ -16,6 +18,8 @@ export default function AddSingleQuestion() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const { reducer } = useContext(QuizContext);
+  const [state] = reducer;
 
   const handleNewAnswer = () => {
     setAnswers((prevAnswers) => [...prevAnswers, defaultAnswer]);
@@ -80,7 +84,11 @@ export default function AddSingleQuestion() {
   return (
     <>
       <Navigation />
-      <Card className="mx-auto mt-1" bg="light" style={{ maxWidth: "800px" }}>
+      <Card
+        bg={state.isDarkMode ? "dark" : "light"}
+        className="mx-auto mt-1"
+        style={{ maxWidth: "800px" }}
+      >
         <Card.Body>
           <h2 className="text-center mb-4">Add Single Question</h2>
           {error && <Alert variant="danger">{error}</Alert>}
@@ -127,6 +135,7 @@ export default function AddSingleQuestion() {
       <div className="w-100 text-center mt-2">
         <Link to="/">Cancel</Link>
       </div>
+      <DarkMode />
     </>
   );
 }

@@ -25,7 +25,7 @@ export default function Navigation() {
   }
 
   return (
-    <Navbar bg="dark" expand="sm" data-bs-theme="dark">
+    <Navbar className="border-bottom" expand="sm">
       <Container>
         <Navbar.Brand as={Link} to="/">
           Quiz

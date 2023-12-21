@@ -16,7 +16,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { reducer } = useContext(QuizContext);
-  const [state, dispatch] = reducer;
+  const [state] = reducer;
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -36,7 +36,6 @@ export default function Login() {
   return (
     <>
       <Card
-        // data-bs-theme="dark"
         bg={state.isDarkMode ? "dark" : "light"}
         className="mx-auto mt-5"
         style={{ maxWidth: "400px" }}

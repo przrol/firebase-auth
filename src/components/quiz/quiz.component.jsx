@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Navigation from "../Navigation";
+import DarkMode from "../darkMode/darkMode.component";
 
 const Quiz = () => {
   const { reducer, questions } = useContext(QuizContext);
@@ -63,6 +64,7 @@ const Quiz = () => {
         </div>
       )}
       {!quizState.showResults && <Question />}
+      <DarkMode />
     </div>
   );
 };
