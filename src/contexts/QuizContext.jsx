@@ -14,6 +14,7 @@ const initialState = {
   showExplanation: false,
   solveQuestion: false,
   isDarkMode: localStorage.getItem("theme") === "dark",
+  showDeleteModalDialog: false,
 };
 
 const quizReducer = (state, action) => {
@@ -78,6 +79,12 @@ const quizReducer = (state, action) => {
       return {
         ...state,
         isDarkMode: action.isDarkMode,
+      };
+    }
+    case "DELETE_MODALDIALOG": {
+      return {
+        ...state,
+        showDeleteModalDialog: action.showDeleteModalDialog,
       };
     }
     case "RESTART": {

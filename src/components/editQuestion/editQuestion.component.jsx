@@ -8,6 +8,7 @@ import DarkMode from "../darkMode/darkMode.component";
 import { QuizContext } from "../../contexts/QuizContext";
 import Navigation from "../Navigation";
 import { PencilSquare, Trash3 } from "react-bootstrap-icons";
+import ModalDialog from "../modal/modalDialog.component";
 
 export default function EditQuestion() {
   const defaultAnswer = { checked: false, answerText: "" };
@@ -15,7 +16,15 @@ export default function EditQuestion() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const [state] = useContext(QuizContext);
+  const [state, dispatch] = useContext(QuizContext);
+  const [show, setShow] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState("");
+
+  const handleClose = () => setShow(false);
+  const handleShow = (questionIndex) => {
+    setCurrentQuestionIndex(questionIndex);
+    setShow(true);
+  };
 
   const handleNewAnswer = () => {
     setAnswers((prevAnswers) => [...prevAnswers, defaultAnswer]);
@@ -75,41 +84,46 @@ export default function EditQuestion() {
             {state.questions.map((q, index) => (
               <Form.Group key={index} className="mb-3">
                 <Form.Label>{`Question ${index + 1}`}</Form.Label>
-                <div className="d-flex">
+                <Button
+                  className="pt-0 ps-2 pb-2 text-primary"
+                  variant="link"
+                  title="Edit"
+                  // onClick={() => {
+                  //   onDeleteAnswer(index);
+                  // }}
+                >
+                  <PencilSquare />
+                </Button>
+                <div className="d-flex align-items-center">
                   <Form.Control
                     as="textarea"
                     rows={3}
                     disabled
                     defaultValue={q.question}
                   />
-                  <div style={{ maxWidth: "35px" }}>
-                    <Button
-                      className="pe-0 text-primary"
-                      variant="link"
-                      title="Edit"
-                      // onClick={() => {
-                      //   onDeleteAnswer(index);
-                      // }}
-                    >
-                      <PencilSquare />
-                    </Button>
-                    <Button
-                      className="pe-0 text-danger"
-                      variant="link"
-                      title="Delete answer"
-                      // onClick={() => {
-                      //   onDeleteAnswer(index);
-                      // }}
-                    >
-                      <Trash3 />
-                    </Button>
-                  </div>
+
+                  <Button
+                    className="pe-0 text-danger"
+                    variant="link"
+                    title="Delete answer"
+                    onClick={() => handleShow(`Question ${index + 1}`)}
+                  >
+                    <Trash3 />
+                  </Button>
                 </div>
               </Form.Group>
             ))}
           </Form>
         </Card.Body>
       </Card>
+      <DarkMode />
+      <ModalDialog
+        show={show}
+        onCloseModal={handleClose}
+        question={currentQuestionIndex}
+        modalTitle={`Delete ${currentQuestionIndex}`}
+        modalBody={`Do you really want to delete: ${currentQuestionIndex}?`}
+      />
     </>
   );
 }
