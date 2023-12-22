@@ -77,7 +77,7 @@ export default function EditQuestions() {
         className="mx-auto"
         style={{ maxWidth: "800px" }}
       >
-        <Card.Header className="text-center">Edit Question</Card.Header>
+        <Card.Header className="text-center">Edit Questions</Card.Header>
         <Card.Body>
           <Form>
             {state.questions.map((q, index) => (

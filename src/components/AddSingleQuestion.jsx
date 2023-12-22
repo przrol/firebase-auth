@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
@@ -12,14 +12,36 @@ import DarkMode from "./darkMode/darkMode.component";
 
 export default function AddSingleQuestion() {
   const { questionId } = useParams();
-  const questionRef = useRef();
-  const explanationRef = useRef();
+  const [state] = useContext(QuizContext);
+  let questionRef = useRef();
+  let explanationRef = useRef();
   const defaultAnswer = { checked: false, answerText: "" };
   const [answers, setAnswers] = useState([defaultAnswer]);
+
+  useEffect(() => {
+    if (questionId) {
+      const editQuestion = state.questions.find((q) => q.id === questionId);
+      questionRef.current.value = editQuestion.question;
+      explanationRef.current.value = editQuestion.explanation;
+      const incorrectAnswers = editQuestion.incorrectAnswers.map((element) => ({
+        checked: false,
+        answerText: element,
+      }));
+      const correctAnswers = editQuestion.correctAnswers.map((element) => ({
+        checked: true,
+        answerText: element,
+      }));
+      setAnswers([...correctAnswers, ...incorrectAnswers]);
+    } else {
+      questionRef.current.value = "";
+      explanationRef.current.value = "";
+      setAnswers([defaultAnswer]); // Reset answers to default
+    }
+  }, [questionId]);
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const [state] = useContext(QuizContext);
 
   const handleNewAnswer = () => {
     setAnswers((prevAnswers) => [...prevAnswers, defaultAnswer]);
@@ -96,7 +118,9 @@ export default function AddSingleQuestion() {
         className="mx-auto"
         style={{ maxWidth: "800px" }}
       >
-        <Card.Header className="text-center">Add Single Question</Card.Header>
+        <Card.Header className="text-center">
+          {questionId ? "Edit Question" : "Add Single Question"}
+        </Card.Header>
         <Card.Body>
           {error && <Alert variant="danger">{error}</Alert>}
           {success && <Alert variant="success">{success}</Alert>}
@@ -134,7 +158,7 @@ export default function AddSingleQuestion() {
               />
             </Form.Group>
             <Button disabled={loading} className="w-100" type="submit">
-              Add
+              {questionId ? "Update" : "Add"}
             </Button>
           </Form>
         </Card.Body>
