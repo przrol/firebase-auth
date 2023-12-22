@@ -2,7 +2,6 @@ import React, { useContext, useRef, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
-import Alert from "react-bootstrap/Alert";
 import { Link } from "react-router-dom";
 import DarkMode from "../darkMode/darkMode.component";
 import { QuizContext } from "../../contexts/QuizContext";
@@ -84,16 +83,9 @@ export default function EditQuestions() {
             {state.questions.map((q, index) => (
               <Form.Group key={index} className="mb-3">
                 <Form.Label>{`Question ${index + 1}`}</Form.Label>
-                <Button
-                  className="pt-0 ps-2 pb-2 text-primary"
-                  variant="link"
-                  title="Edit"
-                  // onClick={() => {
-                  //   onDeleteAnswer(index);
-                  // }}
-                >
-                  <PencilSquare />
-                </Button>
+                <Link to={q.id}>
+                  <PencilSquare className="ms-2 mb-1" />
+                </Link>
                 <div className="d-flex align-items-center">
                   <Form.Control
                     as="textarea"

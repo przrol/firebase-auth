@@ -19,6 +19,7 @@ const app = initializeApp({
 
 export const db = getFirestore();
 
+// adding document
 export const addNewDocument = async (
   question,
   correctAnswers,

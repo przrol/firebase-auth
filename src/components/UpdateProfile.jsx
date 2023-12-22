@@ -73,22 +73,25 @@ export default function UpdateProfile() {
                 ref={emailRef}
                 required
                 defaultValue={currentUser.email}
+                autoComplete="username"
               />
             </Form.Group>
             <Form.Group id="password" className="mb-3">
-              <Form.Label>Password</Form.Label>
+              <Form.Label>New Password</Form.Label>
               <Form.Control
                 type="password"
                 ref={passwordRef}
                 placeholder="Leave blank to keep the same"
+                autoComplete="new-password"
               />
             </Form.Group>
             <Form.Group id="password-confirm" className="mb-4">
-              <Form.Label>Password Confirmation</Form.Label>
+              <Form.Label>New Password Confirmation</Form.Label>
               <Form.Control
                 type="password"
                 ref={passwordConfirmRef}
                 placeholder="Leave blank to keep the same"
+                autoComplete="new-password"
               />
             </Form.Group>
             <Button disabled={loading} className="w-100" type="submit">

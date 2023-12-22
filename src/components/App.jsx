@@ -37,6 +37,13 @@ function App() {
                 <Route element={<PrivateRoute />}>
                   <Route path="/editquestion" element={<EditQuestions />} />
                 </Route>
+                <Route element={<PrivateRoute />}>
+                  <Route
+                    path="/editquestion/:questionId"
+                    element={<AddSingleQuestion />}
+                  />
+                </Route>
+
                 <Route path="/login" element={<Login />} />
               </Routes>
             </QuizProvider>

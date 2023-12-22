@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Navigation from "./Navigation";
 import NewAnswer from "./newAnswer/newAnswer.component";
 import { addNewDocument, getQuestionsAndDocuments } from "../firebase";
@@ -11,6 +11,7 @@ import { QuizContext } from "../contexts/QuizContext";
 import DarkMode from "./darkMode/darkMode.component";
 
 export default function AddSingleQuestion() {
+  const { questionId } = useParams();
   const questionRef = useRef();
   const explanationRef = useRef();
   const defaultAnswer = { checked: false, answerText: "" };
