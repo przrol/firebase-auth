@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import DarkMode from "../darkMode/darkMode.component";
 import { QuizContext } from "../../contexts/QuizContext";
 import Navigation from "../Navigation";
-import { PencilSquare } from "react-bootstrap-icons";
+import { PencilSquare, Trash3 } from "react-bootstrap-icons";
 
 export default function EditQuestion() {
   const defaultAnswer = { checked: false, answerText: "" };
@@ -82,16 +82,28 @@ export default function EditQuestion() {
                     disabled
                     defaultValue={q.question}
                   />
-                  <Button
-                    className="pe-0 text-primary"
-                    variant="link"
-                    title="Edit"
-                    // onClick={() => {
-                    //   onDeleteAnswer(index);
-                    // }}
-                  >
-                    <PencilSquare />
-                  </Button>
+                  <div style={{ maxWidth: "35px" }}>
+                    <Button
+                      className="pe-0 text-primary"
+                      variant="link"
+                      title="Edit"
+                      // onClick={() => {
+                      //   onDeleteAnswer(index);
+                      // }}
+                    >
+                      <PencilSquare />
+                    </Button>
+                    <Button
+                      className="pe-0 text-danger"
+                      variant="link"
+                      title="Delete answer"
+                      // onClick={() => {
+                      //   onDeleteAnswer(index);
+                      // }}
+                    >
+                      <Trash3 />
+                    </Button>
+                  </div>
                 </div>
               </Form.Group>
             ))}
