@@ -47,7 +47,7 @@ export default function Navigation() {
                 Add Single
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/editquestion">
-                Edit Question
+                Edit Questions
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/Import">
                 Import

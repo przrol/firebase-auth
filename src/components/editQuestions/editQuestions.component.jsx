@@ -10,7 +10,7 @@ import Navigation from "../Navigation";
 import { PencilSquare, Trash3 } from "react-bootstrap-icons";
 import ModalDialog from "../modal/modalDialog.component";
 
-export default function EditQuestion() {
+export default function EditQuestions() {
   const defaultAnswer = { checked: false, answerText: "" };
   const [answers, setAnswers] = useState([defaultAnswer]);
   const [error, setError] = useState("");
