@@ -6,13 +6,17 @@ import Alert from "react-bootstrap/Alert";
 import { Link, useParams } from "react-router-dom";
 import Navigation from "./Navigation";
 import NewAnswer from "./newAnswer/newAnswer.component";
-import { addNewDocument, getQuestionsAndDocuments } from "../firebase";
+import {
+  addNewDocument,
+  getQuestionsAndDocuments,
+  updateDocument,
+} from "../firebase";
 import { QuizContext } from "../contexts/QuizContext";
 import DarkMode from "./darkMode/darkMode.component";
 
 export default function AddSingleQuestion() {
   const { questionId } = useParams();
-  const [state] = useContext(QuizContext);
+  const [state, dispatch] = useContext(QuizContext);
   let questionRef = useRef();
   let explanationRef = useRef();
   const defaultAnswer = { checked: false, answerText: "" };
@@ -69,7 +73,7 @@ export default function AddSingleQuestion() {
     );
   };
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     // if (passwordRef.current.value !== passwordConfirmRef.current.value) {
@@ -86,28 +90,40 @@ export default function AddSingleQuestion() {
       .filter((element) => !element.checked)
       .map((answer) => answer.answerText);
 
-    addNewDocument(
-      questionRef.current.value,
-      correctAnswers,
-      incorrectAnswers,
-      explanationRef.current.value
-    )
-      .then(() => {
-        setSuccess("The question was successful added");
+    try {
+      if (questionId) {
+        await updateDocument(
+          questionId,
+          questionRef.current.value,
+          correctAnswers,
+          incorrectAnswers,
+          explanationRef.current.value
+        );
+      } else {
+        await addNewDocument(
+          questionRef.current.value,
+          correctAnswers,
+          incorrectAnswers,
+          explanationRef.current.value
+        );
+
         questionRef.current.value = "";
         explanationRef.current.value = "";
         setAnswers([defaultAnswer]);
+      }
 
-        getQuestionsAndDocuments().then((data) =>
-          dispatch({ type: "RESTART", payload: data })
-        );
-      })
-      .catch((e) => {
-        setError(e.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      setSuccess(
+        `The question was successful ${questionId ? "updated" : "added"}!`
+      );
+
+      getQuestionsAndDocuments().then((data) =>
+        dispatch({ type: "RESTART", payload: data })
+      );
+    } catch (error) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

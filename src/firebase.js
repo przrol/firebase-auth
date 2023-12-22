@@ -6,6 +6,8 @@ import {
   getFirestore,
   query,
   addDoc,
+  doc,
+  updateDoc,
 } from "firebase/firestore";
 
 const app = initializeApp({
@@ -17,6 +19,8 @@ const app = initializeApp({
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 });
 
+const questionCollection = "questions";
+
 export const db = getFirestore();
 
 // adding document
@@ -26,7 +30,7 @@ export const addNewDocument = async (
   incorrectAnswers,
   explanation
 ) => {
-  const collectionRef = collection(db, "questions");
+  const collectionRef = collection(db, questionCollection);
   await addDoc(collectionRef, {
     question,
     correctAnswers,
@@ -35,8 +39,26 @@ export const addNewDocument = async (
   });
 };
 
+// updating document
+export const updateDocument = async (
+  docId,
+  question,
+  correctAnswers,
+  incorrectAnswers,
+  explanation
+) => {
+  const docRef = doc(db, questionCollection, docId);
+
+  await updateDoc(docRef, {
+    question,
+    correctAnswers,
+    incorrectAnswers,
+    explanation,
+  });
+};
+
 export const getQuestionsAndDocuments = async () => {
-  const collectionRef = collection(db, "questions");
+  const collectionRef = collection(db, questionCollection);
   const q = query(collectionRef);
 
   const querySnapshot = await getDocs(q);
