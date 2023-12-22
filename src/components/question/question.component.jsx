@@ -83,7 +83,9 @@ const Question = () => {
           <div
             className="explanation"
             dangerouslySetInnerHTML={{
-              __html: replaceWithBr(currentQuestion.explanation),
+              __html: replaceWithBr(
+                currentQuestion.explanation || "No explanation available!"
+              ),
             }}
           />
         </Col>
