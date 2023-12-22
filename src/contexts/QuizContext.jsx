@@ -88,11 +88,13 @@ const quizReducer = (state, action) => {
       };
     }
     case "RESTART": {
+      const shuffledQuestions = shuffle(action.payload);
+
       return {
         ...initialState,
         isDarkMode: state.isDarkMode,
-        questions: action.payload.sort(() => Math.random() - 0.5),
-        answers: shuffleAnswers(action.payload[0]),
+        questions: shuffledQuestions,
+        answers: shuffleAnswers(shuffledQuestions[0]),
       };
     }
     default: {
