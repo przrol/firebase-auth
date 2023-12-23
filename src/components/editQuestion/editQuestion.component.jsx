@@ -1,19 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
 import { PencilSquare, Trash3 } from "react-bootstrap-icons";
+import { InputGroup } from "react-bootstrap";
 
 export default function EditQuestion({
   index,
   question,
   onShowDeleteModal,
   showAllExplanations,
+  showAllAnswers,
 }) {
   const [showExplanation, setShowExplanation] = useState(false);
+  const [showAnswers, setShowAnswers] = useState(false);
+
+  useEffect(() => {
+    setShowExplanation(showAllExplanations);
+  }, [showAllExplanations]);
+
+  useEffect(() => {
+    setShowAnswers(showAllAnswers);
+  }, [showAllAnswers]);
+
+  const incorrectAnswers = question.incorrectAnswers.map((element) => ({
+    checked: false,
+    answerText: element,
+  }));
+  const correctAnswers = question.correctAnswers.map((element) => ({
+    checked: true,
+    answerText: element,
+  }));
+
+  const allAnswers = [...correctAnswers, ...incorrectAnswers];
 
   const handleShowExplanation = () => {
     setShowExplanation((prev) => !prev);
+  };
+
+  const handleShowAnswers = () => {
+    setShowAnswers((prev) => !prev);
   };
 
   return (
@@ -42,20 +68,32 @@ export default function EditQuestion({
           defaultValue={question.question}
         />
         <Button
-          className="my-2 me-3"
+          className="mt-3 mb-2 me-3"
           variant="primary"
-          onClick={handleShowExplanation}
+          onClick={handleShowAnswers}
         >
           Answers
         </Button>
         <Button
-          className="my-2"
+          className="mt-3 mb-2"
           variant="warning"
           onClick={handleShowExplanation}
         >
           Explanation
         </Button>
-        {(showExplanation || showAllExplanations) && (
+        {showAnswers &&
+          allAnswers.map((answer, index) => (
+            <InputGroup key={index} id={`answerText-${index}`} className="mb-3">
+              <InputGroup.Checkbox checked={answer.checked} disabled />
+              <Form.Control
+                as="textarea"
+                rows={2}
+                defaultValue={answer.answerText}
+                disabled
+              />
+            </InputGroup>
+          ))}
+        {showExplanation && (
           <Form.Control
             as="textarea"
             rows={4}

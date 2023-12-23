@@ -14,6 +14,7 @@ export default function EditQuestions() {
   const [state] = useContext(QuizContext);
   const [show, setShow] = useState(false);
   const [showAllExplanations, setShowAllExplanations] = useState(false);
+  const [showAllAnswers, setShowAllAnswers] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState("");
 
   const handleClose = () => setShow(false);
@@ -24,6 +25,10 @@ export default function EditQuestions() {
 
   const handleShowAllExplanations = () => {
     setShowAllExplanations((prev) => !prev);
+  };
+
+  const handleShowAllAnswers = () => {
+    setShowAllAnswers((prev) => !prev);
   };
 
   return (
@@ -37,19 +42,20 @@ export default function EditQuestions() {
         <Card.Header className="text-center">Edit Questions</Card.Header>
         <Card.Body>
           <Form>
-            <Row className="mb-3">
+            <Row className="mb-4">
               <Col className="d-flex">
                 <Form.Check
-                  className="me-4"
+                  className="me-3"
+                  type="checkbox"
+                  id="show-All-Answers"
+                  label={"Show all answers"}
+                  onClick={handleShowAllAnswers}
+                />
+                <Form.Check
                   type="checkbox"
                   id="show-All-Explanations"
                   label={"Show all explanations"}
                   onClick={handleShowAllExplanations}
-                />
-                <Form.Check
-                  type="checkbox"
-                  id="show-All-Answers"
-                  label={"Show all answers"}
                 />
               </Col>
             </Row>
@@ -59,6 +65,7 @@ export default function EditQuestions() {
                 key={index}
                 index={index}
                 showAllExplanations={showAllExplanations}
+                showAllAnswers={showAllAnswers}
                 question={q}
               />
             ))}
