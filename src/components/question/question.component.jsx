@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { QuizContext } from "../../contexts/QuizContext";
-import { replaceWithBr } from "../../helpers";
+import { replaceWithBr, arraysContainSameStrings } from "../../helpers";
 import Answer from "../answer/answer.component";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
@@ -14,11 +14,21 @@ const Question = () => {
   const currentQuestion = quizState.questions[quizState.currentQuestionIndex];
   const questionWithBr = replaceWithBr(currentQuestion.question);
 
+  let cardBorder = "";
+  if (quizState.solveQuestion) {
+    cardBorder = arraysContainSameStrings(
+      quizState.currentAnswers,
+      currentQuestion.correctAnswers
+    )
+      ? "question-solved"
+      : "question-not-solved";
+  }
+
   return (
     <>
       <Card
         bg={quizState.isDarkMode ? "dark" : "light"}
-        className="mx-auto"
+        className={`mx-auto ${cardBorder}`}
         style={{ maxWidth: "800px" }}
       >
         <Card.Header className="text-center">{`Frage ${

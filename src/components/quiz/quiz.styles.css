@@ -18,11 +18,13 @@
   border-color: #007bff; /* Example solid blue border color on hover */
 }
 
-.answerColumn .correct-answer {
+.answerColumn .correct-answer,
+.card.question-solved {
   border: 2px solid #1ea55b;
 }
 
-.answerColumn .wrong-answer {
+.answerColumn .wrong-answer,
+.card.question-not-solved {
   border: 2px solid #dc0a0a;
 }
 

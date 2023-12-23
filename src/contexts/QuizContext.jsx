@@ -1,4 +1,4 @@
-import { createContext, useEffect, useReducer, useState } from "react";
+import { createContext, useEffect, useReducer } from "react";
 import { arraysContainSameStrings, shuffle, shuffleAnswers } from "../helpers";
 import { getQuestionsAndDocuments } from "../firebase";
 
