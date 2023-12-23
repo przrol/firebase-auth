@@ -13,6 +13,7 @@ import {
 } from "../firebase";
 import { QuizContext } from "../contexts/QuizContext";
 import DarkMode from "./darkMode/darkMode.component";
+import { TypeBold } from "react-bootstrap-icons";
 
 export default function AddSingleQuestion() {
   const { questionId } = useParams();
@@ -137,6 +138,29 @@ export default function AddSingleQuestion() {
     }
   }
 
+  const replaceSelectedText = (htmlTag) => {
+    const textArea = explanationRef.current;
+    const startPos = textArea.selectionStart;
+    const endPos = textArea.selectionEnd;
+    if (startPos !== endPos) {
+      // Only proceed if there's a selection
+      const newText = `${textArea.value.substring(
+        0,
+        startPos
+      )}<${htmlTag}>${textArea.value.substring(
+        startPos,
+        endPos
+      )}</${htmlTag}>${textArea.value.substring(endPos)}`;
+
+      textArea.value = newText;
+
+      // Update the selection to be at the end of the replaced text
+      // const newCaretPosition = startPos + replacementText.length;
+      // textArea.focus();
+      // textArea.setSelectionRange(newCaretPosition, newCaretPosition);
+    }
+  };
+
   return (
     <>
       <Navigation />
@@ -177,6 +201,13 @@ export default function AddSingleQuestion() {
 
             <Form.Group id="explanation" className="mt-4 mb-3">
               <Form.Label>Explanation</Form.Label>
+              <Button
+                title="Bold"
+                onClick={() => replaceSelectedText("strong")}
+                className="px-2 ms-2 mb-2 pt-0 pb-1 align-items-center"
+              >
+                <TypeBold size={20} />
+              </Button>
               <Form.Control
                 as="textarea"
                 rows={3}
