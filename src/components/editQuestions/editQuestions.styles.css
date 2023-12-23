@@ -7,3 +7,9 @@
 .deleteButton {
   padding-bottom: 11px;
 }
+
+label[for="show-All-Explanations"]:hover,
+label[for="show-All-Answers"]:hover {
+  text-decoration: underline;
+  color: rgb(110, 168, 254);
+}

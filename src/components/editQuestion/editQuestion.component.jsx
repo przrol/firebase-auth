@@ -4,7 +4,12 @@ import Form from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
 import { PencilSquare, Trash3 } from "react-bootstrap-icons";
 
-export default function EditQuestion({ index, question, onShowDeleteModal }) {
+export default function EditQuestion({
+  index,
+  question,
+  onShowDeleteModal,
+  showAllExplanations,
+}) {
   const [showExplanation, setShowExplanation] = useState(false);
 
   const handleShowExplanation = () => {
@@ -37,13 +42,20 @@ export default function EditQuestion({ index, question, onShowDeleteModal }) {
           defaultValue={question.question}
         />
         <Button
+          className="my-2 me-3"
+          variant="primary"
+          onClick={handleShowExplanation}
+        >
+          Answers
+        </Button>
+        <Button
           className="my-2"
           variant="warning"
           onClick={handleShowExplanation}
         >
           Explanation
         </Button>
-        {showExplanation && (
+        {(showExplanation || showAllExplanations) && (
           <Form.Control
             as="textarea"
             rows={4}

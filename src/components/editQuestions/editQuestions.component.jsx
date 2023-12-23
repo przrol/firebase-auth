@@ -1,20 +1,19 @@
-import React, { useContext, useRef, useState } from "react";
-import Button from "react-bootstrap/Button";
+import React, { useContext, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
-import { Link } from "react-router-dom";
 import DarkMode from "../darkMode/darkMode.component";
 import { QuizContext } from "../../contexts/QuizContext";
 import Navigation from "../Navigation";
-import { PencilSquare, Trash3 } from "react-bootstrap-icons";
 import ModalDialog from "../modal/modalDialog.component";
-import "./editQuestions.styles.css";
 import EditQuestion from "../editQuestion/editQuestion.component";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import "./editQuestions.styles.css";
 
 export default function EditQuestions() {
   const [state] = useContext(QuizContext);
   const [show, setShow] = useState(false);
-  const [showExplanation, setShowExplanation] = useState(false);
+  const [showAllExplanations, setShowAllExplanations] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState("");
 
   const handleClose = () => setShow(false);
@@ -23,8 +22,8 @@ export default function EditQuestions() {
     setShow(true);
   };
 
-  const handleShowExplanation = () => {
-    setShowExplanation((prev) => !prev);
+  const handleShowAllExplanations = () => {
+    setShowAllExplanations((prev) => !prev);
   };
 
   return (
@@ -38,11 +37,28 @@ export default function EditQuestions() {
         <Card.Header className="text-center">Edit Questions</Card.Header>
         <Card.Body>
           <Form>
+            <Row className="mb-3">
+              <Col className="d-flex">
+                <Form.Check
+                  className="me-4"
+                  type="checkbox"
+                  id="show-All-Explanations"
+                  label={"Show all explanations"}
+                  onClick={handleShowAllExplanations}
+                />
+                <Form.Check
+                  type="checkbox"
+                  id="show-All-Answers"
+                  label={"Show all answers"}
+                />
+              </Col>
+            </Row>
             {state.questions.map((q, index) => (
               <EditQuestion
                 onShowDeleteModal={handleShow}
                 key={index}
                 index={index}
+                showAllExplanations={showAllExplanations}
                 question={q}
               />
             ))}
