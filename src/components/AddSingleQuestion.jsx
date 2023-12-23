@@ -155,9 +155,35 @@ export default function AddSingleQuestion() {
       textArea.value = newText;
 
       // Update the selection to be at the end of the replaced text
-      // const newCaretPosition = startPos + replacementText.length;
+      const newCaretPosition = endPos + 2 * (htmlTag.length + 2) + 1;
+      textArea.focus();
+      textArea.setSelectionRange(startPos, newCaretPosition);
+    }
+  };
+
+  const replaceSelectedTextWithAnker = () => {
+    const textArea = explanationRef.current;
+    const startPos = textArea.selectionStart;
+    const endPos = textArea.selectionEnd;
+    if (startPos !== endPos) {
+      // Only proceed if there's a selection
+      const newText = `${textArea.value.substring(
+        0,
+        startPos
+      )}<a target="_blank" href="${textArea.value.substring(
+        startPos,
+        endPos
+      )}">${textArea.value.substring(
+        startPos,
+        endPos
+      )}</a>${textArea.value.substring(endPos)}`;
+
+      textArea.value = newText;
+
+      // Update the selection to be at the end of the replaced text
+      // const newCaretPosition = endPos + 2 * (htmlTag.length + 2) + 1;
       // textArea.focus();
-      // textArea.setSelectionRange(newCaretPosition, newCaretPosition);
+      // textArea.setSelectionRange(startPos, newCaretPosition);
     }
   };
 
@@ -204,9 +230,27 @@ export default function AddSingleQuestion() {
               <Button
                 title="Bold"
                 onClick={() => replaceSelectedText("strong")}
-                className="px-2 ms-2 mb-2 pt-0 pb-1 align-items-center"
+                className="mb-2 ms-2 fw-bold fs-6 py-1"
               >
-                <TypeBold size={20} />
+                B
+              </Button>
+              <Button
+                size="sm"
+                variant="warning"
+                title="Highlight"
+                onClick={() => replaceSelectedText("mark")}
+                className="mb-2 mx-3 fw-bold fs-6 py-1"
+              >
+                H
+              </Button>
+              <Button
+                size="sm"
+                variant="success"
+                title="Anker"
+                onClick={() => replaceSelectedTextWithAnker()}
+                className="mb-2 fw-bold fs-6 py-1"
+              >
+                A
               </Button>
               <Form.Control
                 as="textarea"
