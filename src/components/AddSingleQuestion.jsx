@@ -73,12 +73,17 @@ export default function AddSingleQuestion() {
     );
   };
 
+  const scrollToTop = () => {
+    // For scrolling to the top of the page
+    window.scrollTo({
+      top: 0, // Scroll to the top of the window
+      behavior: "smooth", // For a smooth scroll
+    });
+  };
+
   async function handleSubmit(e) {
     e.preventDefault();
 
-    // if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-    //   return setError("Password do not match");
-    // }
     setLoading(true);
     setError("");
     setSuccess("");
@@ -123,6 +128,7 @@ export default function AddSingleQuestion() {
       setError(e.message);
     } finally {
       setLoading(false);
+      scrollToTop();
     }
   }
 
