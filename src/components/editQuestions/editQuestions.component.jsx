@@ -8,14 +8,10 @@ import { QuizContext } from "../../contexts/QuizContext";
 import Navigation from "../Navigation";
 import { PencilSquare, Trash3 } from "react-bootstrap-icons";
 import ModalDialog from "../modal/modalDialog.component";
+import "./editQuestions.styles.css";
 
 export default function EditQuestions() {
-  const defaultAnswer = { checked: false, answerText: "" };
-  const [answers, setAnswers] = useState([defaultAnswer]);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [state, dispatch] = useContext(QuizContext);
+  const [state] = useContext(QuizContext);
   const [show, setShow] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState("");
 
@@ -24,50 +20,6 @@ export default function EditQuestions() {
     setCurrentQuestionIndex(questionIndex);
     setShow(true);
   };
-
-  const handleNewAnswer = () => {
-    setAnswers((prevAnswers) => [...prevAnswers, defaultAnswer]);
-  };
-
-  const handleNewAnswerChange = (index, newText) => {
-    setAnswers((prevAnswers) =>
-      prevAnswers.map((element, i) => {
-        return i === index ? { ...element, answerText: newText } : element;
-      })
-    );
-  };
-
-  const handleDeleteAnswer = (indexToRemove) => {
-    setAnswers((prevAnswers) =>
-      prevAnswers.filter((element, index) => index !== indexToRemove)
-    );
-  };
-
-  const handleCheckboxChange = (index, checked) => {
-    setAnswers((prevAnswers) =>
-      prevAnswers.map((element, i) => {
-        return i === index ? { ...element, checked } : element;
-      })
-    );
-  };
-
-  function handleSubmit(e) {
-    e.preventDefault();
-
-    // if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-    //   return setError("Password do not match");
-    // }
-    setLoading(true);
-    setError("");
-    setSuccess("");
-
-    const correctAnswers = answers
-      .filter((element) => element.checked)
-      .map((answer) => answer.answerText);
-    const incorrectAnswers = answers
-      .filter((element) => !element.checked)
-      .map((answer) => answer.answerText);
-  }
 
   return (
     <>
@@ -82,20 +34,17 @@ export default function EditQuestions() {
           <Form>
             {state.questions.map((q, index) => (
               <Form.Group key={index} className="mb-3">
-                <Form.Label>{`Question ${index + 1}`}</Form.Label>
-                <Link to={q.id}>
-                  <PencilSquare className="ms-2 mb-1" />
-                </Link>
-                <div className="d-flex align-items-center">
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    disabled
-                    defaultValue={q.question}
-                  />
-
+                <div className="d-flex align-items-center justify-content-between">
+                  <div>
+                    <Form.Label className="ms-1">{`Question ${
+                      index + 1
+                    }`}</Form.Label>
+                    <Link to={q.id}>
+                      <PencilSquare className="ms-2 editIcon" />
+                    </Link>
+                  </div>
                   <Button
-                    className="pe-0 text-danger"
+                    className="pt-0 deleteButton pe-2 text-danger"
                     variant="link"
                     title="Delete answer"
                     onClick={() => handleShow(`Question ${index + 1}`)}
@@ -103,6 +52,24 @@ export default function EditQuestions() {
                     <Trash3 />
                   </Button>
                 </div>
+                {/* <div className="d-flex align-items-center"> */}
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  disabled
+                  defaultValue={q.question}
+                />
+                {/* </div> */}
+                <Button className="my-2" variant="warning">
+                  Explanation
+                </Button>
+                <Form.Control
+                  as="textarea"
+                  rows={4}
+                  disabled
+                  defaultValue={q.explanation}
+                />
+                <hr className="mt-4"></hr>
               </Form.Group>
             ))}
           </Form>
