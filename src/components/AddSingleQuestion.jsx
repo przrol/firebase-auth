@@ -88,42 +88,47 @@ export default function AddSingleQuestion() {
     setError("");
     setSuccess("");
 
-    const correctAnswers = answers
-      .filter((element) => element.checked)
-      .map((answer) => answer.answerText);
-    const incorrectAnswers = answers
-      .filter((element) => !element.checked)
-      .map((answer) => answer.answerText);
-
     try {
-      if (questionId) {
-        await updateDocument(
-          questionId,
-          questionRef.current.value,
-          correctAnswers,
-          incorrectAnswers,
-          explanationRef.current.value
-        );
+      const correctAnswers = answers
+        .filter((element) => element.checked)
+        .map((answer) => answer.answerText);
+
+      if (correctAnswers.length === 0) {
+        setError("mark at least one answer as correct");
       } else {
-        await addNewDocument(
-          questionRef.current.value,
-          correctAnswers,
-          incorrectAnswers,
-          explanationRef.current.value
+        const incorrectAnswers = answers
+          .filter((element) => !element.checked)
+          .map((answer) => answer.answerText);
+
+        if (questionId) {
+          await updateDocument(
+            questionId,
+            questionRef.current.value,
+            correctAnswers,
+            incorrectAnswers,
+            explanationRef.current.value
+          );
+        } else {
+          await addNewDocument(
+            questionRef.current.value,
+            correctAnswers,
+            incorrectAnswers,
+            explanationRef.current.value
+          );
+
+          questionRef.current.value = "";
+          explanationRef.current.value = "";
+          setAnswers([defaultAnswer]);
+        }
+
+        setSuccess(
+          `The question was successful ${questionId ? "updated" : "added"}!`
         );
 
-        questionRef.current.value = "";
-        explanationRef.current.value = "";
-        setAnswers([defaultAnswer]);
+        getQuestionsAndDocuments().then((data) =>
+          dispatch({ type: "RESTART", payload: data })
+        );
       }
-
-      setSuccess(
-        `The question was successful ${questionId ? "updated" : "added"}!`
-      );
-
-      getQuestionsAndDocuments().then((data) =>
-        dispatch({ type: "RESTART", payload: data })
-      );
     } catch (error) {
       setError(e.message);
     } finally {
