@@ -45,6 +45,29 @@ const quizReducer = (state, action) => {
         // state.questions[state.currentQuestionIndex].correctAnswers.length,
       };
     }
+    case "ADD_QUESTION": {
+      return {
+        ...state,
+      };
+    }
+    case "UPDATE_QUESTION": {
+      const updatedQuestions = state.questions.map((q) => {
+        return q.id === action.questionId
+          ? {
+              ...q,
+              question: action.question,
+              correctAnswers: action.correctAnswers,
+              incorrectAnswers: action.incorrectAnswers,
+              explanation: action.explanation,
+            }
+          : q;
+      });
+
+      return {
+        ...state,
+        questions: updatedQuestions,
+      };
+    }
     case "NEXT_QUESTION": {
       const showResults =
         !action.solveQuestion &&

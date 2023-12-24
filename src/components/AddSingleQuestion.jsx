@@ -109,6 +109,15 @@ export default function AddSingleQuestion() {
             incorrectAnswers,
             explanationRef.current.value
           );
+
+          dispatch({
+            type: "UPDATE_QUESTION",
+            questionId,
+            question: questionRef.current.value,
+            correctAnswers,
+            incorrectAnswers,
+            explanation: explanationRef.current.value,
+          });
         } else {
           await addNewDocument(
             questionRef.current.value,
@@ -126,9 +135,9 @@ export default function AddSingleQuestion() {
           `The question was successful ${questionId ? "updated" : "added"}!`
         );
 
-        getQuestionsAndDocuments().then((data) =>
-          dispatch({ type: "RESTART", payload: data })
-        );
+        // getQuestionsAndDocuments().then((data) =>
+        //   dispatch({ type: "RESTART", payload: data })
+        // );
       }
     } catch (error) {
       setError(e.message);
