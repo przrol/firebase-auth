@@ -11,3 +11,7 @@
 .fade-in {
   animation: fadeIn 3s forwards; /* or your preferred timing */
 }
+
+.edit-link {
+  width: 107.4px;
+}
