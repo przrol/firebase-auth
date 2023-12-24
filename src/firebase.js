@@ -31,12 +31,15 @@ export const addNewDocument = async (
   explanation
 ) => {
   const collectionRef = collection(db, questionCollection);
-  await addDoc(collectionRef, {
+
+  const newDocRef = await addDoc(collectionRef, {
     question,
     correctAnswers,
     incorrectAnswers,
     explanation,
   });
+
+  return newDocRef;
 };
 
 // updating document

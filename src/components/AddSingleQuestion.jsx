@@ -119,12 +119,23 @@ export default function AddSingleQuestion() {
             explanation: explanationRef.current.value,
           });
         } else {
-          await addNewDocument(
+          const newDocRef = await addNewDocument(
             questionRef.current.value,
             correctAnswers,
             incorrectAnswers,
             explanationRef.current.value
           );
+
+          dispatch({
+            type: "ADD_QUESTION",
+            newQuestion: {
+              id: newDocRef.id,
+              question: questionRef.current.value,
+              correctAnswers,
+              incorrectAnswers,
+              explanation: explanationRef.current.value,
+            },
+          });
 
           questionRef.current.value = "";
           explanationRef.current.value = "";

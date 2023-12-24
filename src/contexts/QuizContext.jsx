@@ -48,6 +48,7 @@ const quizReducer = (state, action) => {
     case "ADD_QUESTION": {
       return {
         ...state,
+        questions: [...state.questions, action.newQuestion],
       };
     }
     case "UPDATE_QUESTION": {
