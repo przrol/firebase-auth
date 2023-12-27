@@ -4,18 +4,14 @@ import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
 import { Link, useParams } from "react-router-dom";
-import Navigation from "./Navigation";
-import NewAnswer from "./newAnswer/newAnswer.component";
-import {
-  addNewDocument,
-  getQuestionsAndDocuments,
-  updateDocument,
-} from "../firebase";
-import { QuizContext } from "../contexts/QuizContext";
-import DarkMode from "./darkMode/darkMode.component";
-import { TypeBold } from "react-bootstrap-icons";
+import Navigation from "../Navigation";
+import NewAnswer from "../newAnswer/newAnswer.component";
+import { addNewDocument, updateDocument } from "../../firebase";
+import { QuizContext } from "../../contexts/QuizContext";
+import DarkMode from "../darkMode/darkMode.component";
+import "./addOrUpdateQuestion.styles.css";
 
-export default function AddSingleQuestion() {
+export default function AddOrUpdateQuestion() {
   const { questionId } = useParams();
   const [state, dispatch] = useContext(QuizContext);
   let questionRef = useRef();
@@ -256,6 +252,15 @@ export default function AddSingleQuestion() {
               </Button>
               <Button
                 size="sm"
+                variant="light"
+                title="Italic"
+                onClick={() => replaceSelectedText("em")}
+                className="italic-button mb-2 ms-3 fw-bold fs-6"
+              >
+                I
+              </Button>
+              <Button
+                size="sm"
                 variant="warning"
                 title="Highlight"
                 onClick={() => replaceSelectedText("mark")}
@@ -272,6 +277,7 @@ export default function AddSingleQuestion() {
               >
                 A
               </Button>
+
               <Form.Control
                 as="textarea"
                 rows={3}

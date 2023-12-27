@@ -8,8 +8,8 @@ import PrivateRoute from "./PrivateRoute";
 import UpdateProfile from "./UpdateProfile";
 import Quiz from "./quiz/quiz.component";
 import { QuizProvider } from "../contexts/QuizContext";
-import AddSingleQuestion from "./AddSingleQuestion";
 import EditQuestions from "./editQuestions/editQuestions.component";
+import AddOrUpdateQuestion from "./addOrUpdateQuestion/addOrUpdateQuestion.component";
 
 function App() {
   return (
@@ -30,8 +30,8 @@ function App() {
                 </Route>
                 <Route element={<PrivateRoute />}>
                   <Route
-                    path="/addsinglequestion"
-                    element={<AddSingleQuestion />}
+                    path="/addquestion"
+                    element={<AddOrUpdateQuestion />}
                   />
                 </Route>
                 <Route element={<PrivateRoute />}>
@@ -40,7 +40,7 @@ function App() {
                 <Route element={<PrivateRoute />}>
                   <Route
                     path="/editquestion/:questionId"
-                    element={<AddSingleQuestion />}
+                    element={<AddOrUpdateQuestion />}
                   />
                 </Route>
 
