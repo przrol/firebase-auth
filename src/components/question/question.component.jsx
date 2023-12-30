@@ -8,7 +8,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
 import Image from "react-bootstrap/Image";
-import { PencilSquare } from "react-bootstrap-icons";
+import { PencilSquare, QuestionCircle } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import "./question.styles.css";
 
@@ -81,11 +81,11 @@ const Question = () => {
                   size="sm"
                   onClick={() => dispatch({ type: "EXPLANATION" })}
                 >
-                  EXPLANATION
+                  <QuestionCircle />
                 </Button>
                 <div>
                   <Button
-                    className="text-uppercase me-3"
+                    className="text-uppercase me-2"
                     type="button"
                     variant="success"
                     size="sm"
@@ -96,10 +96,10 @@ const Question = () => {
                       })
                     }
                   >
-                    PREV QUESTION
+                    PREV
                   </Button>
                   <Button
-                    className="text-uppercase"
+                    className="text-uppercase ms-1"
                     type="button"
                     variant="success"
                     size="sm"
@@ -110,14 +110,14 @@ const Question = () => {
                       })
                     }
                   >
-                    NEXT QUESTION
+                    NEXT
                   </Button>
                 </div>
                 <Link
                   className="edit-link text-end me-2"
                   to={`editquestion/${currentQuestion.id}`}
                 >
-                  <PencilSquare className="" />
+                  <PencilSquare />
                 </Link>
               </Col>
             </Row>
