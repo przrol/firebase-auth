@@ -111,10 +111,9 @@ export default function AddOrUpdateQuestion() {
           .map((answer) => answer.answerText);
 
         const examTopicId = Number(examTopicIdRef.current.value);
+        let newImageUrl = imageUrl ?? "";
 
         if (questionId) {
-          let newImageUrl = imageUrl ?? "";
-
           if (fileInputRef.current && fileInputRef.current.files.length > 0) {
             const file = fileInputRef.current.files[0];
 
@@ -185,7 +184,7 @@ export default function AddOrUpdateQuestion() {
         // );
       }
     } catch (error) {
-      setError(e.message);
+      setError(error.message);
     } finally {
       setLoading(false);
       scrollToTop();
