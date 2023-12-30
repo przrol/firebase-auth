@@ -7,6 +7,7 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
+import Image from "react-bootstrap/Image";
 import { PencilSquare } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import "./question.styles.css";
@@ -42,6 +43,18 @@ const Question = () => {
             dangerouslySetInnerHTML={{ __html: questionWithBr }}
           ></Card.Text>
           <Form>
+            {currentQuestion.imageUrl && (
+              <Image
+                className="px-2 mb-3"
+                src={currentQuestion.imageUrl}
+                fluid
+              />
+            )}
+            {currentQuestion.questionBelowImg && (
+              <Card.Text className="ps-2">
+                {currentQuestion.questionBelowImg}
+              </Card.Text>
+            )}
             {quizState.answers.map((answer, index) => (
               <Answer
                 answerText={answer}

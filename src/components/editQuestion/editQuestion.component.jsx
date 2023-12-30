@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Image from "react-bootstrap/Image";
+import InputGroup from "react-bootstrap/InputGroup";
 import { Link } from "react-router-dom";
 import { PencilSquare, Trash3 } from "react-bootstrap-icons";
-import { InputGroup } from "react-bootstrap";
 
 export default function EditQuestion({
   index,
@@ -66,6 +67,18 @@ export default function EditQuestion({
         disabled
         defaultValue={question.question}
       />
+      {question.imageUrl && (
+        <Image className="mt-2" src={question.imageUrl} fluid />
+      )}
+      {question.questionBelowImg && (
+        <Form.Control
+          className="mt-2"
+          as="textarea"
+          rows={2}
+          disabled
+          defaultValue={question.questionBelowImg}
+        />
+      )}
       <Button
         className="mt-3 mb-2 me-3"
         variant="primary"

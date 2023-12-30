@@ -9,6 +9,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 const app = initializeApp({
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -23,20 +24,48 @@ const questionCollection = "questions";
 
 export const db = getFirestore();
 
+const storage = getStorage();
+
+export const addNewImage = async (file) => {
+  const storageRef = ref(storage, file.name);
+
+  // 'file' comes from the Blob or File API
+  const snapshot = await uploadBytes(storageRef, file);
+  const downloadURL = await getDownloadURL(snapshot.ref);
+
+  return downloadURL;
+};
+
+// // Child references can also take paths delimited by '/'
+// const fileRef = ref(storage, "0007300002.png");
+// getDownloadURL(fileRef)
+//   .then((url) => {
+//     // Use the URL for the image, e.g. set the source of an image element
+//     // document.querySelector('img').src = url;
+//     console.log(url);
+//   })
+//   .catch((error) => {
+//     // Handle any errors
+//   });
+
 // adding document
 export const addNewDocument = async (
   question,
+  questionBelowImg,
   correctAnswers,
   incorrectAnswers,
-  explanation
+  explanation,
+  imageUrl
 ) => {
   const collectionRef = collection(db, questionCollection);
 
   const newDocRef = await addDoc(collectionRef, {
     question,
+    questionBelowImg,
     correctAnswers,
     incorrectAnswers,
     explanation,
+    imageUrl,
   });
 
   return newDocRef;
@@ -46,17 +75,21 @@ export const addNewDocument = async (
 export const updateDocument = async (
   docId,
   question,
+  questionBelowImg,
   correctAnswers,
   incorrectAnswers,
-  explanation
+  explanation,
+  imageUrl
 ) => {
   const docRef = doc(db, questionCollection, docId);
 
   await updateDoc(docRef, {
     question,
+    questionBelowImg,
     correctAnswers,
     incorrectAnswers,
     explanation,
+    imageUrl,
   });
 };
 

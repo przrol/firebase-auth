@@ -1,3 +1,11 @@
-.italic-button {
+#italic-button {
   padding: 0.25rem 0.75rem;
+}
+
+.file-upload {
+  padding-right: 1.75rem;
+}
+
+.question-img {
+  padding-right: 0.3rem;
 }

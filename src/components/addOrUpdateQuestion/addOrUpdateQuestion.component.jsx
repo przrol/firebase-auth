@@ -3,26 +3,34 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
+import Image from "react-bootstrap/Image";
+import InputGroup from "react-bootstrap/InputGroup";
+import Row from "react-bootstrap/Row";
 import { Link, useParams } from "react-router-dom";
 import Navigation from "../Navigation";
 import NewAnswer from "../newAnswer/newAnswer.component";
-import { addNewDocument, updateDocument } from "../../firebase";
+import { addNewDocument, addNewImage, updateDocument } from "../../firebase";
 import { QuizContext } from "../../contexts/QuizContext";
 import DarkMode from "../darkMode/darkMode.component";
 import "./addOrUpdateQuestion.styles.css";
+import { Trash3 } from "react-bootstrap-icons";
 
 export default function AddOrUpdateQuestion() {
   const { questionId } = useParams();
   const [state, dispatch] = useContext(QuizContext);
   let questionRef = useRef();
+  let questionBelowImgRef = useRef();
   let explanationRef = useRef();
   const defaultAnswer = { checked: false, answerText: "" };
   const [answers, setAnswers] = useState([defaultAnswer]);
+  const [imageUrl, setImageUrl] = useState("");
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (questionId) {
       const editQuestion = state.questions.find((q) => q.id === questionId);
       questionRef.current.value = editQuestion.question;
+      questionBelowImgRef.current.value = editQuestion.questionBelowImg ?? "";
       explanationRef.current.value = editQuestion.explanation;
       const incorrectAnswers = editQuestion.incorrectAnswers.map((element) => ({
         checked: false,
@@ -33,8 +41,10 @@ export default function AddOrUpdateQuestion() {
         answerText: element,
       }));
       setAnswers([...correctAnswers, ...incorrectAnswers]);
+      setImageUrl(editQuestion.imageUrl);
     } else {
       questionRef.current.value = "";
+      questionBelowImgRef.current.value = "";
       explanationRef.current.value = "";
       setAnswers([defaultAnswer]); // Reset answers to default
     }
@@ -98,28 +108,42 @@ export default function AddOrUpdateQuestion() {
           .map((answer) => answer.answerText);
 
         if (questionId) {
+          let imageUrl = "";
+
+          if (fileInputRef.current && fileInputRef.current.files.length > 0) {
+            const file = fileInputRef.current.files[0];
+
+            imageUrl = await addNewImage(file);
+          }
+
           await updateDocument(
             questionId,
             questionRef.current.value,
+            questionBelowImgRef.current.value,
             correctAnswers,
             incorrectAnswers,
-            explanationRef.current.value
+            explanationRef.current.value,
+            imageUrl
           );
 
           dispatch({
             type: "UPDATE_QUESTION",
             questionId,
             question: questionRef.current.value,
+            questionBelowImg: questionBelowImgRef.current.value,
             correctAnswers,
             incorrectAnswers,
             explanation: explanationRef.current.value,
+            imageUrl,
           });
         } else {
           const newDocRef = await addNewDocument(
             questionRef.current.value,
+            questionBelowImgRef.current.value,
             correctAnswers,
             incorrectAnswers,
-            explanationRef.current.value
+            explanationRef.current.value,
+            imageUrl
           );
 
           dispatch({
@@ -127,15 +151,19 @@ export default function AddOrUpdateQuestion() {
             newQuestion: {
               id: newDocRef.id,
               question: questionRef.current.value,
+              questionBelowImg: questionBelowImgRef.current.value,
               correctAnswers,
               incorrectAnswers,
               explanation: explanationRef.current.value,
+              imageUrl,
             },
           });
 
           questionRef.current.value = "";
+          questionBelowImgRef.current.value = "";
           explanationRef.current.value = "";
           setAnswers([defaultAnswer]);
+          handleDeleteImg();
         }
 
         setSuccess(
@@ -195,11 +223,27 @@ export default function AddOrUpdateQuestion() {
       )}</a>${textArea.value.substring(endPos)}`;
 
       textArea.value = newText;
+    }
+  };
 
-      // Update the selection to be at the end of the replaced text
-      // const newCaretPosition = endPos + 2 * (htmlTag.length + 2) + 1;
-      // textArea.focus();
-      // textArea.setSelectionRange(startPos, newCaretPosition);
+  const handleChangeImage = async (event) => {
+    // Get a reference to the selected file
+    const file = fileInputRef.current.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      // e.target.result contains the Data URL which can be used as a source of the image
+      setImageUrl(e.target.result);
+    };
+
+    // Read the file as a Data URL
+    reader.readAsDataURL(file);
+  };
+
+  const handleDeleteImg = () => {
+    setImageUrl("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -220,7 +264,49 @@ export default function AddOrUpdateQuestion() {
           <Form onSubmit={handleSubmit}>
             <Form.Group id="singleQuestion" className="mb-3">
               <Form.Label>Question</Form.Label>
-              <Form.Control as="textarea" rows={3} ref={questionRef} required />
+              <Form.Control
+                as="textarea"
+                className="mb-3"
+                rows={3}
+                ref={questionRef}
+                required
+              />
+            </Form.Group>
+            {imageUrl && (
+              <InputGroup as={Row}>
+                <div className="d-flex mb-2">
+                  <Image className="question-img" src={imageUrl} fluid />
+                  <Button
+                    className="ps-2 text-danger"
+                    variant="link"
+                    title="Delete answer"
+                    onClick={() => {
+                      handleDeleteImg(imageUrl);
+                    }}
+                  >
+                    <Trash3 />
+                  </Button>
+                </div>
+              </InputGroup>
+            )}
+            <Form.Group controlId="formFile" className="mb-3 file-upload">
+              <Form.Label>Image file</Form.Label>
+              <Form.Control
+                type="file"
+                size="sm"
+                accept=".jpg, .jpeg, .png, .gif"
+                onChange={handleChangeImage}
+                ref={fileInputRef}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Question Below Image</Form.Label>
+              <Form.Control
+                as="textarea"
+                className="mb-3"
+                rows={3}
+                ref={questionBelowImgRef}
+              />
             </Form.Group>
             <Form.Label>Answers</Form.Label>
 
@@ -255,7 +341,8 @@ export default function AddOrUpdateQuestion() {
                 variant="light"
                 title="Italic"
                 onClick={() => replaceSelectedText("em")}
-                className="italic-button mb-2 ms-3 fw-bold fs-6"
+                className="mb-2 ms-3 fw-bold fs-6"
+                id="italic-button"
               >
                 I
               </Button>
