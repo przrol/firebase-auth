@@ -12,6 +12,12 @@ import "./editQuestions.styles.css";
 
 export default function EditQuestions() {
   const [state] = useContext(QuizContext);
+
+  const sortedQuestions = [...state.questions].sort((a, b) => {
+    return a.examTopicId - b.examTopicId; // Sort by the 'age' property in ascending order
+    // For descending order, use 'b.age - a.age'
+  });
+
   const [show, setShow] = useState(false);
   const [showAllExplanations, setShowAllExplanations] = useState(false);
   const [showAllAnswers, setShowAllAnswers] = useState(false);
@@ -59,7 +65,7 @@ export default function EditQuestions() {
                 />
               </Col>
             </Row>
-            {state.questions.map((q, index) => (
+            {sortedQuestions.map((q, index) => (
               <EditQuestion
                 onShowDeleteModal={handleShow}
                 key={index}

@@ -47,7 +47,7 @@ export default function EditQuestion({
     <Form.Group className="mb-3">
       <div className="d-flex align-items-center justify-content-between">
         <div>
-          <Form.Label className="ms-1">{`Question ${index + 1}`}</Form.Label>
+          <Form.Label className="ms-1">{`Question #${question.examTopicId}`}</Form.Label>
           <Link to={question.id}>
             <PencilSquare className="ms-2 editIcon" />
           </Link>

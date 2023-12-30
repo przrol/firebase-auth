@@ -55,7 +55,8 @@ export const addNewDocument = async (
   correctAnswers,
   incorrectAnswers,
   explanation,
-  imageUrl
+  imageUrl,
+  examTopicId
 ) => {
   const collectionRef = collection(db, questionCollection);
 
@@ -66,6 +67,7 @@ export const addNewDocument = async (
     incorrectAnswers,
     explanation,
     imageUrl,
+    examTopicId,
   });
 
   return newDocRef;
@@ -79,7 +81,8 @@ export const updateDocument = async (
   correctAnswers,
   incorrectAnswers,
   explanation,
-  imageUrl
+  imageUrl,
+  examTopicId
 ) => {
   const docRef = doc(db, questionCollection, docId);
 
@@ -90,6 +93,7 @@ export const updateDocument = async (
     incorrectAnswers,
     explanation,
     imageUrl,
+    examTopicId,
   });
 };
 

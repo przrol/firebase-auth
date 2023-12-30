@@ -16,6 +16,7 @@ const initialState = {
   isDarkMode: localStorage.getItem("theme") === "dark",
   showDeleteModalDialog: false,
   imageUrl: "",
+  examTopicId: 0,
 };
 
 const quizReducer = (state, action) => {
@@ -63,6 +64,7 @@ const quizReducer = (state, action) => {
               incorrectAnswers: action.incorrectAnswers,
               explanation: action.explanation,
               imageUrl: action.imageUrl,
+              examTopicId: action.examTopicId,
             }
           : q;
       });

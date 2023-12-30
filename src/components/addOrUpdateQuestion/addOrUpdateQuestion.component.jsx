@@ -19,6 +19,7 @@ export default function AddOrUpdateQuestion() {
   const { questionId } = useParams();
   const [state, dispatch] = useContext(QuizContext);
   let questionRef = useRef();
+  let examTopicIdRef = useRef();
   let questionBelowImgRef = useRef();
   let explanationRef = useRef();
   const defaultAnswer = { checked: false, answerText: "" };
@@ -30,6 +31,7 @@ export default function AddOrUpdateQuestion() {
     if (questionId) {
       const editQuestion = state.questions.find((q) => q.id === questionId);
       questionRef.current.value = editQuestion.question;
+      examTopicIdRef.current.value = editQuestion.examTopicId;
       questionBelowImgRef.current.value = editQuestion.questionBelowImg ?? "";
       explanationRef.current.value = editQuestion.explanation;
       const incorrectAnswers = editQuestion.incorrectAnswers.map((element) => ({
@@ -44,6 +46,7 @@ export default function AddOrUpdateQuestion() {
       setImageUrl(editQuestion.imageUrl);
     } else {
       questionRef.current.value = "";
+      examTopicIdRef.current.value = "";
       questionBelowImgRef.current.value = "";
       explanationRef.current.value = "";
       setAnswers([defaultAnswer]); // Reset answers to default
@@ -107,6 +110,8 @@ export default function AddOrUpdateQuestion() {
           .filter((element) => !element.checked)
           .map((answer) => answer.answerText);
 
+        const examTopicId = Number(examTopicIdRef.current.value);
+
         if (questionId) {
           let imageUrl = "";
 
@@ -123,7 +128,8 @@ export default function AddOrUpdateQuestion() {
             correctAnswers,
             incorrectAnswers,
             explanationRef.current.value,
-            imageUrl
+            imageUrl,
+            examTopicId
           );
 
           dispatch({
@@ -135,6 +141,7 @@ export default function AddOrUpdateQuestion() {
             incorrectAnswers,
             explanation: explanationRef.current.value,
             imageUrl,
+            examTopicId,
           });
         } else {
           const newDocRef = await addNewDocument(
@@ -143,7 +150,8 @@ export default function AddOrUpdateQuestion() {
             correctAnswers,
             incorrectAnswers,
             explanationRef.current.value,
-            imageUrl
+            imageUrl,
+            examTopicId
           );
 
           dispatch({
@@ -156,10 +164,12 @@ export default function AddOrUpdateQuestion() {
               incorrectAnswers,
               explanation: explanationRef.current.value,
               imageUrl,
+              examTopicId,
             },
           });
 
           questionRef.current.value = "";
+          examTopicIdRef.current.value = "";
           questionBelowImgRef.current.value = "";
           explanationRef.current.value = "";
           setAnswers([defaultAnswer]);
@@ -262,6 +272,10 @@ export default function AddOrUpdateQuestion() {
           {error && <Alert variant="danger">{error}</Alert>}
           {success && <Alert variant="success">{success}</Alert>}
           <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>ExamTopics ID</Form.Label>
+              <Form.Control ref={examTopicIdRef} />
+            </Form.Group>
             <Form.Group id="singleQuestion" className="mb-3">
               <Form.Label>Question</Form.Label>
               <Form.Control
