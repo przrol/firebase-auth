@@ -113,7 +113,7 @@ export default function AddOrUpdateQuestion() {
         const examTopicId = Number(examTopicIdRef.current.value);
 
         if (questionId) {
-          let newImageUrl = imageUrl;
+          let newImageUrl = imageUrl ?? "";
 
           if (fileInputRef.current && fileInputRef.current.files.length > 0) {
             const file = fileInputRef.current.files[0];
