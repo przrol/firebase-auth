@@ -113,12 +113,12 @@ export default function AddOrUpdateQuestion() {
         const examTopicId = Number(examTopicIdRef.current.value);
 
         if (questionId) {
-          let imageUrl = "";
+          let newImageUrl = imageUrl;
 
           if (fileInputRef.current && fileInputRef.current.files.length > 0) {
             const file = fileInputRef.current.files[0];
 
-            imageUrl = await addNewImage(file);
+            newImageUrl = await addNewImage(file);
           }
 
           await updateDocument(
@@ -128,7 +128,7 @@ export default function AddOrUpdateQuestion() {
             correctAnswers,
             incorrectAnswers,
             explanationRef.current.value,
-            imageUrl,
+            newImageUrl,
             examTopicId
           );
 
@@ -140,7 +140,7 @@ export default function AddOrUpdateQuestion() {
             correctAnswers,
             incorrectAnswers,
             explanation: explanationRef.current.value,
-            imageUrl,
+            imageUrl: newImageUrl,
             examTopicId,
           });
         } else {
@@ -150,7 +150,7 @@ export default function AddOrUpdateQuestion() {
             correctAnswers,
             incorrectAnswers,
             explanationRef.current.value,
-            imageUrl,
+            newImageUrl,
             examTopicId
           );
 
@@ -163,7 +163,7 @@ export default function AddOrUpdateQuestion() {
               correctAnswers,
               incorrectAnswers,
               explanation: explanationRef.current.value,
-              imageUrl,
+              imageUrl: newImageUrl,
               examTopicId,
             },
           });
