@@ -26,6 +26,8 @@ export default function AddOrUpdateQuestion() {
   const [answers, setAnswers] = useState([defaultAnswer]);
   const [imageUrl, setImageUrl] = useState("");
   const fileInputRef = useRef(null);
+  const [isExamTopicIdInvalid, setIsExamTopicIdInvalid] = useState(false);
+  const [isQuestionInvalid, setIsQuestionInvalid] = useState(false);
 
   useEffect(() => {
     if (questionId) {
@@ -91,8 +93,16 @@ export default function AddOrUpdateQuestion() {
     });
   };
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    // const form = event.currentTarget;
+    // if (form.checkValidity() === false) {
+    //   setValidated(true);
+    //   return;
+    // }
+    setIsExamTopicIdInvalid(examTopicIdRef.current.value === "");
+    setIsQuestionInvalid(questionRef.current.value === "");
 
     setLoading(true);
     setError("");
@@ -105,7 +115,10 @@ export default function AddOrUpdateQuestion() {
 
       if (correctAnswers.length === 0) {
         setError("mark at least one answer as correct");
-      } else {
+      } else if (
+        examTopicIdRef.current.value !== "" &&
+        questionRef.current.value !== ""
+      ) {
         const incorrectAnswers = answers
           .filter((element) => !element.checked)
           .map((answer) => answer.answerText);
@@ -270,20 +283,30 @@ export default function AddOrUpdateQuestion() {
         <Card.Body>
           {error && <Alert variant="danger">{error}</Alert>}
           {success && <Alert variant="success">{success}</Alert>}
-          <Form onSubmit={handleSubmit}>
+          <Form noValidate onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Label>ExamTopics ID</Form.Label>
-              <Form.Control ref={examTopicIdRef} />
+              <Form.Control
+                ref={examTopicIdRef}
+                required
+                isInvalid={isExamTopicIdInvalid}
+              />
+              <Form.Control.Feedback type="invalid">
+                Please provide an ExamTopics ID.
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group id="singleQuestion" className="mb-3">
               <Form.Label>Question</Form.Label>
               <Form.Control
                 as="textarea"
-                className="mb-3"
                 rows={3}
                 ref={questionRef}
                 required
+                isInvalid={isQuestionInvalid}
               />
+              <Form.Control.Feedback type="invalid">
+                Please provide a Question.
+              </Form.Control.Feedback>
             </Form.Group>
             {imageUrl && (
               <InputGroup as={Row}>
