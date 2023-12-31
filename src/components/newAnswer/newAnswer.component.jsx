@@ -12,9 +12,11 @@ const NewAnswer = ({
   answerText,
   checked,
   isLastAnswer,
+  isCheckboxInvalid,
 }) => {
   return (
     <InputGroup
+      hasValidation
       id={`answerText-${index}`}
       className={isLastAnswer ? "" : "mb-3"}
     >
@@ -28,6 +30,7 @@ const NewAnswer = ({
         as="textarea"
         rows={2}
         value={answerText}
+        isInvalid={isCheckboxInvalid}
         onChange={(e) => {
           onChangeAnswer(index, e.target.value);
         }}
@@ -42,6 +45,9 @@ const NewAnswer = ({
       >
         <Trash3 />
       </Button>
+      <Form.Control.Feedback type="invalid">
+        Please mark at least one answer as correct
+      </Form.Control.Feedback>
     </InputGroup>
   );
 };

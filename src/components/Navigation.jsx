@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
@@ -7,11 +7,13 @@ import Form from "react-bootstrap/Form";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { QuizContext } from "../contexts/QuizContext";
 
 export default function Navigation() {
   const [error, setError] = useState("");
   const { logout, currentUser } = useAuth();
   const navigate = useNavigate();
+  const [state] = useContext(QuizContext);
 
   async function handleLogout() {
     setError("");
@@ -25,7 +27,12 @@ export default function Navigation() {
   }
 
   return (
-    <Navbar className="border-bottom mb-2" expand="sm">
+    <Navbar
+      bg={state.isDarkMode ? "dark" : "light"}
+      sticky="top"
+      className="border-bottom mb-2"
+      expand="sm"
+    >
       <Container>
         <Navbar.Brand as={Link} to="/">
           Quiz

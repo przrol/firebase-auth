@@ -22,12 +22,14 @@ export default function AddOrUpdateQuestion() {
   let examTopicIdRef = useRef();
   let questionBelowImgRef = useRef();
   let explanationRef = useRef();
+  const answersLabelRef = useRef();
   const defaultAnswer = { checked: false, answerText: "" };
   const [answers, setAnswers] = useState([defaultAnswer]);
   const [imageUrl, setImageUrl] = useState("");
   const fileInputRef = useRef(null);
   const [isExamTopicIdInvalid, setIsExamTopicIdInvalid] = useState(false);
   const [isQuestionInvalid, setIsQuestionInvalid] = useState(false);
+  const [isCheckboxInvalid, setIsCheckboxInvalid] = useState(false);
 
   useEffect(() => {
     if (questionId) {
@@ -101,21 +103,22 @@ export default function AddOrUpdateQuestion() {
     //   setValidated(true);
     //   return;
     // }
-    setIsExamTopicIdInvalid(examTopicIdRef.current.value === "");
-    setIsQuestionInvalid(questionRef.current.value === "");
 
     setLoading(true);
     setError("");
     setSuccess("");
 
-    try {
-      const correctAnswers = answers
-        .filter((element) => element.checked)
-        .map((answer) => answer.answerText);
+    const correctAnswers = answers
+      .filter((element) => element.checked)
+      .map((answer) => answer.answerText);
 
-      if (correctAnswers.length === 0) {
-        setError("mark at least one answer as correct");
-      } else if (
+    setIsExamTopicIdInvalid(examTopicIdRef.current.value === "");
+    setIsQuestionInvalid(questionRef.current.value === "");
+    setIsCheckboxInvalid(correctAnswers.length === 0);
+
+    try {
+      if (
+        correctAnswers.length > 0 &&
         examTopicIdRef.current.value !== "" &&
         questionRef.current.value !== ""
       ) {
@@ -200,7 +203,20 @@ export default function AddOrUpdateQuestion() {
       setError(error.message);
     } finally {
       setLoading(false);
-      scrollToTop();
+
+      if (
+        error ||
+        examTopicIdRef.current.value === "" ||
+        questionRef.current.value === "" ||
+        success
+      ) {
+        scrollToTop();
+      } else if (correctAnswers.length === 0) {
+        answersLabelRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
     }
   }
 
@@ -344,7 +360,7 @@ export default function AddOrUpdateQuestion() {
                 ref={questionBelowImgRef}
               />
             </Form.Group>
-            <Form.Label>Answers</Form.Label>
+            <Form.Label ref={answersLabelRef}>Answers</Form.Label>
 
             {answers.map((answer, index) => (
               <NewAnswer
@@ -356,6 +372,7 @@ export default function AddOrUpdateQuestion() {
                 onChangeAnswer={handleNewAnswerChange}
                 onChangeCheckbox={handleCheckboxChange}
                 isLastAnswer={index === answers.length - 1}
+                isCheckboxInvalid={isCheckboxInvalid}
               />
             ))}
 
