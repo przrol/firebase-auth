@@ -5,6 +5,7 @@ import Image from "react-bootstrap/Image";
 import InputGroup from "react-bootstrap/InputGroup";
 import { Link } from "react-router-dom";
 import { PencilSquare, Trash3 } from "react-bootstrap-icons";
+import { replaceWithBr } from "../../helpers";
 
 export default function EditQuestion({
   index,
@@ -106,12 +107,13 @@ export default function EditQuestion({
           </InputGroup>
         ))}
       {showExplanation && (
-        <Form.Control
-          as="textarea"
-          rows={4}
-          disabled
-          defaultValue={question.explanation}
-        />
+        <div
+          dangerouslySetInnerHTML={{
+            __html: replaceWithBr(
+              question.explanation || "No explanation available!"
+            ),
+          }}
+        ></div>
       )}
       <hr className="mt-4"></hr>
     </Form.Group>
