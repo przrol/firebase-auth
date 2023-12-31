@@ -91,7 +91,7 @@ const Question = () => {
                   <Button
                     className="text-uppercase me-2"
                     type="button"
-                    variant="success"
+                    variant="secondary"
                     size="sm"
                     onClick={() =>
                       dispatch({
@@ -100,12 +100,12 @@ const Question = () => {
                       })
                     }
                   >
-                    PREV
+                    PREVIOUS
                   </Button>
                   <Button
                     className="text-uppercase ms-1"
                     type="button"
-                    variant="success"
+                    variant={quizState.solveQuestion ? "primary" : "success"}
                     size="sm"
                     onClick={() =>
                       dispatch({
@@ -114,7 +114,9 @@ const Question = () => {
                       })
                     }
                   >
-                    NEXT
+                    {quizState.solveQuestion
+                      ? "NEXT QUESTION"
+                      : "SOLVE QUESTION"}
                   </Button>
                 </div>
                 <Link
