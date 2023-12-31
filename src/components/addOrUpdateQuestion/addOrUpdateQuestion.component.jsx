@@ -18,10 +18,10 @@ import { Trash3 } from "react-bootstrap-icons";
 export default function AddOrUpdateQuestion() {
   const { questionId } = useParams();
   const [state, dispatch] = useContext(QuizContext);
-  let questionRef = useRef();
-  let examTopicIdRef = useRef();
-  let questionBelowImgRef = useRef();
-  let explanationRef = useRef();
+  const questionRef = useRef();
+  const examTopicIdRef = useRef();
+  const questionBelowImgRef = useRef();
+  const explanationRef = useRef();
   const answersLabelRef = useRef();
   const defaultAnswer = { checked: false, answerText: "" };
   const [answers, setAnswers] = useState([defaultAnswer]);
@@ -54,6 +54,7 @@ export default function AddOrUpdateQuestion() {
       questionBelowImgRef.current.value = "";
       explanationRef.current.value = "";
       setAnswers([defaultAnswer]); // Reset answers to default
+      setImageUrl("");
     }
   }, [questionId]);
 
