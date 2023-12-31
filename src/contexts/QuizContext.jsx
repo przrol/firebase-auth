@@ -74,6 +74,21 @@ const quizReducer = (state, action) => {
         questions: updatedQuestions,
       };
     }
+    case "PREV_QUESTION": {
+      const prevQuestion = state.questions[state.currentQuestionIndex - 1];
+
+      return {
+        ...state,
+        currentQuestionIndex: state.currentQuestionIndex - 1,
+        solveQuestion: false,
+        answers: [
+          ...prevQuestion.correctAnswers,
+          ...prevQuestion.incorrectAnswers,
+        ],
+        currentAnswers: [],
+        showExplanation: false,
+      };
+    }
     case "NEXT_QUESTION": {
       const showResults =
         !action.solveQuestion &&

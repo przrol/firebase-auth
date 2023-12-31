@@ -96,7 +96,6 @@ const Question = () => {
                     onClick={() =>
                       dispatch({
                         type: "PREV_QUESTION",
-                        solveQuestion: !quizState.solveQuestion,
                       })
                     }
                   >
