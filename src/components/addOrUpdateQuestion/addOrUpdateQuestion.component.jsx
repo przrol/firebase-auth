@@ -30,6 +30,9 @@ export default function AddOrUpdateQuestion() {
   const [isExamTopicIdInvalid, setIsExamTopicIdInvalid] = useState(false);
   const [isQuestionInvalid, setIsQuestionInvalid] = useState(false);
   const [isCheckboxInvalid, setIsCheckboxInvalid] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (questionId) {
@@ -57,10 +60,6 @@ export default function AddOrUpdateQuestion() {
       setImageUrl("");
     }
   }, [questionId]);
-
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const handleNewAnswer = () => {
     setAnswers((prevAnswers) => [...prevAnswers, defaultAnswer]);
@@ -206,17 +205,16 @@ export default function AddOrUpdateQuestion() {
       setLoading(false);
 
       if (
-        error ||
-        examTopicIdRef.current.value === "" ||
-        questionRef.current.value === "" ||
-        success
+        correctAnswers.length === 0 &&
+        examTopicIdRef.current.value !== "" &&
+        questionRef.current.value !== ""
       ) {
-        scrollToTop();
-      } else if (correctAnswers.length === 0) {
         answersLabelRef.current.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
+      } else {
+        scrollToTop();
       }
     }
   }
