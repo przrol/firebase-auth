@@ -22,7 +22,6 @@ export default function AddOrUpdateQuestion() {
   const examTopicIdRef = useRef();
   const questionBelowImgRef = useRef();
   const explanationRef = useRef();
-  const answersLabelRef = useRef();
   const defaultAnswer = { checked: false, answerText: "" };
   const [answers, setAnswers] = useState([defaultAnswer]);
   const [imageUrl, setImageUrl] = useState("");
@@ -209,7 +208,7 @@ export default function AddOrUpdateQuestion() {
         examTopicIdRef.current.value !== "" &&
         questionRef.current.value !== ""
       ) {
-        answersLabelRef.current.scrollIntoView({
+        questionBelowImgRef.current.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
@@ -359,8 +358,7 @@ export default function AddOrUpdateQuestion() {
                 ref={questionBelowImgRef}
               />
             </Form.Group>
-            <Form.Label ref={answersLabelRef}>Answers</Form.Label>
-
+            <Form.Label>Answers</Form.Label>
             {answers.map((answer, index) => (
               <NewAnswer
                 answerText={answer.answerText}
