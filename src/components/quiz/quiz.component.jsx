@@ -20,7 +20,7 @@ const Quiz = () => {
           className="mx-auto text-center"
           style={{ maxWidth: "800px" }}
         >
-          <Card.Header>Congratulations!</Card.Header>
+          <Card.Header>{`Congratulations! (${state.currentExamNumber})`}</Card.Header>
           <Card.Body>
             <Card.Text>You have completed the quiz.</Card.Text>
             <Card.Text>

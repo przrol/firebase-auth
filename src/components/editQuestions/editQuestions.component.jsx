@@ -45,7 +45,9 @@ export default function EditQuestions() {
         className="mx-auto"
         style={{ maxWidth: "800px" }}
       >
-        <Card.Header className="text-center">Edit Questions</Card.Header>
+        <Card.Header className="text-center">
+          <div>{`Edit Questions (${state.currentExamNumber})`}</div>
+        </Card.Header>
         <Card.Body>
           <Form>
             <Row className="mb-4">

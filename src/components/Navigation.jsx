@@ -56,11 +56,8 @@ export default function Navigation() {
               <NavDropdown.Item as={Link} to="/editquestion">
                 Edit Questions
               </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/Import">
-                Import
-              </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/Export">
-                Export
+              <NavDropdown.Item as={Link} to="/editexam">
+                Manage Exams
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>

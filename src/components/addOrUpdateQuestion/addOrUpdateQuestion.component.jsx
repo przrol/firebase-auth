@@ -136,6 +136,7 @@ export default function AddOrUpdateQuestion() {
           }
 
           await updateDocument(
+            state.currentExamNumber,
             questionId,
             questionRef.current.value,
             questionBelowImgRef.current.value,
@@ -159,6 +160,7 @@ export default function AddOrUpdateQuestion() {
           });
         } else {
           const newDocRef = await addNewDocument(
+            state.currentExamNumber,
             questionRef.current.value,
             questionBelowImgRef.current.value,
             correctAnswers,
@@ -191,7 +193,9 @@ export default function AddOrUpdateQuestion() {
         }
 
         setSuccess(
-          `The question was successful ${questionId ? "updated" : "added"}!`
+          `The question was successful ${
+            questionId ? `updated in '${state.currentExamNumber}'` : "added"
+          }`
         );
 
         // getQuestionsAndDocuments().then((data) =>
@@ -292,7 +296,9 @@ export default function AddOrUpdateQuestion() {
         style={{ maxWidth: "800px" }}
       >
         <Card.Header className="text-center">
-          {questionId ? "Edit Question" : "Add Single Question"}
+          <div>{`${questionId ? "Edit Question" : "Add Single Question"} (${
+            state.currentExamNumber
+          })`}</div>
         </Card.Header>
         <Card.Body>
           {error && <Alert variant="danger">{error}</Alert>}

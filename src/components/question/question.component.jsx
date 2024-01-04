@@ -35,10 +35,10 @@ const Question = () => {
         style={{ maxWidth: "800px", transition: "all 1s" }}
       >
         <Card.Header className="d-flex justify-content-between">
-          <div style={{ width: "26.7125px" }}></div>
+          <div style={{ width: "35.34px" }}></div>
           <div className="">{`Frage ${quizState.currentQuestionIndex + 1} von ${
             quizState.questions.length
-          }`}</div>
+          } (${quizState.currentExamNumber})`}</div>
           <div>#{currentQuestion.examTopicId}</div>
         </Card.Header>
         <Card.Body>

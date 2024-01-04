@@ -10,6 +10,7 @@ import Quiz from "./quiz/quiz.component";
 import { QuizProvider } from "../contexts/QuizContext";
 import EditQuestions from "./editQuestions/editQuestions.component";
 import AddOrUpdateQuestion from "./addOrUpdateQuestion/addOrUpdateQuestion.component";
+import EditExams from "./editExams/editExams.component";
 
 function App() {
   return (
@@ -33,6 +34,9 @@ function App() {
                     path="/addquestion"
                     element={<AddOrUpdateQuestion />}
                   />
+                </Route>
+                <Route element={<PrivateRoute />}>
+                  <Route path="/editexam" element={<EditExams />} />
                 </Route>
                 <Route element={<PrivateRoute />}>
                   <Route path="/editquestion" element={<EditQuestions />} />

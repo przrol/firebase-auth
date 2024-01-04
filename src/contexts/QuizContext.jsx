@@ -1,6 +1,6 @@
 import { createContext, useEffect, useReducer } from "react";
 import { arraysContainSameStrings, shuffle, shuffleAnswers } from "../helpers";
-import { getQuestionsAndDocuments } from "../firebase";
+import { getExamQuestions, fetchCollectionNames } from "../firebase";
 
 const initialState = {
   //   questions: questions.sort(() => Math.random() - 0.5),
@@ -17,6 +17,8 @@ const initialState = {
   showDeleteModalDialog: false,
   imageUrl: "",
   examTopicId: 0,
+  examArray: [],
+  currentExamNumber: localStorage.getItem("currentExamNumber"),
 };
 
 const quizReducer = (state, action) => {
@@ -71,6 +73,7 @@ const quizReducer = (state, action) => {
 
       return {
         ...state,
+        answers: [...action.correctAnswers, ...action.incorrectAnswers],
         questions: updatedQuestions,
       };
     }
@@ -131,11 +134,31 @@ const quizReducer = (state, action) => {
         showDeleteModalDialog: action.showDeleteModalDialog,
       };
     }
+    case "GET_ALL_COLLECTIONS": {
+      return {
+        ...state,
+        examArray: action.payload,
+        currentExamNumber:
+          state.currentExamNumber ??
+          action.payload.find((name) => name.number.startsWith("AI-900"))
+            .number,
+      };
+    }
+    case "SELECT_EXAM": {
+      localStorage.setItem("currentExamNumber", action.payload);
+
+      return {
+        ...state,
+        currentExamNumber: action.payload,
+      };
+    }
     case "RESTART": {
       const shuffledQuestions = shuffle(action.payload);
 
       return {
         ...initialState,
+        examArray: state.examArray,
+        currentExamNumber: state.currentExamNumber,
         isDarkMode: state.isDarkMode,
         questions: shuffledQuestions,
         answers: shuffleAnswers(shuffledQuestions[0]),
@@ -154,13 +177,24 @@ export const QuizProvider = ({ children }) => {
   const [state, dispatch] = value;
 
   useEffect(() => {
+    const getAllCollections = async () => {
+      const data = await fetchCollectionNames();
+      dispatch({ type: "GET_ALL_COLLECTIONS", payload: data });
+    };
+
+    getAllCollections();
+  }, []);
+
+  useEffect(() => {
     const getQuestions = async () => {
-      const data = await getQuestionsAndDocuments();
+      const data = await getExamQuestions(state.currentExamNumber);
       dispatch({ type: "RESTART", payload: data });
     };
 
-    getQuestions();
-  }, []);
+    if (state.currentExamNumber) {
+      getQuestions();
+    }
+  }, [state.currentExamNumber]);
 
   // Effect to toggle the attribute on the <html> tag
   useEffect(() => {
