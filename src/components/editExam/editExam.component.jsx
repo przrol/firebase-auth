@@ -1,7 +1,6 @@
 import React from "react";
 import { Trash3, ArrowDownSquare, ArrowUpSquare } from "react-bootstrap-icons";
 import Button from "react-bootstrap/Button";
-import InputGroup from "react-bootstrap/InputGroup";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
@@ -21,7 +20,7 @@ export default function EditExam({
   };
   return (
     <Row>
-      <Col xs={8} className="exam-column d-flex align-items-center pe-0">
+      <Col xs={7} className="exam-column d-flex align-items-center pe-0">
         <Form.Check
           className="w-100 hover-border py-3"
           type="radio"
@@ -33,34 +32,34 @@ export default function EditExam({
           }}
         />
       </Col>
-      <Col className="d-flex align-items-center justify-content-center">
+      <Col className="px-0 d-flex align-items-center justify-content-center">
         <Button
           className="px-0"
           variant="link"
           title={`Import exam: ${examNumber}`}
           onClick={() => onImportClick(examNumber)}
         >
-          <ArrowUpSquare />
+          <ArrowUpSquare size={24} />
         </Button>
       </Col>
-      <Col className="d-flex align-items-center justify-content-center">
+      <Col className="px-0 d-flex align-items-center justify-content-center">
         <Button
-          className="pe-0 text-secondary"
+          className="px-0 text-secondary"
           variant="link"
           title={`Export exam: ${examNumber}`}
           onClick={handleExport}
         >
-          <ArrowDownSquare />
+          <ArrowDownSquare size={24} />
         </Button>
       </Col>
-      <Col className="d-flex align-items-center">
+      <Col className="px-0 d-flex align-items-center justify-content-center">
         <Button
-          className="text-danger pe-0"
+          className="text-danger px-0"
           variant="link"
           title={`Delete exam: ${examNumber}`}
           onClick={() => {}}
         >
-          <Trash3 />
+          <Trash3 size={24} />
         </Button>
       </Col>
     </Row>
