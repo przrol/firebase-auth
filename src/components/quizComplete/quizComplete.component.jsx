@@ -6,13 +6,6 @@ import { QuizContext } from "../../contexts/QuizContext";
 const QuizComplete = () => {
   const [state, dispatch] = useContext(QuizContext);
 
-  const handleRestart = (e) => {
-    e.preventDefault();
-
-    dispatch({ type: "RESTART", payload: state.questions });
-    // navigate("/");
-  };
-
   return (
     <>
       <Card
@@ -20,7 +13,7 @@ const QuizComplete = () => {
         className="mx-auto text-center"
         style={{ maxWidth: "800px" }}
       >
-        <Card.Header>Congratulations!</Card.Header>
+        <Card.Header>{`Congratulations! (${state.currentExamNumber})`}</Card.Header>
         <Card.Body>
           <Card.Text>You have completed the quiz.</Card.Text>
           <Card.Text>
@@ -31,7 +24,9 @@ const QuizComplete = () => {
             variant="success"
             className="w-100"
             type="button"
-            onClick={handleRestart}
+            onClick={() => {
+              dispatch({ type: "RESTART", payload: state.questions });
+            }}
           >
             RESTART
           </Button>
