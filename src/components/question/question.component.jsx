@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { QuizContext } from "../../contexts/QuizContext";
 import { replaceWithBr, arraysContainSameStrings } from "../../helpers";
 import Answer from "../answer/answer.component";
@@ -11,6 +11,8 @@ import Image from "react-bootstrap/Image";
 import { PencilSquare, QuestionCircle } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import "./question.styles.css";
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
 
 const Question = () => {
   const [quizState, dispatch] = useContext(QuizContext);
@@ -18,6 +20,12 @@ const Question = () => {
   const questionWithBr = replaceWithBr(currentQuestion.question);
   const answerAreaWithBr = replaceWithBr(currentQuestion.answerArea);
   const answerAreaParts = answerAreaWithBr.split("_button_");
+  const [selectedItem, setSelectedItem] = useState("Select an item");
+
+  // Function to handle the selection
+  const handleSelect = (eventKey) => {
+    setSelectedItem(eventKey);
+  };
 
   let cardBorder = "";
   if (quizState.solveQuestion) {
@@ -62,43 +70,54 @@ const Question = () => {
               </Card.Text>
             )}
 
-            {currentQuestion.answerArea && (
+            {currentQuestion.answerArea ? (
               <>
                 <Card.Text className="ps-2 mb-1 mt-1 fw-bold">
                   Answer Area
                 </Card.Text>
-                <Card.Text className="ps-2">
+                <div className="ps-2">
                   {answerAreaParts.map((part, index) => (
                     <React.Fragment key={index}>
                       <span dangerouslySetInnerHTML={{ __html: part }}></span>
                       {index < answerAreaParts.length - 1 && ( // Only render a button if it's not the last part
-                        <Button variant="primary">Answer {index + 1}</Button>
+                        // <Button variant="primary">Answer {index + 1}</Button>
+                        <DropdownButton
+                          onSelect={handleSelect}
+                          className="d-inline"
+                          id={`dropdown-basic-button${index + 1}`}
+                          title={selectedItem}
+                        >
+                          {quizState.answers.map((answer, i) => (
+                            <Dropdown.Item key={i} eventKey={answer}>
+                              {answer}
+                            </Dropdown.Item>
+                          ))}
+                        </DropdownButton>
                       )}
                     </React.Fragment>
                   ))}
-                </Card.Text>
+                </div>
               </>
+            ) : (
+              quizState.answers.map((answer, index) => (
+                <Answer
+                  answerText={answer}
+                  key={index}
+                  index={index}
+                  answerArea={currentQuestion.answerArea}
+                  currentAnswers={quizState.currentAnswers}
+                  solveQuestion={quizState.solveQuestion}
+                  correctAnswers={currentQuestion.correctAnswers}
+                  onSelectAnswer={(checked, answerText) =>
+                    dispatch({
+                      type: "SELECT_ANSWER",
+                      payload: answerText,
+                      checked,
+                    })
+                  }
+                />
+              ))
             )}
-            {/* : ( */}
-            {quizState.answers.map((answer, index) => (
-              <Answer
-                answerText={answer}
-                key={index}
-                index={index}
-                answerArea={currentQuestion.answerArea}
-                currentAnswers={quizState.currentAnswers}
-                solveQuestion={quizState.solveQuestion}
-                correctAnswers={currentQuestion.correctAnswers}
-                onSelectAnswer={(checked, answerText) =>
-                  dispatch({
-                    type: "SELECT_ANSWER",
-                    payload: answerText,
-                    checked,
-                  })
-                }
-              />
-            ))}
-            {/* )} */}
             <Row className="mt-4 pb-3">
               <Col className="d-flex justify-content-between">
                 <Button
