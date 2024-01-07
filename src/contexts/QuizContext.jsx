@@ -67,6 +67,7 @@ const quizReducer = (state, action) => {
               explanation: action.explanation,
               imageUrl: action.imageUrl,
               examTopicId: action.examTopicId,
+              answerArea: action.answerArea,
             }
           : q;
       });

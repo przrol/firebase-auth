@@ -21,6 +21,7 @@ export default function AddOrUpdateQuestion() {
   const questionRef = useRef();
   const examTopicIdRef = useRef();
   const questionBelowImgRef = useRef();
+  const answerAreaRef = useRef();
   const explanationRef = useRef();
   const defaultAnswer = { checked: false, answerText: "" };
   const [answers, setAnswers] = useState([defaultAnswer]);
@@ -39,6 +40,7 @@ export default function AddOrUpdateQuestion() {
       questionRef.current.value = editQuestion.question;
       examTopicIdRef.current.value = editQuestion.examTopicId;
       questionBelowImgRef.current.value = editQuestion.questionBelowImg ?? "";
+      answerAreaRef.current.value = editQuestion.answerArea ?? "";
       explanationRef.current.value = editQuestion.explanation;
       const incorrectAnswers = editQuestion.incorrectAnswers.map((element) => ({
         checked: false,
@@ -55,6 +57,7 @@ export default function AddOrUpdateQuestion() {
       examTopicIdRef.current.value = "";
       questionBelowImgRef.current.value = "";
       explanationRef.current.value = "";
+      answerAreaRef.current.value = "";
       setAnswers([defaultAnswer]); // Reset answers to default
       setImageUrl("");
     }
@@ -144,7 +147,8 @@ export default function AddOrUpdateQuestion() {
             incorrectAnswers,
             explanationRef.current.value,
             newImageUrl,
-            examTopicId
+            examTopicId,
+            answerAreaRef.current.value
           );
 
           dispatch({
@@ -157,6 +161,7 @@ export default function AddOrUpdateQuestion() {
             explanation: explanationRef.current.value,
             imageUrl: newImageUrl,
             examTopicId,
+            answerArea: answerAreaRef.current.value,
           });
         } else {
           const newDocRef = await addNewDocument(
@@ -167,7 +172,8 @@ export default function AddOrUpdateQuestion() {
             incorrectAnswers,
             explanationRef.current.value,
             newImageUrl,
-            examTopicId
+            examTopicId,
+            answerAreaRef.current.value
           );
 
           dispatch({
@@ -181,6 +187,7 @@ export default function AddOrUpdateQuestion() {
               explanation: explanationRef.current.value,
               imageUrl: newImageUrl,
               examTopicId,
+              answerArea: answerAreaRef.current.value,
             },
           });
 
@@ -188,6 +195,7 @@ export default function AddOrUpdateQuestion() {
           examTopicIdRef.current.value = "";
           questionBelowImgRef.current.value = "";
           explanationRef.current.value = "";
+          answerAreaRef.current.value = "";
           setAnswers([defaultAnswer]);
           handleDeleteImg();
         }
@@ -362,6 +370,15 @@ export default function AddOrUpdateQuestion() {
                 className="mb-3"
                 rows={3}
                 ref={questionBelowImgRef}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Answer Area</Form.Label>
+              <Form.Control
+                as="textarea"
+                className="mb-3"
+                rows={3}
+                ref={answerAreaRef}
               />
             </Form.Group>
             <Form.Label>Answers</Form.Label>

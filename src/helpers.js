@@ -1,7 +1,8 @@
 export const shuffleAnswers = (question) => {
-  const unshuffledAnswers = question.answerArea
-    ? [...question.incorrectAnswers]
-    : [...question.correctAnswers, ...question.incorrectAnswers];
+  const unshuffledAnswers = [
+    ...question.correctAnswers,
+    ...question.incorrectAnswers,
+  ];
 
   return unshuffledAnswers
     .map((answer) => ({ sort: Math.random(), value: answer }))

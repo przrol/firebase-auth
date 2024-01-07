@@ -19,7 +19,7 @@ const Question = () => {
   const currentQuestion = quizState.questions[quizState.currentQuestionIndex];
   const questionWithBr = replaceWithBr(currentQuestion.question);
   const answerAreaWithBr = replaceWithBr(currentQuestion.answerArea);
-  const answerAreaParts = answerAreaWithBr.split("_button_");
+  const answerAreaParts = answerAreaWithBr.split("_dropdown_");
   const [selectedItem, setSelectedItem] = useState("Select an item");
 
   // Function to handle the selection
@@ -78,10 +78,11 @@ const Question = () => {
                 <div className="ps-2">
                   {answerAreaParts.map((part, index) => (
                     <React.Fragment key={index}>
-                      <span dangerouslySetInnerHTML={{ __html: part }}></span>
+                      <em dangerouslySetInnerHTML={{ __html: part }}></em>
                       {index < answerAreaParts.length - 1 && ( // Only render a button if it's not the last part
                         // <Button variant="primary">Answer {index + 1}</Button>
                         <DropdownButton
+                          size="sm"
                           onSelect={handleSelect}
                           className="d-inline"
                           id={`dropdown-basic-button${index + 1}`}
