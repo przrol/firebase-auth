@@ -1,8 +1,7 @@
 export const shuffleAnswers = (question) => {
-  const unshuffledAnswers = [
-    ...question.correctAnswers,
-    ...question.incorrectAnswers,
-  ];
+  const unshuffledAnswers = question.answerArea
+    ? [...question.incorrectAnswers]
+    : [...question.correctAnswers, ...question.incorrectAnswers];
 
   return unshuffledAnswers
     .map((answer) => ({ sort: Math.random(), value: answer }))
@@ -11,7 +10,7 @@ export const shuffleAnswers = (question) => {
 };
 
 export const replaceWithBr = (text) => {
-  return text.replace(/\n/g, "<br />");
+  return text ? text.replace(/\n/g, "<br />") : "";
 };
 
 export const arraysContainSameStrings = (arr1, arr2) => {

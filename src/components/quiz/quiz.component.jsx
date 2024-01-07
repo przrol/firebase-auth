@@ -8,7 +8,7 @@ import DarkMode from "../darkMode/darkMode.component";
 import QuizComplete from "../quizComplete/quizComplete.component";
 
 const Quiz = () => {
-  const [state, dispatch] = useContext(QuizContext);
+  const [state] = useContext(QuizContext);
 
   return (
     <div>

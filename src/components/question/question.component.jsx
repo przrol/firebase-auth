@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { QuizContext } from "../../contexts/QuizContext";
 import { replaceWithBr, arraysContainSameStrings } from "../../helpers";
 import Answer from "../answer/answer.component";
@@ -16,6 +16,8 @@ const Question = () => {
   const [quizState, dispatch] = useContext(QuizContext);
   const currentQuestion = quizState.questions[quizState.currentQuestionIndex];
   const questionWithBr = replaceWithBr(currentQuestion.question);
+  const answerAreaWithBr = replaceWithBr(currentQuestion.answerArea);
+  const answerAreaParts = answerAreaWithBr.split("_button_");
 
   let cardBorder = "";
   if (quizState.solveQuestion) {
@@ -59,11 +61,31 @@ const Question = () => {
                 {currentQuestion.questionBelowImg}
               </Card.Text>
             )}
+
+            {currentQuestion.answerArea && (
+              <>
+                <Card.Text className="ps-2 mb-1 mt-1 fw-bold">
+                  Answer Area
+                </Card.Text>
+                <Card.Text className="ps-2">
+                  {answerAreaParts.map((part, index) => (
+                    <React.Fragment key={index}>
+                      <span dangerouslySetInnerHTML={{ __html: part }}></span>
+                      {index < answerAreaParts.length - 1 && ( // Only render a button if it's not the last part
+                        <Button variant="primary">Answer {index + 1}</Button>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </Card.Text>
+              </>
+            )}
+            {/* : ( */}
             {quizState.answers.map((answer, index) => (
               <Answer
                 answerText={answer}
                 key={index}
                 index={index}
+                answerArea={currentQuestion.answerArea}
                 currentAnswers={quizState.currentAnswers}
                 solveQuestion={quizState.solveQuestion}
                 correctAnswers={currentQuestion.correctAnswers}
@@ -76,6 +98,7 @@ const Question = () => {
                 }
               />
             ))}
+            {/* )} */}
             <Row className="mt-4 pb-3">
               <Col className="d-flex justify-content-between">
                 <Button

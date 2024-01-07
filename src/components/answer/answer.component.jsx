@@ -10,6 +10,7 @@ const Answer = ({
   currentAnswers,
   correctAnswers,
   solveQuestion,
+  answerArea,
 }) => {
   const letterMapping = ["A", "B", "C", "D", "E", "F"];
   const isCorrectAnswer = solveQuestion && correctAnswers.includes(answerText);
@@ -31,7 +32,9 @@ const Answer = ({
       <Col className="answerColumn">
         <Form.Check
           className={`${correctAnswerClass} ${wrongAnswerClass} ${disabledClass} hover-border py-3`}
-          type={correctAnswers.length === 1 ? "radio" : "checkbox"}
+          type={
+            answerArea || correctAnswers.length === 1 ? "radio" : "checkbox"
+          }
           checked={currentAnswers.includes(answerText)}
           onChange={(e) => {
             // handleChange();
