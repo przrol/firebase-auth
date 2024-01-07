@@ -11,8 +11,7 @@ import Image from "react-bootstrap/Image";
 import { PencilSquare, QuestionCircle } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import "./question.styles.css";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
+import AnswerDropdown from "../answerDropdown/answerDropdown.component";
 
 const Question = () => {
   const [quizState, dispatch] = useContext(QuizContext);
@@ -20,12 +19,6 @@ const Question = () => {
   const questionWithBr = replaceWithBr(currentQuestion.question);
   const answerAreaWithBr = replaceWithBr(currentQuestion.answerArea);
   const answerAreaParts = answerAreaWithBr.split("_dropdown_");
-  const [selectedItem, setSelectedItem] = useState("Select an item");
-
-  // Function to handle the selection
-  const handleSelect = (eventKey) => {
-    setSelectedItem(eventKey);
-  };
 
   let cardBorder = "";
   if (quizState.solveQuestion) {
@@ -80,20 +73,10 @@ const Question = () => {
                     <React.Fragment key={index}>
                       <em dangerouslySetInnerHTML={{ __html: part }}></em>
                       {index < answerAreaParts.length - 1 && ( // Only render a button if it's not the last part
-                        // <Button variant="primary">Answer {index + 1}</Button>
-                        <DropdownButton
-                          size="sm"
-                          onSelect={handleSelect}
-                          className="d-inline"
-                          id={`dropdown-basic-button${index + 1}`}
-                          title={selectedItem}
-                        >
-                          {quizState.answers.map((answer, i) => (
-                            <Dropdown.Item key={i} eventKey={answer}>
-                              {answer}
-                            </Dropdown.Item>
-                          ))}
-                        </DropdownButton>
+                        <AnswerDropdown
+                          answers={quizState.answers}
+                          index={index}
+                        />
                       )}
                     </React.Fragment>
                   ))}
