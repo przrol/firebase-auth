@@ -34,7 +34,7 @@ export default function EditExam({
       </Col>
       <Col className="px-0 d-flex align-items-center justify-content-center">
         <Button
-          className="px-0"
+          className="import-button px-1"
           variant="link"
           title={`Import exam: ${examNumber}`}
           onClick={() => onImportClick(examNumber)}
@@ -44,7 +44,7 @@ export default function EditExam({
       </Col>
       <Col className="px-0 d-flex align-items-center justify-content-center">
         <Button
-          className="px-0 text-secondary"
+          className="export-button px-1 text-secondary"
           variant="link"
           title={`Export exam: ${examNumber}`}
           onClick={handleExport}

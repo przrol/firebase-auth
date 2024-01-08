@@ -3,8 +3,6 @@ import { arraysContainSameStrings, shuffle, shuffleAnswers } from "../helpers";
 import { getExamQuestions, fetchCollectionNames } from "../firebase";
 
 const initialState = {
-  //   questions: questions.sort(() => Math.random() - 0.5),
-  //   shuffleAnswers(questions[0]
   questions: [],
   currentQuestionIndex: 0,
   showResults: false,
@@ -26,27 +24,39 @@ const quizReducer = (state, action) => {
   switch (action.type) {
     case "SELECT_ANSWER": {
       // payload -> "answerText"
+      const currentQuestion = state.questions[state.currentQuestionIndex];
+
       const questionCorrectAnswers =
-        state.questions[state.currentQuestionIndex].correctAnswers;
+        currentQuestion[`correctAnswers${action.index}`];
       const currentAnswers =
         questionCorrectAnswers.length === 1
           ? [action.payload]
           : action.checked
-          ? [...state.currentAnswers, action.payload]
-          : state.currentAnswers.filter((item) => item !== action.payload);
-      const correctAnswerCount = arraysContainSameStrings(
+          ? [...state.currentAnswers[action.index], action.payload]
+          : state.currentAnswers[action.index].filter(
+              (item) => item !== action.payload
+            );
+
+      const newArray = [
+        ...state.currentAnswers.slice(0, action.index),
         currentAnswers,
-        questionCorrectAnswers
+        ...state.currentAnswers.slice(action.index + 1),
+      ];
+
+      // Todo correctAnswerCount also edit at NEXT_QUESTION
+      const correctAnswerCount = arraysContainSameStrings(
+        newArray,
+        currentQuestion
       )
         ? state.correctAnswerCount + 1
         : state.correctAnswerCount;
+
+      console.log("correctAnswerCount: ", correctAnswerCount);
       return {
         ...state,
-        currentAnswers,
+        currentAnswers: newArray,
         correctAnswerCount,
         showExplanation: false,
-        // currentAnswers.length >=
-        // state.questions[state.currentQuestionIndex].correctAnswers.length,
       };
     }
     case "ADD_QUESTION": {
