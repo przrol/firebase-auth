@@ -85,6 +85,7 @@ const Question = () => {
                               quizState={quizState}
                               index={index}
                               dispatch={dispatch}
+                              currentQuestion={currentQuestion}
                             />
                           )}
                         </React.Fragment>
