@@ -53,8 +53,8 @@ export const addNewDocument = async (
   collectionName,
   question,
   questionBelowImg,
-  correctAnswers,
-  incorrectAnswers,
+  correctAnswersArray,
+  incorrectAnswersArray,
   explanation,
   imageUrl,
   examTopicId,
@@ -62,11 +62,29 @@ export const addNewDocument = async (
 ) => {
   const collectionRef = collection(db, collectionName);
 
+  // Transform the correctAnswers array of arrays into an object with dynamic keys
+  const correctAnswersObject = correctAnswersArray.reduce(
+    (obj, subArray, index) => {
+      obj[`correctAnswers${index}`] = subArray;
+      return obj;
+    },
+    {}
+  );
+
+  // Do the same for incorrectAnswers
+  const incorrectAnswersObject = incorrectAnswersArray.reduce(
+    (obj, subArray, index) => {
+      obj[`incorrectAnswers${index}`] = subArray;
+      return obj;
+    },
+    {}
+  );
+
   const newDocRef = await addDoc(collectionRef, {
     question,
     questionBelowImg,
-    correctAnswers,
-    incorrectAnswers,
+    ...correctAnswersObject, // Spread the correctAnswersObject to include all its key-value pairs
+    ...incorrectAnswersObject,
     explanation,
     imageUrl,
     examTopicId,
@@ -82,8 +100,8 @@ export const updateDocument = async (
   docId,
   question,
   questionBelowImg,
-  correctAnswers,
-  incorrectAnswers,
+  correctAnswersArray,
+  incorrectAnswersArray,
   explanation,
   imageUrl,
   examTopicId,
@@ -91,11 +109,29 @@ export const updateDocument = async (
 ) => {
   const docRef = doc(db, collectionName, docId);
 
+  // Transform the correctAnswers array of arrays into an object with dynamic keys
+  const correctAnswersObject = correctAnswersArray.reduce(
+    (obj, subArray, index) => {
+      obj[`correctAnswers${index}`] = subArray;
+      return obj;
+    },
+    {}
+  );
+
+  // Do the same for incorrectAnswers
+  const incorrectAnswersObject = incorrectAnswersArray.reduce(
+    (obj, subArray, index) => {
+      obj[`incorrectAnswers${index}`] = subArray;
+      return obj;
+    },
+    {}
+  );
+
   await updateDoc(docRef, {
     question,
     questionBelowImg,
-    correctAnswers,
-    incorrectAnswers,
+    ...correctAnswersObject, // Spread the correctAnswersObject to include all its key-value pairs
+    ...incorrectAnswersObject, // Do the same for incorrectAnswersObject
     explanation,
     imageUrl,
     examTopicId,

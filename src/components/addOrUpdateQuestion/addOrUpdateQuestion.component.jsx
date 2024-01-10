@@ -24,7 +24,7 @@ export default function AddOrUpdateQuestion() {
   const answerAreaRef = useRef();
   const explanationRef = useRef();
   const defaultAnswer = { checked: false, answerText: "" };
-  const [answers, setAnswers] = useState([defaultAnswer]);
+  const [answers, setAnswers] = useState([[defaultAnswer]]);
   const [imageUrl, setImageUrl] = useState("");
   const fileInputRef = useRef(null);
   const [isExamTopicIdInvalid, setIsExamTopicIdInvalid] = useState(false);
@@ -42,15 +42,30 @@ export default function AddOrUpdateQuestion() {
       questionBelowImgRef.current.value = editQuestion.questionBelowImg ?? "";
       answerAreaRef.current.value = editQuestion.answerArea ?? "";
       explanationRef.current.value = editQuestion.explanation;
-      const incorrectAnswers = editQuestion.incorrectAnswers.map((element) => ({
-        checked: false,
-        answerText: element,
-      }));
-      const correctAnswers = editQuestion.correctAnswers.map((element) => ({
-        checked: true,
-        answerText: element,
-      }));
-      setAnswers([...correctAnswers, ...incorrectAnswers]);
+      let allAnswers = [];
+
+      for (let index = 0; index < 6; index++) {
+        if (`correctAnswers${index}` in editQuestion) {
+          const correctAnswers = editQuestion[`correctAnswers${index}`].map(
+            (element) => ({
+              checked: true,
+              answerText: element,
+            })
+          );
+          const incorrectAnswers = editQuestion[`incorrectAnswers${index}`].map(
+            (element) => ({
+              checked: false,
+              answerText: element,
+            })
+          );
+
+          allAnswers.push([...correctAnswers, ...incorrectAnswers]);
+        } else {
+          break;
+        }
+      }
+
+      setAnswers(allAnswers);
       setImageUrl(editQuestion.imageUrl);
     } else {
       questionRef.current.value = "";
@@ -58,33 +73,102 @@ export default function AddOrUpdateQuestion() {
       questionBelowImgRef.current.value = "";
       explanationRef.current.value = "";
       answerAreaRef.current.value = "";
-      setAnswers([defaultAnswer]); // Reset answers to default
+      setAnswers([[defaultAnswer]]); // Reset answers to default
       setImageUrl("");
     }
   }, [questionId]);
 
-  const handleNewAnswer = () => {
-    setAnswers((prevAnswers) => [...prevAnswers, defaultAnswer]);
+  // const handleNewAnswer = (blockindex) => {
+  //   setAnswers((prevAnswers) => [
+  //     ...prevAnswers,
+  //     [...prevAnswers[blockindex], defaultAnswer],
+  //   ]);
+  // };
+
+  const handleNewAnswerBlock = () => {
+    setAnswers((prevAnswers) => [...prevAnswers, [defaultAnswer]]);
   };
 
-  const handleNewAnswerChange = (index, newText) => {
+  const handleNewAnswer = (blockindex) => {
     setAnswers((prevAnswers) =>
-      prevAnswers.map((element, i) => {
-        return i === index ? { ...element, answerText: newText } : element;
+      prevAnswers.map((answerBlock, index) => {
+        if (index === blockindex) {
+          // Add defaultAnswer to the sub-array at the specified blockindex
+          return [...answerBlock, defaultAnswer];
+        }
+        // For other indices, return the answerBlock as is
+        return answerBlock;
       })
     );
   };
 
-  const handleDeleteAnswer = (indexToRemove) => {
+  const handleNewAnswerChange = (blockindex, index, newText) => {
     setAnswers((prevAnswers) =>
-      prevAnswers.filter((element, index) => index !== indexToRemove)
+      prevAnswers.map((answerBlock, idx) => {
+        if (idx === blockindex) {
+          // Only update the sub-array at the specified blockindex
+          return answerBlock.map((element, i) => {
+            return i === index ? { ...element, answerText: newText } : element;
+          });
+        } else {
+          // Return other answer blocks unmodified
+          return answerBlock;
+        }
+      })
     );
   };
 
-  const handleCheckboxChange = (index, checked) => {
+  const handleDeleteAnswerBlock = (blockindexToRemove) => {
     setAnswers((prevAnswers) =>
-      prevAnswers.map((element, i) => {
-        return i === index ? { ...element, checked } : element;
+      prevAnswers.filter((element, index) => index !== blockindexToRemove)
+    );
+  };
+
+  const handleDeleteAnswer = (blockindex, indexToRemove) => {
+    // setAnswers((prevAnswers) =>
+    //   prevAnswers.map((answerBlock, idx) => {
+    //     // Apply the filter operation only to the sub-array at blockindex
+    //     if (idx === blockindex) {
+    //       return answerBlock.filter((_, index) => index !== indexToRemove);
+    //     }
+    //     // Return other answer blocks unmodified
+    //     return answerBlock;
+    //   })
+    // );
+
+    setAnswers((prevAnswers) =>
+      prevAnswers.reduce((newAnswers, currentBlock, idx) => {
+        // When we reach the block from which we want to remove an answer
+        if (idx === blockindex) {
+          const updatedBlock = currentBlock.filter(
+            (_, index) => index !== indexToRemove
+          );
+          // Only add the updatedBlock if it still has elements after the removal
+          if (updatedBlock.length > 0) {
+            newAnswers.push(updatedBlock);
+          }
+          // If the block is empty, it's not pushed to newAnswers, effectively removing it
+        } else {
+          // For all other blocks, just add them to newAnswers
+          newAnswers.push(currentBlock);
+        }
+        return newAnswers;
+      }, [])
+    );
+  };
+
+  const handleCheckboxChange = (blockindex, index, checked) => {
+    setAnswers((prevAnswers) =>
+      prevAnswers.map((answerBlock, idx) => {
+        if (idx === blockindex) {
+          // Only update the sub-array at the specified blockindex
+          return answerBlock.map((element, i) => {
+            return i === index ? { ...element, checked } : element;
+          });
+        } else {
+          // Return other answer blocks unmodified
+          return answerBlock;
+        }
       })
     );
   };
@@ -110,23 +194,38 @@ export default function AddOrUpdateQuestion() {
     setError("");
     setSuccess("");
 
+    // const correctAnswers = answers
+    //   .filter((element) => element.checked)
+    //   .map((answer) => answer.answerText);
+
     const correctAnswers = answers
-      .filter((element) => element.checked)
-      .map((answer) => answer.answerText);
+      .map((answerBlock) =>
+        answerBlock
+          .filter((element) => element.checked)
+          .map((answer) => answer.answerText)
+      )
+      .filter((block) => block.length > 0); // Filter out empty sub-arrays
 
     setIsExamTopicIdInvalid(examTopicIdRef.current.value === "");
     setIsQuestionInvalid(questionRef.current.value === "");
-    setIsCheckboxInvalid(correctAnswers.length === 0);
+    setIsCheckboxInvalid(correctAnswers.length < answers.length);
 
     try {
       if (
-        correctAnswers.length > 0 &&
+        correctAnswers.length === answers.length &&
         examTopicIdRef.current.value !== "" &&
         questionRef.current.value !== ""
       ) {
-        const incorrectAnswers = answers
-          .filter((element) => !element.checked)
-          .map((answer) => answer.answerText);
+        // const incorrectAnswers = answers
+        //   .filter((element) => !element.checked)
+        //   .map((answer) => answer.answerText);
+
+        const incorrectAnswers = answers.map(
+          (answerBlock) =>
+            answerBlock
+              .filter((element) => !element.checked) // Filter out only checked answers within this block
+              .map((answer) => answer.answerText) // Map to their answerText
+        );
 
         const examTopicId = Number(examTopicIdRef.current.value);
         let newImageUrl = imageUrl ?? "";
@@ -216,11 +315,11 @@ export default function AddOrUpdateQuestion() {
       setLoading(false);
 
       if (
-        correctAnswers.length === 0 &&
+        correctAnswers.length < answers.length &&
         examTopicIdRef.current.value !== "" &&
         questionRef.current.value !== ""
       ) {
-        questionBelowImgRef.current.scrollIntoView({
+        answerAreaRef.current.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
@@ -381,25 +480,52 @@ export default function AddOrUpdateQuestion() {
                 ref={answerAreaRef}
               />
             </Form.Group>
-            <Form.Label>Answers</Form.Label>
-            {answers.map((answer, index) => (
-              <NewAnswer
-                answerText={answer.answerText}
-                key={index}
-                index={index}
-                checked={answer.checked}
-                onDeleteAnswer={handleDeleteAnswer}
-                onChangeAnswer={handleNewAnswerChange}
-                onChangeCheckbox={handleCheckboxChange}
-                isLastAnswer={index === answers.length - 1}
-                isCheckboxInvalid={isCheckboxInvalid}
-              />
+
+            {answers.map((answerblock, blockindex) => (
+              <Form.Group key={blockindex} className="mb-3">
+                {/* <> */}
+                <Form.Label>{`Answer block ${blockindex + 1}`}</Form.Label>
+                <Button
+                  className="pe-0 mb-2 text-danger"
+                  variant="link"
+                  title="Delete answers block"
+                  onClick={() => {
+                    handleDeleteAnswerBlock(blockindex);
+                  }}
+                >
+                  <Trash3 />
+                </Button>
+                {answerblock.map((answer, index) => (
+                  <NewAnswer
+                    answerText={answer.answerText}
+                    blockindex={blockindex}
+                    key={index}
+                    index={index}
+                    checked={answer.checked}
+                    onDeleteAnswer={handleDeleteAnswer}
+                    onChangeAnswer={handleNewAnswerChange}
+                    onChangeCheckbox={handleCheckboxChange}
+                    isLastAnswer={index === answerblock.length - 1}
+                    isCheckboxInvalid={isCheckboxInvalid}
+                  />
+                ))}
+                <Button
+                  className="ps-1"
+                  variant="link"
+                  onClick={() => handleNewAnswer(blockindex)}
+                >
+                  Add Answer
+                </Button>
+                {/* </> */}
+              </Form.Group>
             ))}
-
-            <Button className="ps-1" variant="link" onClick={handleNewAnswer}>
-              Add Answer
+            <Button
+              className="ps-1"
+              variant="link"
+              onClick={handleNewAnswerBlock}
+            >
+              Add Answer block
             </Button>
-
             <Form.Group id="explanation" className="mt-4 mb-3">
               <Form.Label>Explanation</Form.Label>
               <Button

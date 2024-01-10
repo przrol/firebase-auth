@@ -6,6 +6,7 @@ import { Trash3 } from "react-bootstrap-icons";
 
 const NewAnswer = ({
   index,
+  blockindex,
   onDeleteAnswer,
   onChangeAnswer,
   onChangeCheckbox,
@@ -23,7 +24,7 @@ const NewAnswer = ({
       <InputGroup.Checkbox
         checked={checked}
         onChange={(e) => {
-          onChangeCheckbox(index, e.target.checked);
+          onChangeCheckbox(blockindex, index, e.target.checked);
         }}
       />
       <Form.Control
@@ -32,7 +33,7 @@ const NewAnswer = ({
         value={answerText}
         isInvalid={isCheckboxInvalid}
         onChange={(e) => {
-          onChangeAnswer(index, e.target.value);
+          onChangeAnswer(blockindex, index, e.target.value);
         }}
       />
       <Button
@@ -40,7 +41,7 @@ const NewAnswer = ({
         variant="link"
         title="Delete answer"
         onClick={() => {
-          onDeleteAnswer(index);
+          onDeleteAnswer(blockindex, index);
         }}
       >
         <Trash3 />
