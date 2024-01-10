@@ -43,19 +43,9 @@ const quizReducer = (state, action) => {
         ...state.currentAnswers.slice(action.index + 1),
       ];
 
-      // Todo correctAnswerCount also edit at NEXT_QUESTION
-      const correctAnswerCount = arraysContainSameStrings(
-        newArray,
-        currentQuestion
-      )
-        ? state.correctAnswerCount + 1
-        : state.correctAnswerCount;
-
-      console.log("correctAnswerCount: ", correctAnswerCount);
       return {
         ...state,
         currentAnswers: newArray,
-        correctAnswerCount,
         showExplanation: false,
       };
     }
@@ -115,11 +105,24 @@ const quizReducer = (state, action) => {
         showResults || action.solveQuestion
           ? state.answers
           : shuffleAnswers(state.questions[currentQuestionIndex]);
+
+      const correctAnswerCount =
+        action.solveQuestion &&
+        arraysContainSameStrings(
+          state.currentAnswers,
+          state.questions[state.currentQuestionIndex]
+        )
+          ? state.correctAnswerCount + 1
+          : state.correctAnswerCount;
+
+      console.log("correctAnswerCount: ", correctAnswerCount);
+
       return {
         ...state,
         currentQuestionIndex,
         showResults,
         solveQuestion: action.solveQuestion,
+        correctAnswerCount,
         answers,
         currentAnswers: action.solveQuestion ? state.currentAnswers : [],
         showExplanation: action.solveQuestion,
