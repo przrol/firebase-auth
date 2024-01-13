@@ -84,10 +84,7 @@ const quizReducer = (state, action) => {
         ...state,
         currentQuestionIndex: state.currentQuestionIndex - 1,
         solveQuestion: false,
-        answers: [
-          ...prevQuestion.correctAnswers,
-          ...prevQuestion.incorrectAnswers,
-        ],
+        answers: shuffleAnswers(prevQuestion),
         currentAnswers: [],
         showExplanation: false,
       };
