@@ -6,26 +6,25 @@ import Row from "react-bootstrap/Row";
 const Answer = ({
   answerText,
   index,
-  onSelectAnswer,
-  currentAnswers,
+  blockindex,
   correctAnswers,
-  solveQuestion,
   answerArea,
+  quizState,
+  dispatch,
 }) => {
   const letterMapping = ["A", "B", "C", "D", "E", "F"];
-  const isCorrectAnswer = solveQuestion && correctAnswers.includes(answerText);
-  const isWrongAnswer = solveQuestion && !correctAnswers.includes(answerText);
+  const isCorrectAnswer =
+    quizState.solveQuestion && correctAnswers.includes(answerText);
+  const isWrongAnswer =
+    quizState.solveQuestion && !correctAnswers.includes(answerText);
   const correctAnswerClass = isCorrectAnswer ? "correct-answer" : "";
   const wrongAnswerClass =
-    currentAnswers.includes(answerText) && isWrongAnswer ? "wrong-answer" : "";
-  const disabledClass = solveQuestion ? "disabled-answer" : "";
-
-  // const [isMounted, setIsMounted] = useState(false);
-
-  // // When the component mounts, set isMounted to true
-  // useEffect(() => {
-  //   setIsMounted(true);
-  // }, [answerText]);
+    quizState.currentAnswers.length > 0 &&
+    quizState.currentAnswers[blockindex].includes(answerText) &&
+    isWrongAnswer
+      ? "wrong-answer"
+      : "";
+  const disabledClass = quizState.solveQuestion ? "disabled-answer" : "";
 
   return (
     <Row>
@@ -35,10 +34,17 @@ const Answer = ({
           type={
             answerArea || correctAnswers.length === 1 ? "radio" : "checkbox"
           }
-          checked={currentAnswers.includes(answerText)}
+          checked={
+            quizState.currentAnswers.length > 0 &&
+            quizState.currentAnswers[blockindex].includes(answerText)
+          }
           onChange={(e) => {
-            // handleChange();
-            onSelectAnswer(e.target.checked, answerText);
+            dispatch({
+              type: "SELECT_ANSWER",
+              payload: answerText,
+              index: blockindex,
+              checked: e.target.checked,
+            });
           }}
           id={`checkRadio-${index}`}
           label={
@@ -47,12 +53,6 @@ const Answer = ({
               {answerText}
             </>
           }
-          /* <div
-          className="pointer-cursor hover-border py-3"
-          dangerouslySetInnerHTML={{
-            __html: `${letterMapping[index]}) ${answerText}`,
-          }}
-        /> */
         />
       </Col>
     </Row>

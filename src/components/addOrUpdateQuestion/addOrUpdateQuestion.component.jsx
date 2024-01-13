@@ -74,13 +74,6 @@ export default function AddOrUpdateQuestion() {
     }
   }, [questionId]);
 
-  // const handleNewAnswer = (blockindex) => {
-  //   setAnswers((prevAnswers) => [
-  //     ...prevAnswers,
-  //     [...prevAnswers[blockindex], defaultAnswer],
-  //   ]);
-  // };
-
   const handleNewAnswerBlock = () => {
     setAnswers((prevAnswers) => [...prevAnswers, [defaultAnswer]]);
   };

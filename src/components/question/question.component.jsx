@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { QuizContext } from "../../contexts/QuizContext";
 import { replaceWithBr, arraysContainSameStrings } from "../../helpers";
 import Answer from "../answer/answer.component";
@@ -93,23 +93,27 @@ const Question = () => {
                     </div>
                   </>
                 ) : (
-                  quizState.answers[0].map((answer, index) => (
-                    <Answer
-                      answerText={answer}
-                      key={index}
-                      index={index}
-                      answerArea={currentQuestion.answerArea}
-                      currentAnswers={quizState.currentAnswers}
-                      solveQuestion={quizState.solveQuestion}
-                      correctAnswers={currentQuestion.correctAnswers}
-                      onSelectAnswer={(checked, answerText) =>
-                        dispatch({
-                          type: "SELECT_ANSWER",
-                          payload: answerText,
-                          checked,
-                        })
-                      }
-                    />
+                  quizState.answers.map((answerblock, blockindex) => (
+                    <Form.Group key={blockindex} className="mb-3">
+                      <Form.Label>{`Answer block ${
+                        blockindex + 1
+                      }`}</Form.Label>
+
+                      {answerblock.map((answer, index) => (
+                        <Answer
+                          answerText={answer}
+                          key={index}
+                          index={index}
+                          blockindex={blockindex}
+                          answerArea={currentQuestion.answerArea}
+                          quizState={quizState}
+                          dispatch={dispatch}
+                          correctAnswers={
+                            currentQuestion.correctAnswers[blockindex]
+                          }
+                        />
+                      ))}
+                    </Form.Group>
                   ))
                 )}
                 <Row className="mt-4 pb-3">

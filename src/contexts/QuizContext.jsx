@@ -28,6 +28,7 @@ const quizReducer = (state, action) => {
 
       const questionCorrectAnswers =
         currentQuestion.correctAnswers[action.index];
+
       const currentAnswers =
         questionCorrectAnswers.length === 1
           ? [action.payload]
@@ -37,11 +38,14 @@ const quizReducer = (state, action) => {
               (item) => item !== action.payload
             );
 
-      const newArray = [
-        ...state.currentAnswers.slice(0, action.index),
-        currentAnswers,
-        ...state.currentAnswers.slice(action.index + 1),
-      ];
+      const newArray =
+        state.currentAnswers.length > action.index
+          ? [
+              ...state.currentAnswers.slice(0, action.index),
+              currentAnswers,
+              ...state.currentAnswers.slice(action.index + 1),
+            ]
+          : [new Array(action.index).fill("Select an item"), currentAnswers];
 
       return {
         ...state,
