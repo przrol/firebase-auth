@@ -29,14 +29,25 @@ const quizReducer = (state, action) => {
       const questionCorrectAnswers =
         currentQuestion.correctAnswers[action.index];
 
-      const currentAnswers =
-        questionCorrectAnswers.length === 1
-          ? [action.payload]
-          : action.checked
+      const currentAnswers = [...state.currentAnswers];
+      if (questionCorrectAnswers.length === 1) {
+        currentAnswers[action.index] = [action.payload];
+      } else {
+        // more than one correct answer
+        currentAnswers[action.index] = action.checked
           ? [...state.currentAnswers[action.index], action.payload]
-          : state.currentAnswers[action.index].filter(
-              (item) => item !== action.payload
-            );
+          : [
+              ...state.currentAnswers[action.index].filter(
+                (item) => item !== action.payload
+              ),
+            ];
+      }
+      // ? [...currentQuestion.currentAnswers, action.payload]
+      // : action.checked
+      // ? [...state.currentAnswers[action.index], action.payload]
+      // : state.currentAnswers[action.index].filter(
+      //     (item) => item !== action.payload
+      //   );
 
       const newArray =
         state.currentAnswers.length > action.index
@@ -45,11 +56,14 @@ const quizReducer = (state, action) => {
               currentAnswers,
               ...state.currentAnswers.slice(action.index + 1),
             ]
-          : [new Array(action.index).fill("Select an item"), currentAnswers];
+          : [
+              ...new Array(action.index).fill(["Select an item"]),
+              currentAnswers,
+            ];
 
       return {
         ...state,
-        currentAnswers: newArray,
+        currentAnswers,
         showExplanation: false,
       };
     }
@@ -127,7 +141,13 @@ const quizReducer = (state, action) => {
         solveQuestion: action.solveQuestion,
         correctAnswerCount,
         answers,
-        currentAnswers: action.solveQuestion ? state.currentAnswers : [],
+        currentAnswers: action.solveQuestion
+          ? state.currentAnswers
+          : [
+              ...new Array(
+                state.questions[currentQuestionIndex].correctAnswers.length
+              ).fill(["Select an item"]),
+            ],
         showExplanation: action.solveQuestion,
       };
     }
@@ -178,6 +198,11 @@ const quizReducer = (state, action) => {
         currentExamNumber: state.currentExamNumber,
         isDarkMode: state.isDarkMode,
         questions: shuffledQuestions,
+        currentAnswers: [
+          ...new Array(shuffledQuestions[0].correctAnswers.length).fill([
+            "Select an item",
+          ]),
+        ],
         answers: shuffleAnswers(shuffledQuestions[0]),
       };
     }

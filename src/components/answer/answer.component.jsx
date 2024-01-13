@@ -35,7 +35,7 @@ const Answer = ({
             answerArea || correctAnswers.length === 1 ? "radio" : "checkbox"
           }
           checked={
-            quizState.currentAnswers.length > 0 &&
+            quizState.currentAnswers.length > blockindex &&
             quizState.currentAnswers[blockindex].includes(answerText)
           }
           onChange={(e) => {
@@ -46,7 +46,7 @@ const Answer = ({
               checked: e.target.checked,
             });
           }}
-          id={`checkRadio-${index}`}
+          id={`checkRadio-${blockindex}-${index}`}
           label={
             <>
               <span className="me-1">{letterMapping[index]}.</span>
