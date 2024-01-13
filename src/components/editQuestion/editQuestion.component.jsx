@@ -25,16 +25,28 @@ export default function EditQuestion({
     setShowAnswers(showAllAnswers);
   }, [showAllAnswers]);
 
-  const incorrectAnswers = question.incorrectAnswers.map((element) => ({
-    checked: false,
-    answerText: element,
-  }));
-  const correctAnswers = question.correctAnswers.map((element) => ({
-    checked: true,
-    answerText: element,
-  }));
+  let allAnswers = [];
 
-  const allAnswers = [...correctAnswers, ...incorrectAnswers];
+  for (let index = 0; index < 6; index++) {
+    if (`correctAnswers${index}` in question) {
+      const correctAnswers = question[`correctAnswers${index}`].map(
+        (element) => ({
+          checked: true,
+          answerText: element,
+        })
+      );
+      const incorrectAnswers = question[`incorrectAnswers${index}`].map(
+        (element) => ({
+          checked: false,
+          answerText: element,
+        })
+      );
+
+      allAnswers.push([...correctAnswers, ...incorrectAnswers]);
+    } else {
+      break;
+    }
+  }
 
   const handleShowExplanation = () => {
     setShowExplanation((prev) => !prev);
@@ -95,16 +107,26 @@ export default function EditQuestion({
         Explanation
       </Button>
       {showAnswers &&
-        allAnswers.map((answer, index) => (
-          <InputGroup key={index} id={`answerText-${index}`} className="mb-3">
-            <InputGroup.Checkbox checked={answer.checked} disabled />
-            <Form.Control
-              as="textarea"
-              rows={2}
-              defaultValue={answer.answerText}
-              disabled
-            />
-          </InputGroup>
+        allAnswers.map((answerblock, blockindex) => (
+          <Form.Group key={blockindex} className="mb-3">
+            <Form.Label>{`Answer block ${blockindex + 1}`}</Form.Label>
+
+            {answerblock.map((answer, index) => (
+              <InputGroup
+                key={index}
+                id={`answerText-${index}`}
+                className="mb-3"
+              >
+                <InputGroup.Checkbox checked={answer.checked} disabled />
+                <Form.Control
+                  as="textarea"
+                  rows={2}
+                  defaultValue={answer.answerText}
+                  disabled
+                />
+              </InputGroup>
+            ))}
+          </Form.Group>
         ))}
       {showExplanation && (
         <div

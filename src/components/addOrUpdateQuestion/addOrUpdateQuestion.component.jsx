@@ -329,6 +329,23 @@ export default function AddOrUpdateQuestion() {
     }
   }
 
+  const insertSpaceAtCursor = () => {
+    const textToInsert = "&emsp;";
+    const textarea = answerAreaRef.current;
+    const startPos = textarea.selectionStart;
+    const endPos = textarea.selectionEnd;
+
+    const beforeText = textarea.value.substring(0, startPos);
+    const afterText = textarea.value.substring(endPos, textarea.value.length);
+
+    textarea.value = beforeText + textToInsert + afterText;
+    textarea.selectionStart = startPos + textToInsert.length;
+    textarea.selectionEnd = startPos + textToInsert.length;
+
+    // After inserting the text, you might want to set the focus back to the textarea
+    textarea.focus();
+  };
+
   const replaceSelectedText = (htmlTag) => {
     const textArea = explanationRef.current;
     const startPos = textArea.selectionStart;
@@ -473,10 +490,19 @@ export default function AddOrUpdateQuestion() {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Answer Area</Form.Label>
+              <Button
+                size="sm"
+                variant="light"
+                title="Insert Space"
+                onClick={insertSpaceAtCursor}
+                className="mb-2 mx-3 fw-bold fs-6 py-1"
+              >
+                S
+              </Button>
               <Form.Control
                 as="textarea"
                 className="mb-3"
-                rows={3}
+                rows={8}
                 ref={answerAreaRef}
               />
             </Form.Group>
