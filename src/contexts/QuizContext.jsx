@@ -79,10 +79,13 @@ const quizReducer = (state, action) => {
     }
     case "PREV_QUESTION": {
       const prevQuestion = state.questions[state.currentQuestionIndex - 1];
+      const correctAnswerCount =
+        state.correctAnswerCount > 0 ? state.correctAnswerCount - 1 : 0;
 
       return {
         ...state,
         currentQuestionIndex: state.currentQuestionIndex - 1,
+        correctAnswerCount,
         solveQuestion: false,
         answers: shuffleAnswers(prevQuestion),
         currentAnswers: [],
