@@ -27,7 +27,7 @@ const quizReducer = (state, action) => {
       const currentQuestion = state.questions[state.currentQuestionIndex];
 
       const questionCorrectAnswers =
-        currentQuestion[`correctAnswers${action.index}`];
+        currentQuestion.correctAnswers[action.index];
       const currentAnswers =
         questionCorrectAnswers.length === 1
           ? [action.payload]
@@ -74,7 +74,6 @@ const quizReducer = (state, action) => {
 
       return {
         ...state,
-        answers: [...action.correctAnswers, ...action.incorrectAnswers],
         questions: updatedQuestions,
       };
     }

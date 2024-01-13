@@ -62,29 +62,11 @@ export const addNewDocument = async (
 ) => {
   const collectionRef = collection(db, collectionName);
 
-  // Transform the correctAnswers array of arrays into an object with dynamic keys
-  const correctAnswersObject = correctAnswersArray.reduce(
-    (obj, subArray, index) => {
-      obj[`correctAnswers${index}`] = subArray;
-      return obj;
-    },
-    {}
-  );
-
-  // Do the same for incorrectAnswers
-  const incorrectAnswersObject = incorrectAnswersArray.reduce(
-    (obj, subArray, index) => {
-      obj[`incorrectAnswers${index}`] = subArray;
-      return obj;
-    },
-    {}
-  );
-
   const newDocRef = await addDoc(collectionRef, {
     question,
     questionBelowImg,
-    ...correctAnswersObject, // Spread the correctAnswersObject to include all its key-value pairs
-    ...incorrectAnswersObject,
+    correctAnswers: JSON.stringify(correctAnswersArray),
+    incorrectAnswers: JSON.stringify(incorrectAnswersArray),
     explanation,
     imageUrl,
     examTopicId,
@@ -109,29 +91,11 @@ export const updateDocument = async (
 ) => {
   const docRef = doc(db, collectionName, docId);
 
-  // Transform the correctAnswers array of arrays into an object with dynamic keys
-  const correctAnswersObject = correctAnswersArray.reduce(
-    (obj, subArray, index) => {
-      obj[`correctAnswers${index}`] = subArray;
-      return obj;
-    },
-    {}
-  );
-
-  // Do the same for incorrectAnswers
-  const incorrectAnswersObject = incorrectAnswersArray.reduce(
-    (obj, subArray, index) => {
-      obj[`incorrectAnswers${index}`] = subArray;
-      return obj;
-    },
-    {}
-  );
-
   await updateDoc(docRef, {
     question,
     questionBelowImg,
-    ...correctAnswersObject, // Spread the correctAnswersObject to include all its key-value pairs
-    ...incorrectAnswersObject, // Do the same for incorrectAnswersObject
+    correctAnswers: JSON.stringify(correctAnswersArray),
+    incorrectAnswers: JSON.stringify(incorrectAnswersArray),
     explanation,
     imageUrl,
     examTopicId,
@@ -146,6 +110,8 @@ export const getExamQuestions = async (collectionName) => {
   const querySnapshot = await getDocs(q);
   const questions = querySnapshot.docs.map((doc) => ({
     ...doc.data(),
+    correctAnswers: JSON.parse(doc.data().correctAnswers),
+    incorrectAnswers: JSON.parse(doc.data().incorrectAnswers),
     id: doc.id,
   }));
 

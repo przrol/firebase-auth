@@ -22,7 +22,7 @@ const Question = () => {
   const answerAreaWithBr = replaceWithBr(
     currentQuestion ? currentQuestion.answerArea : ""
   );
-  const answerAreaParts = answerAreaWithBr.split("_button_");
+  const answerAreaParts = answerAreaWithBr.split("_dropdown_");
 
   let cardBorder = "";
   if (quizState.solveQuestion) {

@@ -13,7 +13,7 @@ import { addNewDocument, addNewImage, updateDocument } from "../../firebase";
 import { QuizContext } from "../../contexts/QuizContext";
 import DarkMode from "../darkMode/darkMode.component";
 import "./addOrUpdateQuestion.styles.css";
-import { Trash3 } from "react-bootstrap-icons";
+import { Trash3, Stickies } from "react-bootstrap-icons";
 
 export default function AddOrUpdateQuestion() {
   const { questionId } = useParams();
@@ -44,25 +44,21 @@ export default function AddOrUpdateQuestion() {
       explanationRef.current.value = editQuestion.explanation;
       let allAnswers = [];
 
-      for (let index = 0; index < 6; index++) {
-        if (`correctAnswers${index}` in editQuestion) {
-          const correctAnswers = editQuestion[`correctAnswers${index}`].map(
-            (element) => ({
-              checked: true,
-              answerText: element,
-            })
-          );
-          const incorrectAnswers = editQuestion[`incorrectAnswers${index}`].map(
-            (element) => ({
-              checked: false,
-              answerText: element,
-            })
-          );
+      for (let index = 0; index < editQuestion.correctAnswers.length; index++) {
+        const correctAnswers = editQuestion.correctAnswers[index].map(
+          (element) => ({
+            checked: true,
+            answerText: element,
+          })
+        );
+        const incorrectAnswers = editQuestion.incorrectAnswers[index].map(
+          (element) => ({
+            checked: false,
+            answerText: element,
+          })
+        );
 
-          allAnswers.push([...correctAnswers, ...incorrectAnswers]);
-        } else {
-          break;
-        }
+        allAnswers.push([...correctAnswers, ...incorrectAnswers]);
       }
 
       setAnswers(allAnswers);
@@ -124,18 +120,15 @@ export default function AddOrUpdateQuestion() {
     );
   };
 
-  const handleDeleteAnswer = (blockindex, indexToRemove) => {
-    // setAnswers((prevAnswers) =>
-    //   prevAnswers.map((answerBlock, idx) => {
-    //     // Apply the filter operation only to the sub-array at blockindex
-    //     if (idx === blockindex) {
-    //       return answerBlock.filter((_, index) => index !== indexToRemove);
-    //     }
-    //     // Return other answer blocks unmodified
-    //     return answerBlock;
-    //   })
-    // );
+  const handleDuplicateAnswerBlock = (blockindex) => {
+    setAnswers((prevAnswers) => [
+      ...prevAnswers.slice(0, blockindex + 1),
+      prevAnswers[blockindex],
+      ...prevAnswers.slice(blockindex + 1),
+    ]);
+  };
 
+  const handleDeleteAnswer = (blockindex, indexToRemove) => {
     setAnswers((prevAnswers) =>
       prevAnswers.reduce((newAnswers, currentBlock, idx) => {
         // When we reach the block from which we want to remove an answer
@@ -329,8 +322,7 @@ export default function AddOrUpdateQuestion() {
     }
   }
 
-  const insertSpaceAtCursor = () => {
-    const textToInsert = "&emsp;";
+  const insertAtCursor = (textToInsert) => {
     const textarea = answerAreaRef.current;
     const startPos = textarea.selectionStart;
     const endPos = textarea.selectionEnd;
@@ -492,9 +484,17 @@ export default function AddOrUpdateQuestion() {
               <Form.Label>Answer Area</Form.Label>
               <Button
                 size="sm"
+                title="Insert Dropdown"
+                onClick={() => insertAtCursor("_dropdown_")}
+                className="mb-2 ms-3 fw-bold fs-6 py-1"
+              >
+                D
+              </Button>
+              <Button
+                size="sm"
                 variant="light"
                 title="Insert Space"
-                onClick={insertSpaceAtCursor}
+                onClick={() => insertAtCursor("&emsp;&emsp;")}
                 className="mb-2 mx-3 fw-bold fs-6 py-1"
               >
                 S
@@ -509,8 +509,17 @@ export default function AddOrUpdateQuestion() {
 
             {answers.map((answerblock, blockindex) => (
               <Form.Group key={blockindex} className="mb-3">
-                {/* <> */}
                 <Form.Label>{`Answer block ${blockindex + 1}`}</Form.Label>
+                <Button
+                  className="pe-1 mb-2 text-primary"
+                  variant="link"
+                  title="Copy answers block"
+                  onClick={() => {
+                    handleDuplicateAnswerBlock(blockindex);
+                  }}
+                >
+                  <Stickies />
+                </Button>
                 <Button
                   className="pe-0 mb-2 text-danger"
                   variant="link"
@@ -542,7 +551,6 @@ export default function AddOrUpdateQuestion() {
                 >
                   Add Answer
                 </Button>
-                {/* </> */}
               </Form.Group>
             ))}
             <Button

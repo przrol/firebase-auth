@@ -27,25 +27,19 @@ export default function EditQuestion({
 
   let allAnswers = [];
 
-  for (let index = 0; index < 6; index++) {
-    if (`correctAnswers${index}` in question) {
-      const correctAnswers = question[`correctAnswers${index}`].map(
-        (element) => ({
-          checked: true,
-          answerText: element,
-        })
-      );
-      const incorrectAnswers = question[`incorrectAnswers${index}`].map(
-        (element) => ({
-          checked: false,
-          answerText: element,
-        })
-      );
+  for (let index = 0; index < question.correctAnswers.length; index++) {
+    const correctAnswers = question.correctAnswers[index].map((element) => ({
+      checked: true,
+      answerText: element,
+    }));
+    const incorrectAnswers = question.incorrectAnswers[index].map(
+      (element) => ({
+        checked: false,
+        answerText: element,
+      })
+    );
 
-      allAnswers.push([...correctAnswers, ...incorrectAnswers]);
-    } else {
-      break;
-    }
+    allAnswers.push([...correctAnswers, ...incorrectAnswers]);
   }
 
   const handleShowExplanation = () => {

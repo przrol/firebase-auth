@@ -14,7 +14,7 @@ export default function AnswerDropdown({
       ? "Select an item"
       : quizState.currentAnswers[index][0];
 
-  const correctAnswer = currentQuestion[`correctAnswers${index}`][0];
+  const correctAnswer = currentQuestion.correctAnswers[index][0];
   const isCorrectAnswer = selectedItem === correctAnswer;
 
   // Function to handle the selection
