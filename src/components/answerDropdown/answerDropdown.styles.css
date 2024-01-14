@@ -1,0 +1,9 @@
+a.dropdown-item {
+  /* max-width: 300px; */
+  white-space: pre;
+  /* overflow-wrap: break-word; */
+}
+
+button.dropdown-toggle {
+  white-space: normal;
+}
