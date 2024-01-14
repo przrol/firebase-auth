@@ -5,43 +5,15 @@ import "./quiz.styles.css";
 // import QuizComplete from "../quizComplete/quizComplete.component";
 import Navigation from "../Navigation";
 import DarkMode from "../darkMode/darkMode.component";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
+import QuizComplete from "../quizComplete/quizComplete.component";
 
 const Quiz = () => {
-  const [state, dispatch] = useContext(QuizContext);
+  const [state] = useContext(QuizContext);
 
   return (
     <div>
       <Navigation />
-      {state.showResults ? (
-        <Card
-          bg={state.isDarkMode ? "dark" : "light"}
-          className="mx-auto text-center"
-          style={{ maxWidth: "800px" }}
-        >
-          <Card.Header>{`Congratulations! (${state.currentExamNumber})`}</Card.Header>
-          <Card.Body>
-            <Card.Text>You have completed the quiz.</Card.Text>
-            <Card.Text>
-              You've got {state.correctAnswerCount} of {state.questions.length}{" "}
-              right.
-            </Card.Text>
-            <Button
-              variant="success"
-              className="w-100"
-              type="button"
-              onClick={() => {
-                dispatch({ type: "RESTART", payload: state.questions });
-              }}
-            >
-              RESTART
-            </Button>
-          </Card.Body>
-        </Card>
-      ) : (
-        <Question />
-      )}
+      {state.showResults ? <QuizComplete /> : <Question />}
       <DarkMode />
     </div>
   );

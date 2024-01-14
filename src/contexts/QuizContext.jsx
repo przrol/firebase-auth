@@ -3,8 +3,6 @@ import { arraysContainSameStrings, shuffle, shuffleAnswers } from "../helpers";
 import { getExamQuestions, fetchCollectionNames } from "../firebase";
 
 const initialState = {
-  //   questions: questions.sort(() => Math.random() - 0.5),
-  //   shuffleAnswers(questions[0]
   questions: [],
   currentQuestionIndex: 0,
   showResults: false,
@@ -22,31 +20,55 @@ const initialState = {
 };
 
 const quizReducer = (state, action) => {
-  // console.log("reducer", state, action);
   switch (action.type) {
     case "SELECT_ANSWER": {
       // payload -> "answerText"
+      const currentQuestion = state.questions[state.currentQuestionIndex];
+
       const questionCorrectAnswers =
-        state.questions[state.currentQuestionIndex].correctAnswers;
-      const currentAnswers =
-        questionCorrectAnswers.length === 1
-          ? [action.payload]
-          : action.checked
-          ? [...state.currentAnswers, action.payload]
-          : state.currentAnswers.filter((item) => item !== action.payload);
-      const correctAnswerCount = arraysContainSameStrings(
-        currentAnswers,
-        questionCorrectAnswers
-      )
-        ? state.correctAnswerCount + 1
-        : state.correctAnswerCount;
+        currentQuestion.correctAnswers[action.index];
+
+      const currentAnswers = [...state.currentAnswers];
+      if (questionCorrectAnswers.length === 1) {
+        currentAnswers[action.index] = [action.payload];
+      } else {
+        // more than one correct answer
+        currentAnswers[action.index] = action.checked
+          ? [
+              ...state.currentAnswers[action.index].filter(
+                (item) => item !== "Select an item"
+              ),
+              action.payload,
+            ]
+          : [
+              ...state.currentAnswers[action.index].filter(
+                (item) => item !== action.payload
+              ),
+            ];
+      }
+      // ? [...currentQuestion.currentAnswers, action.payload]
+      // : action.checked
+      // ? [...state.currentAnswers[action.index], action.payload]
+      // : state.currentAnswers[action.index].filter(
+      //     (item) => item !== action.payload
+      //   );
+
+      const newArray =
+        state.currentAnswers.length > action.index
+          ? [
+              ...state.currentAnswers.slice(0, action.index),
+              currentAnswers,
+              ...state.currentAnswers.slice(action.index + 1),
+            ]
+          : [
+              ...new Array(action.index).fill(["Select an item"]),
+              currentAnswers,
+            ];
+
       return {
         ...state,
         currentAnswers,
-        correctAnswerCount,
         showExplanation: false,
-        // currentAnswers.length >=
-        // state.questions[state.currentQuestionIndex].correctAnswers.length,
       };
     }
     case "ADD_QUESTION": {
@@ -67,28 +89,40 @@ const quizReducer = (state, action) => {
               explanation: action.explanation,
               imageUrl: action.imageUrl,
               examTopicId: action.examTopicId,
+              answerArea: action.answerArea,
             }
           : q;
       });
 
+      const currentQuestion = updatedQuestions[state.currentQuestionIndex];
+
       return {
         ...state,
-        answers: [...action.correctAnswers, ...action.incorrectAnswers],
+        answers: shuffleAnswers(currentQuestion),
+        currentAnswers: [
+          ...new Array(currentQuestion.correctAnswers.length).fill([
+            "Select an item",
+          ]),
+        ],
         questions: updatedQuestions,
       };
     }
     case "PREV_QUESTION": {
       const prevQuestion = state.questions[state.currentQuestionIndex - 1];
+      const correctAnswerCount =
+        state.correctAnswerCount > 0 ? state.correctAnswerCount - 1 : 0;
 
       return {
         ...state,
         currentQuestionIndex: state.currentQuestionIndex - 1,
+        correctAnswerCount,
         solveQuestion: false,
-        answers: [
-          ...prevQuestion.correctAnswers,
-          ...prevQuestion.incorrectAnswers,
+        answers: shuffleAnswers(prevQuestion),
+        currentAnswers: [
+          ...new Array(prevQuestion.correctAnswers.length).fill([
+            "Select an item",
+          ]),
         ],
-        currentAnswers: [],
         showExplanation: false,
       };
     }
@@ -104,13 +138,32 @@ const quizReducer = (state, action) => {
         showResults || action.solveQuestion
           ? state.answers
           : shuffleAnswers(state.questions[currentQuestionIndex]);
+
+      const correctAnswerCount =
+        action.solveQuestion &&
+        arraysContainSameStrings(
+          state.currentAnswers,
+          state.questions[state.currentQuestionIndex]
+        )
+          ? state.correctAnswerCount + 1
+          : state.correctAnswerCount;
+
+      // console.log("correctAnswerCount: ", correctAnswerCount);
+
       return {
         ...state,
         currentQuestionIndex,
         showResults,
         solveQuestion: action.solveQuestion,
+        correctAnswerCount,
         answers,
-        currentAnswers: action.solveQuestion ? state.currentAnswers : [],
+        currentAnswers: action.solveQuestion
+          ? state.currentAnswers
+          : [
+              ...new Array(
+                state.questions[currentQuestionIndex].correctAnswers.length
+              ).fill(["Select an item"]),
+            ],
         showExplanation: action.solveQuestion,
       };
     }
@@ -161,6 +214,11 @@ const quizReducer = (state, action) => {
         currentExamNumber: state.currentExamNumber,
         isDarkMode: state.isDarkMode,
         questions: shuffledQuestions,
+        currentAnswers: [
+          ...new Array(shuffledQuestions[0].correctAnswers.length).fill([
+            "Select an item",
+          ]),
+        ],
         answers: shuffleAnswers(shuffledQuestions[0]),
       };
     }

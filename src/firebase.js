@@ -53,22 +53,24 @@ export const addNewDocument = async (
   collectionName,
   question,
   questionBelowImg,
-  correctAnswers,
-  incorrectAnswers,
+  correctAnswersArray,
+  incorrectAnswersArray,
   explanation,
   imageUrl,
-  examTopicId
+  examTopicId,
+  answerArea
 ) => {
   const collectionRef = collection(db, collectionName);
 
   const newDocRef = await addDoc(collectionRef, {
     question,
     questionBelowImg,
-    correctAnswers,
-    incorrectAnswers,
+    correctAnswers: JSON.stringify(correctAnswersArray),
+    incorrectAnswers: JSON.stringify(incorrectAnswersArray),
     explanation,
     imageUrl,
     examTopicId,
+    answerArea,
   });
 
   return newDocRef;
@@ -80,22 +82,24 @@ export const updateDocument = async (
   docId,
   question,
   questionBelowImg,
-  correctAnswers,
-  incorrectAnswers,
+  correctAnswersArray,
+  incorrectAnswersArray,
   explanation,
   imageUrl,
-  examTopicId
+  examTopicId,
+  answerArea
 ) => {
   const docRef = doc(db, collectionName, docId);
 
   await updateDoc(docRef, {
     question,
     questionBelowImg,
-    correctAnswers,
-    incorrectAnswers,
+    correctAnswers: JSON.stringify(correctAnswersArray),
+    incorrectAnswers: JSON.stringify(incorrectAnswersArray),
     explanation,
     imageUrl,
     examTopicId,
+    answerArea,
   });
 };
 
@@ -106,6 +110,8 @@ export const getExamQuestions = async (collectionName) => {
   const querySnapshot = await getDocs(q);
   const questions = querySnapshot.docs.map((doc) => ({
     ...doc.data(),
+    correctAnswers: JSON.parse(doc.data().correctAnswers),
+    incorrectAnswers: JSON.parse(doc.data().incorrectAnswers),
     id: doc.id,
   }));
 
@@ -165,8 +171,16 @@ export const importDataToFirestore = async (jsonContent, collectionName) => {
   const batch = writeBatch(db);
 
   jsonContent.forEach((item) => {
-    const docRef = doc(collectionRef, item.id); // using the id field as the document id
-    batch.set(docRef, item);
+    if (item.id) {
+      // Check if item.id is truthy (not null, undefined, or an empty string)
+      const docRef = doc(collectionRef, item.id); // using the id field as the document id
+      batch.set(docRef, item);
+    } else {
+      console.error(
+        "Error importing item to Firestore: Missing or empty id field",
+        item
+      );
+    }
   });
 
   await batch.commit();

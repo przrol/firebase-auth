@@ -12,3 +12,11 @@
 .exam-column .hover-border:hover {
   border-color: #007bff; /* Example solid blue border color on hover */
 }
+
+button.import-button:hover {
+  background-color: var(--bs-blue);
+}
+
+button.export-button:hover {
+  background-color: var(--bs-gray-500);
+}
