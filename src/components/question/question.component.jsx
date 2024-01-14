@@ -95,9 +95,9 @@ const Question = () => {
                 ) : (
                   quizState.answers.map((answerblock, blockindex) => (
                     <Form.Group key={blockindex} className="mb-3">
-                      <Form.Label>{`Answer block ${
+                      {/* <Form.Label>{`Answer block ${
                         blockindex + 1
-                      }`}</Form.Label>
+                      }`}</Form.Label> */}
 
                       {answerblock.map((answer, index) => (
                         <Answer
@@ -128,19 +128,21 @@ const Question = () => {
                       <QuestionCircle />
                     </Button>
                     <div>
-                      <Button
-                        className="text-uppercase me-2"
-                        type="button"
-                        variant="secondary"
-                        size="sm"
-                        onClick={() =>
-                          dispatch({
-                            type: "PREV_QUESTION",
-                          })
-                        }
-                      >
-                        PREVIOUS
-                      </Button>
+                      {quizState.currentQuestionIndex > 0 && (
+                        <Button
+                          className="text-uppercase me-2"
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          onClick={() =>
+                            dispatch({
+                              type: "PREV_QUESTION",
+                            })
+                          }
+                        >
+                          PREVIOUS
+                        </Button>
+                      )}
                       <Button
                         className="text-uppercase ms-1"
                         type="button"

@@ -20,7 +20,6 @@ const initialState = {
 };
 
 const quizReducer = (state, action) => {
-  // console.log("reducer", state, action);
   switch (action.type) {
     case "SELECT_ANSWER": {
       // payload -> "answerText"
@@ -140,7 +139,7 @@ const quizReducer = (state, action) => {
           ? state.correctAnswerCount + 1
           : state.correctAnswerCount;
 
-      console.log("correctAnswerCount: ", correctAnswerCount);
+      // console.log("correctAnswerCount: ", correctAnswerCount);
 
       return {
         ...state,

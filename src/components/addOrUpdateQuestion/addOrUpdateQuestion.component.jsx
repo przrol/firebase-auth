@@ -281,7 +281,7 @@ export default function AddOrUpdateQuestion() {
           questionBelowImgRef.current.value = "";
           explanationRef.current.value = "";
           answerAreaRef.current.value = "";
-          setAnswers([defaultAnswer]);
+          setAnswers([[defaultAnswer]]);
           handleDeleteImg();
         }
 
