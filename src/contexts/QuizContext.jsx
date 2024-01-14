@@ -34,7 +34,12 @@ const quizReducer = (state, action) => {
       } else {
         // more than one correct answer
         currentAnswers[action.index] = action.checked
-          ? [...state.currentAnswers[action.index], action.payload]
+          ? [
+              ...state.currentAnswers[action.index].filter(
+                (item) => item !== "Select an item"
+              ),
+              action.payload,
+            ]
           : [
               ...state.currentAnswers[action.index].filter(
                 (item) => item !== action.payload
@@ -113,7 +118,11 @@ const quizReducer = (state, action) => {
         correctAnswerCount,
         solveQuestion: false,
         answers: shuffleAnswers(prevQuestion),
-        currentAnswers: [],
+        currentAnswers: [
+          ...new Array(prevQuestion.correctAnswers.length).fill([
+            "Select an item",
+          ]),
+        ],
         showExplanation: false,
       };
     }
