@@ -171,8 +171,16 @@ export const importDataToFirestore = async (jsonContent, collectionName) => {
   const batch = writeBatch(db);
 
   jsonContent.forEach((item) => {
-    const docRef = doc(collectionRef, item.id); // using the id field as the document id
-    batch.set(docRef, item);
+    if (item.id) {
+      // Check if item.id is truthy (not null, undefined, or an empty string)
+      const docRef = doc(collectionRef, item.id); // using the id field as the document id
+      batch.set(docRef, item);
+    } else {
+      console.error(
+        "Error importing item to Firestore: Missing or empty id field",
+        item
+      );
+    }
   });
 
   await batch.commit();
