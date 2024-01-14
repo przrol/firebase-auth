@@ -90,8 +90,16 @@ const quizReducer = (state, action) => {
           : q;
       });
 
+      const currentQuestion = updatedQuestions[state.currentQuestionIndex];
+
       return {
         ...state,
+        answers: shuffleAnswers(currentQuestion),
+        currentAnswers: [
+          ...new Array(currentQuestion.correctAnswers.length).fill([
+            "Select an item",
+          ]),
+        ],
         questions: updatedQuestions,
       };
     }
