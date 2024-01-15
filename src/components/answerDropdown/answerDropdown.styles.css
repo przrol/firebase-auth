@@ -1,7 +1,16 @@
+/* div.dropdown-menu {
+  max-width: 300px;
+} */
+
 a.dropdown-item {
-  /* max-width: 300px; */
-  white-space: pre;
-  /* overflow-wrap: break-word; */
+  /* white-space: pre-wrap; */
+  /* max-width: 300px;
+  overflow-wrap: break-word; */
+
+  width: 352px; /* Set the width to 352 pixels */
+  word-wrap: break-word; /* This allows the text to wrap onto the next line */
+  overflow-wrap: break-word; /* This is the standard property for word-wrapping */
+  white-space: normal; /* Override the default nowrap for anchor tags */
 }
 
 button.dropdown-toggle {
