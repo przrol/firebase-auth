@@ -46,9 +46,12 @@ export default function AnswerDropdown({
         }
       >
         {quizState.answers[index].map((answer, i) => (
-          <Dropdown.Item key={i} eventKey={answer}>
-            {answer}
-          </Dropdown.Item>
+          <>
+            <Dropdown.Item key={i} eventKey={answer}>
+              {answer}
+            </Dropdown.Item>
+            <Dropdown.Divider />
+          </>
         ))}
       </DropdownButton>
       {quizState.solveQuestion && !isCorrectAnswer && (
