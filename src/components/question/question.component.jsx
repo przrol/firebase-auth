@@ -13,7 +13,11 @@ import {
   PencilSquare,
   QuestionCircle,
   PlayCircle,
+  PlayCircleFill,
   PauseCircle,
+  PauseCircleFill,
+  SkipStartCircle,
+  SkipStartCircleFill,
 } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import "./question.styles.css";
@@ -21,6 +25,8 @@ import AnswerDropdown from "../answerDropdown/answerDropdown.component";
 
 const Question = () => {
   const [quizState, dispatch] = useContext(QuizContext);
+  const [isSkipHovered, setIsSkipHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const currentQuestion = quizState.questions[quizState.currentQuestionIndex];
   const questionWithBr = replaceWithBr(
     currentQuestion ? currentQuestion.question : ""
@@ -44,11 +50,19 @@ const Question = () => {
   const { speak, pause, stop, isPaused, isPlaying } = useSpeech(text);
 
   const handleSpeak_2 = () => {
-    if (!isPlaying) {
-      speak();
-    } else {
+    if (isPlaying) {
       pause();
+    } else {
+      speak();
     }
+  };
+
+  const handleSkip = () => {
+    if (isPlaying || isPaused) {
+      stop();
+    }
+
+    speak();
   };
 
   const handleNextSolveQuestion = () => {
@@ -109,13 +123,34 @@ const Question = () => {
               <div>
                 <Button
                   type="button"
-                  className="p-0 bg-transparent border border-0"
+                  className="me-2 p-0 bg-transparent border border-0"
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
                   onClick={handleSpeak_2}
                 >
                   {!isPlaying ? (
-                    <PlayCircle size="25" />
+                    isHovered ? (
+                      <PlayCircleFill size="25" />
+                    ) : (
+                      <PlayCircle size="25" />
+                    )
+                  ) : isHovered ? (
+                    <PauseCircleFill size="25" />
                   ) : (
                     <PauseCircle size="25" />
+                  )}
+                </Button>
+                <Button
+                  type="button"
+                  className="p-0 bg-transparent border border-0"
+                  onMouseEnter={() => setIsSkipHovered(true)}
+                  onMouseLeave={() => setIsSkipHovered(false)}
+                  onClick={handleSkip}
+                >
+                  {isSkipHovered ? (
+                    <SkipStartCircleFill size="25" />
+                  ) : (
+                    <SkipStartCircle size="25" />
                   )}
                 </Button>
               </div>
