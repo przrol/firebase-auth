@@ -34,6 +34,16 @@ const Question = () => {
       : "question-not-solved";
   }
 
+  const handleSpeak = () => {
+    const text = `${currentQuestion.question} ${quizState.answers.join(" ")}`
+    const utterance = new SpeechSynthesisUtterance(text);
+
+    if (quizState.selectedVoices) {
+      utterance.voice = quizState.selectedVoices[0];
+    }
+    window.speechSynthesis.speak(utterance);
+  };
+
   return (
     <>
       {currentQuestion ? (
@@ -44,7 +54,9 @@ const Question = () => {
             style={{ maxWidth: "800px", transition: "all 1s" }}
           >
             <Card.Header className="d-flex justify-content-between">
-              <div style={{ width: "35.34px" }}></div>
+              <div><button onClick={handleSpeak}>
+      Speak Text
+    </button></div>
               <div className="">{`Frage ${
                 quizState.currentQuestionIndex + 1
               } von ${quizState.questions.length} (${

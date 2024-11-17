@@ -59,6 +59,9 @@ export default function Navigation() {
               <NavDropdown.Item as={Link} to="/editexam">
                 Manage Exams
               </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/texttospeech">
+                TextToSpeech
+              </NavDropdown.Item>
             </NavDropdown>
           </Nav>
           <Form className="d-flex align-items-center">

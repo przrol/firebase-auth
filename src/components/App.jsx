@@ -11,6 +11,7 @@ import { QuizProvider } from "../contexts/QuizContext";
 import EditQuestions from "./editQuestions/editQuestions.component";
 import AddOrUpdateQuestion from "./addOrUpdateQuestion/addOrUpdateQuestion.component";
 import EditExams from "./editExams/editExams.component";
+import TextToSpeech from "./textToSpeech/textToSpeech.component";
 
 function App() {
   return (
@@ -51,7 +52,9 @@ function App() {
                     element={<AddOrUpdateQuestion />}
                   />
                 </Route> */}
-
+                <Route element={<PrivateRoute />}>
+                  <Route path="/texttospeech" element={<TextToSpeech />} />
+                </Route>
                 <Route path="/login" element={<Login />} />
               </Routes>
             </QuizProvider>
