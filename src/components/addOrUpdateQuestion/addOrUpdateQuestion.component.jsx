@@ -35,44 +35,47 @@ export default function AddOrUpdateQuestion() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (questionId) {
-      const editQuestion = state.questions.find((q) => q.id === questionId);
-      questionRef.current.value = editQuestion.question;
-      examTopicIdRef.current.value = editQuestion.examTopicId;
-      questionBelowImgRef.current.value = editQuestion.questionBelowImg ?? "";
-      answerAreaRef.current.value = editQuestion.answerArea ?? "";
-      explanationRef.current.value = editQuestion.explanation;
-      let allAnswers = [];
-
-      for (let index = 0; index < editQuestion.correctAnswers.length; index++) {
-        const correctAnswers = editQuestion.correctAnswers[index].map(
-          (element) => ({
-            checked: true,
-            answerText: element,
-          })
-        );
-        const incorrectAnswers = editQuestion.incorrectAnswers[index].map(
-          (element) => ({
-            checked: false,
-            answerText: element,
-          })
-        );
-
-        allAnswers.push([...correctAnswers, ...incorrectAnswers]);
-      }
-
+    // Extract this to a separate function for clarity
+    const initializeForm = (question) => {
+      questionRef.current.value = question.question;
+      examTopicIdRef.current.value = question.examTopicId;
+      questionBelowImgRef.current.value = question.questionBelowImg ?? "";
+      answerAreaRef.current.value = question.answerArea ?? "";
+      explanationRef.current.value = question.explanation;
+      
+      // Transform answers
+      const allAnswers = question.correctAnswers.map((correctAns, index) => {
+        const correct = correctAns.map(text => ({ checked: true, answerText: text }));
+        const incorrect = question.incorrectAnswers[index].map(text => ({ 
+          checked: false, 
+          answerText: text 
+        }));
+        return [...correct, ...incorrect];
+      });
+  
       setAnswers(allAnswers);
-      setImageUrl(editQuestion.imageUrl);
-    } else {
+      setImageUrl(question.imageUrl);
+    };
+  
+    const resetForm = () => {
       questionRef.current.value = "";
       examTopicIdRef.current.value = "";
       questionBelowImgRef.current.value = "";
       explanationRef.current.value = "";
       answerAreaRef.current.value = "";
-      setAnswers([[defaultAnswer]]); // Reset answers to default
+      setAnswers([[defaultAnswer]]);
       setImageUrl("");
+    };
+  
+    if (questionId) {
+      const editQuestion = state.questions.find((q) => q.id === questionId);
+      if (editQuestion) {
+        initializeForm(editQuestion);
+      }
+    } else {
+      resetForm();
     }
-  }, [questionId]);
+  }, [questionId, state.questions]); // Added state.questions as dependency
 
   const handleNewAnswerBlock = () => {
     setAnswers((prevAnswers) => [...prevAnswers, [defaultAnswer]]);

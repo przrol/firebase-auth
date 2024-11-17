@@ -22,6 +22,10 @@ function App() {
               <Routes>
                 <Route element={<PrivateRoute />}>
                   <Route path="/" element={<Quiz />} />
+                  <Route
+                    path="editquestion/:questionId"
+                    element={<AddOrUpdateQuestion />}
+                  />
                 </Route>
                 <Route element={<PrivateRoute />}>
                   <Route path="/update-profile" element={<UpdateProfile />} />
@@ -41,12 +45,12 @@ function App() {
                 <Route element={<PrivateRoute />}>
                   <Route path="/editquestion" element={<EditQuestions />} />
                 </Route>
-                <Route element={<PrivateRoute />}>
+                {/* <Route element={<PrivateRoute />}>
                   <Route
                     path="/editquestion/:questionId"
                     element={<AddOrUpdateQuestion />}
                   />
-                </Route>
+                </Route> */}
 
                 <Route path="/login" element={<Login />} />
               </Routes>
