@@ -17,7 +17,8 @@ const initialState = {
   examTopicId: 0,
   examArray: [],
   currentExamNumber: localStorage.getItem("currentExamNumber"),
-  selectedVoices: window.speechSynthesis.getVoices().filter(v => v.name.startsWith('Microsoft Emma Online') || v.name === 'Google US English')
+  selectedVoices: window.speechSynthesis.getVoices().filter(v => v.name.startsWith('Microsoft Emma Online') || v.name === 'Google US English'),
+  voiceRate: 1.1
 };
 
 const quizReducer = (state, action) => {

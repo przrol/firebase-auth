@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { QuizContext } from "../../contexts/QuizContext";
 import { replaceWithBr, arraysContainSameStrings } from "../../helpers";
 import Answer from "../answer/answer.component";
@@ -8,7 +8,13 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
 import Image from "react-bootstrap/Image";
-import { PencilSquare, QuestionCircle } from "react-bootstrap-icons";
+import { useSpeech } from "../useSpeech/useSpeech.hook";
+import {
+  PencilSquare,
+  QuestionCircle,
+  PlayCircle,
+  PauseCircle,
+} from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import "./question.styles.css";
 import AnswerDropdown from "../answerDropdown/answerDropdown.component";
@@ -34,15 +40,61 @@ const Question = () => {
       : "question-not-solved";
   }
 
-  const handleSpeak = () => {
-    const text = `${currentQuestion.question} ${quizState.answers.join(" ")}`
-    const utterance = new SpeechSynthesisUtterance(text);
+  const text = `${currentQuestion.question} ${quizState.answers.join(" ")}`;
+  const { speak, pause, stop, isPaused, isPlaying } = useSpeech(text);
 
-    if (quizState.selectedVoices) {
-      utterance.voice = quizState.selectedVoices[0];
+  const handleSpeak_2 = () => {
+    if (!isPlaying) {
+      speak();
+    } else {
+      pause();
     }
-    window.speechSynthesis.speak(utterance);
   };
+
+  const handleNextSolveQuestion = () => {
+    dispatch({
+      type: "NEXT_QUESTION",
+      solveQuestion: !quizState.solveQuestion,
+    });
+
+    if (isPlaying || isPaused) {
+      stop();
+    }
+  };
+  // const handleSpeak = () => {
+  //   const synth = window.speechSynthesis;
+
+  //   if (isSpeakFinished) {
+  //     setIsPaused(false);
+
+  //     // const text = `${currentQuestion.question} ${quizState.answers.join(" ")}`
+  //     const text =
+  //       "You are designing an AI system that empowers everyone, including people who have hearing, visual, and other impairments.";
+  //     const utterance = new SpeechSynthesisUtterance(text);
+
+  //     if (quizState.selectedVoices) {
+  //       utterance.voice = quizState.selectedVoices[0];
+  //     }
+
+  //     utterance.rate = quizState.voiceRate;
+
+  //     utterance.onend = () => {
+  //       // Code to execute after speaking is finished
+  //       console.log("Speech has finished");
+  //       setIsSpeakFinished(true);
+  //     };
+
+  //     utterance.onpause = () => {
+  //       setIsPaused(true);
+  //     };
+
+  //     synth.speak(utterance);
+  //   } else {
+  //     // synth.pause();
+  //     // setIsSpeakFinished(false);
+  //     // setIsPaused(true);
+  //   }
+  // };
 
   return (
     <>
@@ -54,9 +106,19 @@ const Question = () => {
             style={{ maxWidth: "800px", transition: "all 1s" }}
           >
             <Card.Header className="d-flex justify-content-between">
-              <div><button onClick={handleSpeak}>
-      Speak Text
-    </button></div>
+              <div>
+                <Button
+                  type="button"
+                  className="p-0 bg-transparent border border-0"
+                  onClick={handleSpeak_2}
+                >
+                  {!isPlaying ? (
+                    <PlayCircle size="25" />
+                  ) : (
+                    <PauseCircle size="25" />
+                  )}
+                </Button>
+              </div>
               <div className="">{`Frage ${
                 quizState.currentQuestionIndex + 1
               } von ${quizState.questions.length} (${
@@ -162,12 +224,7 @@ const Question = () => {
                           quizState.solveQuestion ? "primary" : "success"
                         }
                         size="sm"
-                        onClick={() =>
-                          dispatch({
-                            type: "NEXT_QUESTION",
-                            solveQuestion: !quizState.solveQuestion,
-                          })
-                        }
+                        onClick={handleNextSolveQuestion}
                       >
                         {quizState.solveQuestion
                           ? "NEXT QUESTION"
