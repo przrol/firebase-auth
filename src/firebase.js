@@ -108,12 +108,24 @@ export const getExamQuestions = async (collectionName) => {
   const q = query(collectionRef);
 
   const querySnapshot = await getDocs(q);
-  const questions = querySnapshot.docs.map((doc) => ({
-    ...doc.data(),
-    correctAnswers: JSON.parse(doc.data().correctAnswers),
-    incorrectAnswers: JSON.parse(doc.data().incorrectAnswers),
-    id: doc.id,
-  }));
+  const questions = [];
+
+  for (let i = 0; i < querySnapshot.docs.length; i++) {
+    const doc = querySnapshot.docs[i];
+
+    try {
+      questions.push({
+        ...doc.data(),
+        correctAnswers: JSON.parse(doc.data().correctAnswers),
+        incorrectAnswers: JSON.parse(doc.data().incorrectAnswers),
+        id: doc.id,
+      });
+    } catch (error) {
+      console.log(`document id: ${doc.id}`);
+      console.error(doc.data().incorrectAnswers);
+      console.log(error);
+    }
+  }
 
   return questions;
 };
