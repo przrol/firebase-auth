@@ -5,8 +5,8 @@ import {
   getDocs,
   getFirestore,
   query,
-  addDoc,
   doc,
+  setDoc,
   updateDoc,
   getDoc,
   writeBatch,
@@ -48,6 +48,12 @@ export const addNewImage = async (file) => {
 //     // Handle any errors
 //   });
 
+const formatNumber = (number) => {
+  // Convert the number to a string and pad it with leading zeros
+  let paddedNumber = number.toString().padStart(3, "0");
+  return `question_${paddedNumber}`;
+};
+
 // adding document
 export const addNewDocument = async (
   collectionName,
@@ -60,9 +66,10 @@ export const addNewDocument = async (
   examTopicId,
   answerArea
 ) => {
-  const collectionRef = collection(db, collectionName);
+  // const collectionRef = collection(db, collectionName);
+  const newDocId = formatNumber(examTopicId);
 
-  const newDocRef = await addDoc(collectionRef, {
+  await setDoc(doc(db, collectionName, newDocId), {
     question,
     questionBelowImg,
     correctAnswers: JSON.stringify(correctAnswersArray),
@@ -73,7 +80,7 @@ export const addNewDocument = async (
     answerArea,
   });
 
-  return newDocRef;
+  return newDocId;
 };
 
 // updating document

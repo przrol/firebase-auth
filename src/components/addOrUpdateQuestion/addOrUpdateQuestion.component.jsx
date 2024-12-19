@@ -42,21 +42,24 @@ export default function AddOrUpdateQuestion() {
       questionBelowImgRef.current.value = question.questionBelowImg ?? "";
       answerAreaRef.current.value = question.answerArea ?? "";
       explanationRef.current.value = question.explanation;
-      
+
       // Transform answers
       const allAnswers = question.correctAnswers.map((correctAns, index) => {
-        const correct = correctAns.map(text => ({ checked: true, answerText: text }));
-        const incorrect = question.incorrectAnswers[index].map(text => ({ 
-          checked: false, 
-          answerText: text 
+        const correct = correctAns.map((text) => ({
+          checked: true,
+          answerText: text,
+        }));
+        const incorrect = question.incorrectAnswers[index].map((text) => ({
+          checked: false,
+          answerText: text,
         }));
         return [...correct, ...incorrect];
       });
-  
+
       setAnswers(allAnswers);
       setImageUrl(question.imageUrl);
     };
-  
+
     const resetForm = () => {
       questionRef.current.value = "";
       examTopicIdRef.current.value = "";
@@ -66,7 +69,7 @@ export default function AddOrUpdateQuestion() {
       setAnswers([[defaultAnswer]]);
       setImageUrl("");
     };
-  
+
     if (questionId) {
       const editQuestion = state.questions.find((q) => q.id === questionId);
       if (editQuestion) {
@@ -252,7 +255,7 @@ export default function AddOrUpdateQuestion() {
             answerArea: answerAreaRef.current.value,
           });
         } else {
-          const newDocRef = await addNewDocument(
+          const newDocId = await addNewDocument(
             state.currentExamNumber,
             questionRef.current.value,
             questionBelowImgRef.current.value,
@@ -267,7 +270,7 @@ export default function AddOrUpdateQuestion() {
           dispatch({
             type: "ADD_QUESTION",
             newQuestion: {
-              id: newDocRef.id,
+              id: newDocId,
               question: questionRef.current.value,
               questionBelowImg: questionBelowImgRef.current.value,
               correctAnswers,
