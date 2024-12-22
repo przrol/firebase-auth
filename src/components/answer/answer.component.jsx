@@ -47,12 +47,7 @@ const Answer = ({
             });
           }}
           id={`checkRadio-${blockindex}-${index}`}
-          label={
-            <>
-              {/* <span className="me-1">{letterMapping[index]}.</span> */}
-              {answerText}
-            </>
-          }
+          label={answerText}
         />
       </Col>
     </Row>
