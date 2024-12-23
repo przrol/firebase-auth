@@ -1,15 +1,14 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import DarkMode from "../darkMode/darkMode.component";
 import { QuizContext } from "../../contexts/QuizContext";
 import Navigation from "../Navigation";
-import ModalDialog from "../modal/modalDialog.component";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import "./groupQuestions.styles.css";
-import { formatNumber } from "../../firebase";
+import { formatNumber, updateDocument } from "../../firebase";
 
 export default function GroupQuestions() {
   const [state] = useContext(QuizContext);
@@ -19,33 +18,41 @@ export default function GroupQuestions() {
     // For descending order, use 'b.age - a.age'
   });
 
-  const [show, setShow] = useState(false);
-  const [showAllExplanations, setShowAllExplanations] = useState(false);
-  const [showAllAnswers, setShowAllAnswers] = useState(false);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState("");
-
-  const handleClose = () => setShow(false);
-  const handleShow = (questionIndex) => {
-    setCurrentQuestionIndex(questionIndex);
-    setShow(true);
-  };
-
-  const handleShowAllExplanations = () => {
-    setShowAllExplanations((prev) => !prev);
-  };
-
-  const handleShowAllAnswers = () => {
-    setShowAllAnswers((prev) => !prev);
-  };
-
   const [selectedOptions, setSelectedOptions] = useState([]);
+  const groupNumberRef = useRef();
 
   const handleChange = (event) => {
     const selected = Array.from(
       event.target.selectedOptions,
       (option) => option.value
     );
+    console.log(selected);
     setSelectedOptions(selected);
+  };
+
+  const handleMove = () => {
+    const groupNumber = Number(groupNumberRef.current.value);
+
+    selectedOptions.forEach(async (option) => {
+      const question = state.allQuestions.find(
+        (q) => q.examTopicId === parseInt(option)
+      );
+
+      await updateDocument(
+        state.currentExamNumber,
+        question.id,
+        question.question,
+        question.questionBelowImg,
+        question.correctAnswers,
+        question.incorrectAnswers,
+        question.explanation,
+        question.imageUrl,
+        question.examTopicId,
+        question.answerArea,
+        question.lastModified,
+        groupNumber
+      );
+    });
   };
 
   return (
@@ -61,23 +68,6 @@ export default function GroupQuestions() {
         </Card.Header>
         <Card.Body>
           <Form>
-            <Row className="mb-4">
-              <Col className="d-flex">
-                <Form.Check
-                  className="me-3"
-                  type="checkbox"
-                  id="show-All-Answers"
-                  label={"Show all answers"}
-                  onClick={handleShowAllAnswers}
-                />
-                <Form.Check
-                  type="checkbox"
-                  id="show-All-Explanations"
-                  label={"Show all explanations"}
-                  onClick={handleShowAllExplanations}
-                />
-              </Col>
-            </Row>
             <Row>
               <Col>
                 <Form.Label>{`Question count: ${sortedQuestions.length}`}</Form.Label>
@@ -88,24 +78,34 @@ export default function GroupQuestions() {
                   onChange={handleChange}
                   value={selectedOptions}
                 >
-                  {sortedQuestions.map((option) => (
-                    <option key={option.examTopicId} value={option.examTopicId}>
-                      {/* {`Question_${option.examTopicId}`} */}
-                      {formatNumber(option.examTopicId)}
-                    </option>
-                  ))}
+                  {sortedQuestions.map((option) => {
+                    // const questionNumber = formatNumber(option.examTopicId);
+
+                    return (
+                      <option
+                        key={option.examTopicId}
+                        value={option.examTopicId}
+                      >
+                        {formatNumber(option.examTopicId)}
+                      </option>
+                    );
+                  })}
                 </Form.Select>
               </Col>
               <Col>
-                <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Group className="mb-3" controlId="formMoveToGroup">
                   <Form.Label>Move to Group</Form.Label>
                   <Form.Control
                     type="number"
                     placeholder="Group number"
                     defaultValue={0}
+                    className="question-group-input"
+                    ref={groupNumberRef}
                   />
                 </Form.Group>
-                <Button variant="primary">Move</Button>
+                <Button variant="primary" onClick={handleMove}>
+                  Move
+                </Button>
               </Col>
             </Row>
           </Form>

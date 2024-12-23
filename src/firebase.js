@@ -98,7 +98,8 @@ export const updateDocument = async (
   imageUrl,
   examTopicId,
   answerArea,
-  lastModified
+  lastModified,
+  groupNumber
 ) => {
   const docRef = doc(db, collectionName, docId);
 
@@ -112,6 +113,7 @@ export const updateDocument = async (
     examTopicId,
     answerArea,
     lastModified,
+    groupNumber,
   });
 };
 

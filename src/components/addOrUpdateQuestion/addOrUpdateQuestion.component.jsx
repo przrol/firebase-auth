@@ -21,6 +21,7 @@ export default function AddOrUpdateQuestion() {
   const [state, dispatch] = useContext(QuizContext);
   const questionRef = useRef();
   const examTopicIdRef = useRef();
+  const groupNumberRef = useRef();
   const questionBelowImgRef = useRef();
   const answerAreaRef = useRef();
   const explanationRef = useRef();
@@ -41,6 +42,7 @@ export default function AddOrUpdateQuestion() {
     const initializeForm = (question) => {
       questionRef.current.value = question.question;
       examTopicIdRef.current.value = question.examTopicId;
+      groupNumberRef.current.value = question.groupNumber ?? "1";
       questionBelowImgRef.current.value = question.questionBelowImg ?? "";
       answerAreaRef.current.value = question.answerArea ?? "";
       explanationRef.current.value = question.explanation;
@@ -68,6 +70,7 @@ export default function AddOrUpdateQuestion() {
     const resetForm = () => {
       questionRef.current.value = "";
       examTopicIdRef.current.value = "";
+      groupNumberRef.current.value = "0";
       questionBelowImgRef.current.value = "";
       explanationRef.current.value = "";
       answerAreaRef.current.value = "";
@@ -213,10 +216,6 @@ export default function AddOrUpdateQuestion() {
         examTopicIdRef.current.value !== "" &&
         questionRef.current.value !== ""
       ) {
-        // const incorrectAnswers = answers
-        //   .filter((element) => !element.checked)
-        //   .map((answer) => answer.answerText);
-
         const incorrectAnswers = answers.map(
           (answerBlock) =>
             answerBlock
@@ -225,6 +224,8 @@ export default function AddOrUpdateQuestion() {
         );
 
         const examTopicId = Number(examTopicIdRef.current.value);
+        const groupNumber = Number(groupNumberRef.current.value);
+
         let newImageUrl = imageUrl ?? "";
         const lastModified = new Date().toISOString();
 
@@ -246,7 +247,8 @@ export default function AddOrUpdateQuestion() {
             newImageUrl,
             examTopicId,
             answerAreaRef.current.value,
-            lastModified
+            lastModified,
+            groupNumber
           );
 
           dispatch({
@@ -261,6 +263,7 @@ export default function AddOrUpdateQuestion() {
             examTopicId,
             answerArea: answerAreaRef.current.value,
             lastModified,
+            groupNumber,
           });
         } else {
           const newDocId = await addNewDocument(
@@ -289,11 +292,13 @@ export default function AddOrUpdateQuestion() {
               examTopicId,
               answerArea: answerAreaRef.current.value,
               lastModified,
+              groupNumber,
             },
           });
 
           questionRef.current.value = "";
           examTopicIdRef.current.value = "";
+          groupNumberRef.current.value = "0";
           questionBelowImgRef.current.value = "";
           explanationRef.current.value = "";
           answerAreaRef.current.value = "";
@@ -445,6 +450,10 @@ export default function AddOrUpdateQuestion() {
               <Form.Control.Feedback type="invalid">
                 Please provide an ExamTopics ID.
               </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Group number</Form.Label>
+              <Form.Control ref={groupNumberRef} type="number" />
             </Form.Group>
             <Form.Group id="singleQuestion" className="mb-3">
               <Form.Label>Question</Form.Label>

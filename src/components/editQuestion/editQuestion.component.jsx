@@ -56,7 +56,15 @@ export default function EditQuestion({
       <div className="d-flex align-items-center justify-content-between">
         <div>
           <Form.Label className="ms-1">
-            {`Question #${question.examTopicId} (Last Modified:`}
+            {`Question #${question.examTopicId}`}
+          </Form.Label>
+          <Link to={question.id}>
+            <PencilSquare className="mx-2 editIcon" />
+          </Link>
+        </div>
+        <div>
+          <Form.Label className="ms-1">
+            {`(Last Modified:`}
             <span
               title={lastModifiedObj.tooltip}
               className={
@@ -67,19 +75,17 @@ export default function EditQuestion({
             >{` ${lastModifiedObj.text}`}</span>
             {")"}
           </Form.Label>
-          <Link to={question.id}>
-            <PencilSquare className="ms-2 editIcon" />
-          </Link>
+          <Button
+            className="pt-0 deleteButton pe-2 text-danger"
+            variant="link"
+            title="Delete answer"
+            onClick={() => onShowDeleteModal(`Question ${index + 1}`)}
+          >
+            <Trash3 />
+          </Button>
         </div>
-        <Button
-          className="pt-0 deleteButton pe-2 text-danger"
-          variant="link"
-          title="Delete answer"
-          onClick={() => onShowDeleteModal(`Question ${index + 1}`)}
-        >
-          <Trash3 />
-        </Button>
       </div>
+
       <Form.Control
         as="textarea"
         rows={3}

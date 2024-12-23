@@ -16,6 +16,7 @@ const initialState = {
   showDeleteModalDialog: false,
   imageUrl: "",
   examTopicId: 0,
+  groupNumber: 0,
   examArray: [],
   lastModified: "",
   currentExamNumber: localStorage.getItem("currentExamNumber"),
@@ -104,6 +105,7 @@ const quizReducer = (state, action) => {
               examTopicId: action.examTopicId,
               answerArea: action.answerArea,
               lastModified: action.lastModified,
+              groupNumber: action.groupNumber,
             }
           : q;
       });
