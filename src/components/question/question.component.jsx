@@ -22,12 +22,14 @@ import {
 import { Link } from "react-router-dom";
 import "./question.styles.css";
 import AnswerDropdown from "../answerDropdown/answerDropdown.component";
+import { getGermanFormattedTime } from "../../helpers";
 
 const Question = () => {
   const [quizState, dispatch] = useContext(QuizContext);
   const [isSkipHovered, setIsSkipHovered] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const currentQuestion = quizState.questions[quizState.currentQuestionIndex];
+  const lastModifiedObj = getGermanFormattedTime(currentQuestion?.lastModified);
   const questionWithBr = replaceWithBr(
     currentQuestion ? currentQuestion.question : ""
   );
@@ -75,40 +77,6 @@ const Question = () => {
       stop();
     }
   };
-  // const handleSpeak = () => {
-  //   const synth = window.speechSynthesis;
-
-  //   if (isSpeakFinished) {
-  //     setIsPaused(false);
-
-  //     // const text = `${currentQuestion.question} ${quizState.answers.join(" ")}`
-  //     const text =
-  //       "You are designing an AI system that empowers everyone, including people who have hearing, visual, and other impairments.";
-  //     const utterance = new SpeechSynthesisUtterance(text);
-
-  //     if (quizState.selectedVoices) {
-  //       utterance.voice = quizState.selectedVoices[0];
-  //     }
-
-  //     utterance.rate = quizState.voiceRate;
-
-  //     utterance.onend = () => {
-  //       // Code to execute after speaking is finished
-  //       console.log("Speech has finished");
-  //       setIsSpeakFinished(true);
-  //     };
-
-  //     utterance.onpause = () => {
-  //       setIsPaused(true);
-  //     };
-
-  //     synth.speak(utterance);
-  //   } else {
-  //     // synth.pause();
-  //     // setIsSpeakFinished(false);
-  //     // setIsPaused(true);
-  //   }
-  // };
 
   return (
     <>
@@ -158,7 +126,7 @@ const Question = () => {
                 quizState.currentQuestionIndex + 1
               } von ${quizState.questions.length} (${
                 quizState.currentExamNumber
-              })`}</div>
+              }; Last Modified: ${lastModifiedObj.text})`}</div>
               <div>#{currentQuestion.examTopicId}</div>
             </Card.Header>
             <Card.Body>

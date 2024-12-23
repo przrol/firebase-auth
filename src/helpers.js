@@ -28,10 +28,28 @@ export const replaceWithBr = (text) => {
 
 export const getGermanFormattedTime = (isoString) => {
   try {
+    if (!isoString) {
+      return {
+        tooltip: "no change date",
+        text: "no change date",
+      };
+    }
+
     const date = new Date(isoString);
     const now = new Date();
     const diffInMs = now - date;
     const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+    const options = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      timeZone: "Europe/Berlin",
+    };
+    const formattedDate = date.toLocaleString("de-DE", options);
 
     const timeOptions = {
       hour: "2-digit",
@@ -42,27 +60,21 @@ export const getGermanFormattedTime = (isoString) => {
     const formattedTime = date.toLocaleString("de-DE", timeOptions);
 
     if (diffInDays === 0) {
-      return `Today, ${formattedTime}`;
+      return { tooltip: formattedDate, text: `Today, ${formattedTime}` };
     } else if (diffInDays === 1) {
-      return `Yesterday, ${formattedTime}`;
+      return { tooltip: formattedDate, text: `Yesterday, ${formattedTime}` };
     } else if (diffInDays < 15) {
       // Up to 14 days ago
-      return `${diffInDays} days ago ${formattedTime}`;
-    } else {
-      const options = {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        timeZone: "Europe/Berlin",
+      return {
+        tooltip: formattedDate,
+        text: `${diffInDays} days ago ${formattedTime}`,
       };
-      return date.toLocaleString("de-DE", options);
+    } else {
+      return { tooltip: formattedDate, text: formattedDate };
     }
   } catch (error) {
     console.error("Invalid date format:", error);
-    return "Invalid Date";
+    return { tooltip: "Invalid Date", text: "Invalid Date" };
   }
 };
 

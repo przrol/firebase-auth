@@ -16,9 +16,16 @@ const initialState = {
   imageUrl: "",
   examTopicId: 0,
   examArray: [],
+  lastModified: "",
   currentExamNumber: localStorage.getItem("currentExamNumber"),
-  selectedVoices: window.speechSynthesis.getVoices().filter(v => v.name.startsWith('Microsoft Emma Online') || v.name === 'Google US English'),
-  voiceRate: 1.1
+  selectedVoices: window.speechSynthesis
+    .getVoices()
+    .filter(
+      (v) =>
+        v.name.startsWith("Microsoft Emma Online") ||
+        v.name === "Google US English"
+    ),
+  voiceRate: 1.1,
 };
 
 const quizReducer = (state, action) => {
@@ -92,6 +99,7 @@ const quizReducer = (state, action) => {
               imageUrl: action.imageUrl,
               examTopicId: action.examTopicId,
               answerArea: action.answerArea,
+              lastModified: action.lastModified,
             }
           : q;
       });

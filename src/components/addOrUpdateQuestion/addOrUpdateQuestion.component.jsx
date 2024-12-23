@@ -33,7 +33,7 @@ export default function AddOrUpdateQuestion() {
   const [isCheckboxInvalid, setIsCheckboxInvalid] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [lastModified, setLastModified] = useState("");
+  const [lastModified, setLastModified] = useState({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -60,7 +60,9 @@ export default function AddOrUpdateQuestion() {
 
       setAnswers(allAnswers);
       setImageUrl(question.imageUrl);
-      setLastModified(question.lastModified);
+
+      const lastModifiedObj = getGermanFormattedTime(question.lastModified);
+      setLastModified(lastModifiedObj);
     };
 
     const resetForm = () => {
@@ -422,7 +424,7 @@ export default function AddOrUpdateQuestion() {
           <div className="flex-grow-1 text-center">{`${
             questionId ? "Edit Question" : "Add Single Question"
           } (${state.currentExamNumber})`}</div>
-          <div>{getGermanFormattedTime(lastModified)}</div>
+          <div title={lastModified.tooltip}>{lastModified.text}</div>
         </Card.Header>
         <Card.Body>
           {error && <Alert variant="danger">{error}</Alert>}
