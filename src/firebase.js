@@ -10,6 +10,7 @@ import {
   updateDoc,
   getDoc,
   writeBatch,
+  where,
 } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
@@ -116,6 +117,9 @@ export const updateDocument = async (
 
 export const getExamQuestions = async (collectionName) => {
   const collectionRef = collection(db, collectionName);
+
+  // Add where clause to filter documents with lastModified property
+  // const q = query(collectionRef, where("lastModified", "!=", null)); // Use '!=' to check for existence
   const q = query(collectionRef);
 
   const querySnapshot = await getDocs(q);

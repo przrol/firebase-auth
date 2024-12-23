@@ -4,6 +4,7 @@ import { getExamQuestions, fetchCollectionNames } from "../firebase";
 
 const initialState = {
   questions: [],
+  allQuestions: [],
   currentQuestionIndex: 0,
   showResults: false,
   correctAnswerCount: 0,
@@ -216,7 +217,7 @@ const quizReducer = (state, action) => {
       };
     }
     case "RESTART": {
-      const shuffledQuestions = shuffle(action.payload);
+      const shuffledQuestions = shuffle(action.payload.filteredData);
 
       return {
         ...initialState,
@@ -224,6 +225,7 @@ const quizReducer = (state, action) => {
         currentExamNumber: state.currentExamNumber,
         isDarkMode: state.isDarkMode,
         questions: shuffledQuestions,
+        allQuestions: action.payload.data,
         currentAnswers: [
           ...new Array(shuffledQuestions[0].correctAnswers.length).fill([
             "Select an item",
@@ -256,7 +258,9 @@ export const QuizProvider = ({ children }) => {
   useEffect(() => {
     const getQuestions = async () => {
       const data = await getExamQuestions(state.currentExamNumber);
-      dispatch({ type: "RESTART", payload: data });
+      const filteredData = data.filter((d) => d.lastModified);
+
+      dispatch({ type: "RESTART", payload: { data, filteredData } });
     };
 
     if (state.currentExamNumber) {

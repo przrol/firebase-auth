@@ -76,7 +76,7 @@ export default function AddOrUpdateQuestion() {
     };
 
     if (questionId) {
-      const editQuestion = state.questions.find((q) => q.id === questionId);
+      const editQuestion = state.allQuestions.find((q) => q.id === questionId);
       if (editQuestion) {
         initializeForm(editQuestion);
       }

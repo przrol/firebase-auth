@@ -13,7 +13,7 @@ import "./editQuestions.styles.css";
 export default function EditQuestions() {
   const [state] = useContext(QuizContext);
 
-  const sortedQuestions = [...state.questions].sort((a, b) => {
+  const sortedQuestions = [...state.allQuestions].sort((a, b) => {
     return a.examTopicId - b.examTopicId; // Sort by the 'age' property in ascending order
     // For descending order, use 'b.age - a.age'
   });
