@@ -9,6 +9,7 @@ import UpdateProfile from "./UpdateProfile";
 import Quiz from "./quiz/quiz.component";
 import { QuizProvider } from "../contexts/QuizContext";
 import EditQuestions from "./editQuestions/editQuestions.component";
+import GroupQuestions from "./groupQuestions/groupQuestions.component";
 import AddOrUpdateQuestion from "./addOrUpdateQuestion/addOrUpdateQuestion.component";
 import EditExams from "./editExams/editExams.component";
 import TextToSpeech from "./textToSpeech/textToSpeech.component";
@@ -45,6 +46,9 @@ function App() {
                 </Route>
                 <Route element={<PrivateRoute />}>
                   <Route path="/editquestion" element={<EditQuestions />} />
+                </Route>
+                <Route element={<PrivateRoute />}>
+                  <Route path="/groupquestion" element={<GroupQuestions />} />
                 </Route>
                 {/* <Route element={<PrivateRoute />}>
                   <Route

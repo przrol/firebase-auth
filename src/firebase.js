@@ -49,7 +49,7 @@ export const addNewImage = async (file) => {
 //     // Handle any errors
 //   });
 
-const formatNumber = (number) => {
+export const formatNumber = (number) => {
   // Convert the number to a string and pad it with leading zeros
   let paddedNumber = number.toString().padStart(3, "0");
   return `question_${paddedNumber}`;
