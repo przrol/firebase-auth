@@ -26,6 +26,23 @@ export const replaceWithBr = (text) => {
   return text ? text.replace(/\n/g, "<br />") : "";
 };
 
+const groupBy = (arr, property) => {
+  return arr.reduce((acc, obj) => {
+    const key = obj[property];
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(obj);
+    return acc;
+  }, {});
+};
+
+// If you need an array of arrays instead of an object of arrays:
+export const groupByToArray = (arr, property) => {
+  const grouped = groupBy(arr, property);
+  return Object.values(grouped);
+};
+
 export const getGermanFormattedTime = (isoString) => {
   try {
     if (!isoString) {
