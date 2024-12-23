@@ -26,7 +26,7 @@ export const replaceWithBr = (text) => {
   return text ? text.replace(/\n/g, "<br />") : "";
 };
 
-const groupBy = (arr, property) => {
+export const groupBy = (arr, property) => {
   return arr.reduce((acc, obj) => {
     const key = obj[property];
     if (!acc[key]) {
@@ -38,7 +38,7 @@ const groupBy = (arr, property) => {
 };
 
 // If you need an array of arrays instead of an object of arrays:
-export const groupByToArray = (arr, property) => {
+const groupByToArray = (arr, property) => {
   const grouped = groupBy(arr, property);
   return Object.values(grouped);
 };

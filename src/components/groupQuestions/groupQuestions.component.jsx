@@ -9,7 +9,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import "./groupQuestions.styles.css";
 import { formatNumber, updateDocument } from "../../firebase";
-import { groupByToArray } from "../../helpers";
+import { groupBy } from "../../helpers";
 
 export default function GroupQuestions() {
   const [state] = useContext(QuizContext);
@@ -19,7 +19,7 @@ export default function GroupQuestions() {
     // For descending order, use 'b.age - a.age'
   });
 
-  const groupedData = groupByToArray(state.allQuestions, "groupNumber");
+  const groupedData = groupBy(state.allQuestions, "groupNumber");
   const [selectedOptions, setSelectedOptions] = useState([]);
   const groupNumberRef = useRef();
 
@@ -70,48 +70,56 @@ export default function GroupQuestions() {
         </Card.Header>
         <Card.Body>
           <Form>
-            {groupedData.map((group, index) => (
-              <Row className="mb-3" key={index}>
-                <Col>
-                  <Form.Label>{`Question count: ${group.length}`}</Form.Label>
-                  <Form.Select
-                    multiple
-                    // size="lg"
-                    htmlSize={8}
-                    onChange={handleChange}
-                    value={selectedOptions}
-                  >
-                    {group.map((option) => {
-                      // const questionNumber = formatNumber(option.examTopicId);
+            {groupedData &&
+              Object.keys(groupedData).map((key, index) => (
+                <Row className="mb-3" key={index}>
+                  <Col className="me-3">
+                    <div>
+                      <div className="d-flex justify-content-between">
+                        <Form.Label>{`Group Number: ${key}`}</Form.Label>
+                        <Form.Label>{`${groupedData[key].length} questions`}</Form.Label>
+                      </div>
 
-                      return (
-                        <option
-                          key={option.examTopicId}
-                          value={option.examTopicId}
-                        >
-                          {formatNumber(option.examTopicId)}
-                        </option>
-                      );
-                    })}
-                  </Form.Select>
-                </Col>
-                <Col>
-                  <Form.Group className="mb-3" controlId="formMoveToGroup">
-                    <Form.Label>Move to Group</Form.Label>
-                    <Form.Control
-                      type="number"
-                      placeholder="Group number"
-                      defaultValue={0}
-                      className="question-group-input"
-                      ref={groupNumberRef}
-                    />
-                  </Form.Group>
-                  <Button variant="primary" onClick={handleMove}>
-                    Move
-                  </Button>
-                </Col>
-              </Row>
-            ))}
+                      <Form.Select
+                        multiple
+                        // size="lg"
+                        htmlSize={8}
+                        onChange={handleChange}
+                        value={selectedOptions}
+                      >
+                        {groupedData[key].map((option) => {
+                          // const questionNumber = formatNumber(option.examTopicId);
+
+                          return (
+                            <option
+                              key={option.examTopicId}
+                              value={option.examTopicId}
+                            >
+                              {formatNumber(option.examTopicId)}
+                            </option>
+                          );
+                        })}
+                      </Form.Select>
+                    </div>
+                  </Col>
+                  {/* <Col xs={{ offset: 1 }}> */}
+                  <Col>
+                    <Form.Group className="mb-3" controlId="formMoveToGroup">
+                      <Form.Label>Move to Group</Form.Label>
+                      <Form.Control
+                        type="number"
+                        placeholder="Group number"
+                        defaultValue={0}
+                        className="question-group-input"
+                        ref={groupNumberRef}
+                      />
+                    </Form.Group>
+                    <Button variant="primary" onClick={handleMove}>
+                      Move
+                    </Button>
+                  </Col>
+                </Row>
+              ))}
           </Form>
         </Card.Body>
       </Card>
