@@ -26,6 +26,46 @@ export const replaceWithBr = (text) => {
   return text ? text.replace(/\n/g, "<br />") : "";
 };
 
+export const getGermanFormattedTime = (isoString) => {
+  try {
+    const date = new Date(isoString);
+    const now = new Date();
+    const diffInMs = now - date;
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+    const timeOptions = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      timeZone: "Europe/Berlin",
+    };
+    const formattedTime = date.toLocaleString("de-DE", timeOptions);
+
+    if (diffInDays === 0) {
+      return `Today, ${formattedTime}`;
+    } else if (diffInDays === 1) {
+      return `Yesterday, ${formattedTime}`;
+    } else if (diffInDays < 15) {
+      // Up to 14 days ago
+      return `${diffInDays} days ago ${formattedTime}`;
+    } else {
+      const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        timeZone: "Europe/Berlin",
+      };
+      return date.toLocaleString("de-DE", options);
+    }
+  } catch (error) {
+    console.error("Invalid date format:", error);
+    return "Invalid Date";
+  }
+};
+
 export const arraysContainSameStrings = (currentAnswers, currentQuestion) => {
   for (let index = 0; index < currentQuestion.correctAnswers.length; index++) {
     const currentAnswer = currentAnswers[index];

@@ -14,6 +14,7 @@ import { QuizContext } from "../../contexts/QuizContext";
 import DarkMode from "../darkMode/darkMode.component";
 import "./addOrUpdateQuestion.styles.css";
 import { Trash3, Stickies } from "react-bootstrap-icons";
+import { getGermanFormattedTime } from "../../helpers";
 
 export default function AddOrUpdateQuestion() {
   const { questionId } = useParams();
@@ -32,6 +33,7 @@ export default function AddOrUpdateQuestion() {
   const [isCheckboxInvalid, setIsCheckboxInvalid] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [lastModified, setLastModified] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -58,6 +60,7 @@ export default function AddOrUpdateQuestion() {
 
       setAnswers(allAnswers);
       setImageUrl(question.imageUrl);
+      setLastModified(question.lastModified);
     };
 
     const resetForm = () => {
@@ -221,6 +224,7 @@ export default function AddOrUpdateQuestion() {
 
         const examTopicId = Number(examTopicIdRef.current.value);
         let newImageUrl = imageUrl ?? "";
+        const lastModified = new Date().toISOString();
 
         if (questionId) {
           if (fileInputRef.current && fileInputRef.current.files.length > 0) {
@@ -239,7 +243,8 @@ export default function AddOrUpdateQuestion() {
             explanationRef.current.value,
             newImageUrl,
             examTopicId,
-            answerAreaRef.current.value
+            answerAreaRef.current.value,
+            lastModified
           );
 
           dispatch({
@@ -253,6 +258,7 @@ export default function AddOrUpdateQuestion() {
             imageUrl: newImageUrl,
             examTopicId,
             answerArea: answerAreaRef.current.value,
+            lastModified,
           });
         } else {
           const newDocId = await addNewDocument(
@@ -264,7 +270,8 @@ export default function AddOrUpdateQuestion() {
             explanationRef.current.value,
             newImageUrl,
             examTopicId,
-            answerAreaRef.current.value
+            answerAreaRef.current.value,
+            lastModified
           );
 
           dispatch({
@@ -279,6 +286,7 @@ export default function AddOrUpdateQuestion() {
               imageUrl: newImageUrl,
               examTopicId,
               answerArea: answerAreaRef.current.value,
+              lastModified,
             },
           });
 
@@ -410,10 +418,11 @@ export default function AddOrUpdateQuestion() {
         className="mx-auto"
         style={{ maxWidth: "800px" }}
       >
-        <Card.Header className="text-center">
-          <div>{`${questionId ? "Edit Question" : "Add Single Question"} (${
-            state.currentExamNumber
-          })`}</div>
+        <Card.Header className="d-flex justify-content-between align-items-center">
+          <div className="flex-grow-1 text-center">{`${
+            questionId ? "Edit Question" : "Add Single Question"
+          } (${state.currentExamNumber})`}</div>
+          <div>{getGermanFormattedTime(lastModified)}</div>
         </Card.Header>
         <Card.Body>
           {error && <Alert variant="danger">{error}</Alert>}

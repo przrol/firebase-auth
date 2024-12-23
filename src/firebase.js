@@ -64,7 +64,8 @@ export const addNewDocument = async (
   explanation,
   imageUrl,
   examTopicId,
-  answerArea
+  answerArea,
+  lastModified
 ) => {
   // const collectionRef = collection(db, collectionName);
   const newDocId = formatNumber(examTopicId);
@@ -78,6 +79,7 @@ export const addNewDocument = async (
     imageUrl,
     examTopicId,
     answerArea,
+    lastModified,
   });
 
   return newDocId;
@@ -94,7 +96,8 @@ export const updateDocument = async (
   explanation,
   imageUrl,
   examTopicId,
-  answerArea
+  answerArea,
+  lastModified
 ) => {
   const docRef = doc(db, collectionName, docId);
 
@@ -107,6 +110,7 @@ export const updateDocument = async (
     imageUrl,
     examTopicId,
     answerArea,
+    lastModified,
   });
 };
 
