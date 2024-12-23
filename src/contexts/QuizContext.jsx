@@ -82,13 +82,16 @@ const quizReducer = (state, action) => {
       };
     }
     case "ADD_QUESTION": {
+      const allQuestions = [...state.allQuestions, action.newQuestion];
+
       return {
         ...state,
-        questions: [...state.questions, action.newQuestion],
+        questions: allQuestions.filter((q) => q.lastModified),
+        allQuestions,
       };
     }
     case "UPDATE_QUESTION": {
-      const updatedQuestions = state.questions.map((q) => {
+      const updatedQuestions = state.allQuestions.map((q) => {
         return q.id === action.questionId
           ? {
               ...q,
@@ -115,7 +118,8 @@ const quizReducer = (state, action) => {
             "Select an item",
           ]),
         ],
-        questions: updatedQuestions,
+        questions: updatedQuestions.filter((q) => q.lastModified),
+        allQuestions: updatedQuestions,
       };
     }
     case "PREV_QUESTION": {

@@ -306,10 +306,6 @@ export default function AddOrUpdateQuestion() {
             questionId ? `updated in '${state.currentExamNumber}'` : "added"
           }`
         );
-
-        // getQuestionsAndDocuments().then((data) =>
-        //   dispatch({ type: "RESTART", payload: data })
-        // );
       }
     } catch (error) {
       setError(error.message);

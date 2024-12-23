@@ -25,7 +25,13 @@ const QuizComplete = () => {
             className="w-100"
             type="button"
             onClick={() => {
-              dispatch({ type: "RESTART", payload: state.questions });
+              dispatch({
+                type: "RESTART",
+                payload: {
+                  data: state.allQuestions,
+                  filteredData: state.questions,
+                },
+              });
             }}
           >
             RESTART
