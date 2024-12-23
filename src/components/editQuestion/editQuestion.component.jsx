@@ -5,7 +5,7 @@ import Image from "react-bootstrap/Image";
 import InputGroup from "react-bootstrap/InputGroup";
 import { Link } from "react-router-dom";
 import { PencilSquare, Trash3 } from "react-bootstrap-icons";
-import { replaceWithBr } from "../../helpers";
+import { replaceWithBr, getGermanFormattedTime } from "../../helpers";
 
 export default function EditQuestion({
   index,
@@ -16,6 +16,7 @@ export default function EditQuestion({
 }) {
   const [showExplanation, setShowExplanation] = useState(false);
   const [showAnswers, setShowAnswers] = useState(false);
+  const lastModifiedObj = getGermanFormattedTime(question?.lastModified);
 
   useEffect(() => {
     setShowExplanation(showAllExplanations);
@@ -54,7 +55,18 @@ export default function EditQuestion({
     <Form.Group className="mb-3">
       <div className="d-flex align-items-center justify-content-between">
         <div>
-          <Form.Label className="ms-1">{`Question #${question.examTopicId}`}</Form.Label>
+          <Form.Label className="ms-1">
+            {`Question #${question.examTopicId} (Last Modified:`}
+            <span
+              title={lastModifiedObj.tooltip}
+              className={
+                lastModifiedObj.text === "no change date"
+                  ? "text-danger-emphasis"
+                  : "text-success"
+              }
+            >{` ${lastModifiedObj.text}`}</span>
+            {")"}
+          </Form.Label>
           <Link to={question.id}>
             <PencilSquare className="ms-2 editIcon" />
           </Link>

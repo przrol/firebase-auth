@@ -424,7 +424,16 @@ export default function AddOrUpdateQuestion() {
           <div className="flex-grow-1 text-center">{`${
             questionId ? "Edit Question" : "Add Single Question"
           } (${state.currentExamNumber})`}</div>
-          <div title={lastModified.tooltip}>{lastModified.text}</div>
+          <div
+            className={
+              lastModified.text === "no change date"
+                ? "text-danger-emphasis"
+                : "text-success"
+            }
+            title={lastModified.tooltip}
+          >
+            {lastModified.text}
+          </div>
         </Card.Header>
         <Card.Body>
           {error && <Alert variant="danger">{error}</Alert>}
