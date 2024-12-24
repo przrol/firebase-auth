@@ -122,11 +122,12 @@ const Question = () => {
                   )}
                 </Button>
               </div>
-              <div className="">{`Frage ${
-                quizState.currentQuestionIndex + 1
-              } von ${quizState.questions.length} (${
-                quizState.currentExamNumber
-              }; Last Modified: ${lastModifiedObj.text})`}</div>
+              <div>
+                <div>{`${quizState.currentQuestionIndex + 1} of ${
+                  quizState.questions.length
+                } (${quizState.currentExamNumber})`}</div>
+                <div>{`G.N. ${currentQuestion.groupNumber}; ${lastModifiedObj.text}`}</div>
+              </div>
               <div>#{currentQuestion.examTopicId}</div>
             </Card.Header>
             <Card.Body>

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
@@ -392,7 +392,7 @@ export default function AddOrUpdateQuestion() {
     }
   };
 
-  const handleChangeImage = async (event) => {
+  const handleChangeImage = async () => {
     // Get a reference to the selected file
     const file = fileInputRef.current.files[0];
     const reader = new FileReader();

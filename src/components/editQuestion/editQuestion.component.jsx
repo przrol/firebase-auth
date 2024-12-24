@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
@@ -6,6 +6,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import { Link } from "react-router-dom";
 import { PencilSquare, Trash3 } from "react-bootstrap-icons";
 import { replaceWithBr, getGermanFormattedTime } from "../../helpers";
+import PropTypes from "prop-types";
 
 export default function EditQuestion({
   index,
@@ -153,3 +154,23 @@ export default function EditQuestion({
     </Form.Group>
   );
 }
+
+EditQuestion.propTypes = {
+  index: PropTypes.number.isRequired,
+  question: PropTypes.shape({
+    examTopicId: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
+    lastModified: PropTypes.string,
+    question: PropTypes.string.isRequired,
+    imageUrl: PropTypes.string,
+    questionBelowImg: PropTypes.string,
+    correctAnswers: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
+      .isRequired,
+    incorrectAnswers: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
+      .isRequired,
+    explanation: PropTypes.string,
+  }).isRequired,
+  onShowDeleteModal: PropTypes.func.isRequired,
+  showAllExplanations: PropTypes.bool.isRequired,
+  showAllAnswers: PropTypes.bool.isRequired,
+};

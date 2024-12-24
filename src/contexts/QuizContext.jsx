@@ -16,7 +16,7 @@ const initialState = {
   showDeleteModalDialog: false,
   imageUrl: "",
   examTopicId: 0,
-  groupNumber: 0,
+  currentGroupNumber: 0,
   examArray: [],
   lastModified: "",
   currentExamNumber: localStorage.getItem("currentExamNumber"),
@@ -57,24 +57,6 @@ const quizReducer = (state, action) => {
               ),
             ];
       }
-      // ? [...currentQuestion.currentAnswers, action.payload]
-      // : action.checked
-      // ? [...state.currentAnswers[action.index], action.payload]
-      // : state.currentAnswers[action.index].filter(
-      //     (item) => item !== action.payload
-      //   );
-
-      const newArray =
-        state.currentAnswers.length > action.index
-          ? [
-              ...state.currentAnswers.slice(0, action.index),
-              currentAnswers,
-              ...state.currentAnswers.slice(action.index + 1),
-            ]
-          : [
-              ...new Array(action.index).fill(["Select an item"]),
-              currentAnswers,
-            ];
 
       return {
         ...state,
@@ -89,6 +71,30 @@ const quizReducer = (state, action) => {
         ...state,
         questions: allQuestions.filter((q) => q.lastModified),
         allQuestions,
+      };
+    }
+    case "UPDATE_QUESTION_GROUPNUMBERS": {
+      const updatedQuestions = state.allQuestions.map((q) => {
+        return action.selectedOptions.includes(q.examTopicId.toString())
+          ? {
+              ...q,
+              groupNumber: action.groupNumber,
+            }
+          : q;
+      });
+
+      const currentQuestion = updatedQuestions[state.currentQuestionIndex];
+
+      return {
+        ...state,
+        answers: shuffleAnswers(currentQuestion),
+        currentAnswers: [
+          ...new Array(currentQuestion.correctAnswers.length).fill([
+            "Select an item",
+          ]),
+        ],
+        questions: updatedQuestions.filter((q) => q.lastModified),
+        allQuestions: updatedQuestions,
       };
     }
     case "UPDATE_QUESTION": {

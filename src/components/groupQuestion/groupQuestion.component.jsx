@@ -1,22 +1,15 @@
-import React, { useContext, useState, useRef } from "react";
+import { useContext, useState, useRef } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import DarkMode from "../darkMode/darkMode.component";
 import { QuizContext } from "../../contexts/QuizContext";
-import Navigation from "../Navigation";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import "./groupQuestion.styles.css";
 import { formatNumber, updateDocument } from "../../firebase";
+import PropTypes from "prop-types";
 
-export default function GroupQuestion() {
-  const [state] = useContext(QuizContext);
-
-  const sortedQuestions = [...state.allQuestions].sort((a, b) => {
-    return a.examTopicId - b.examTopicId; // Sort by the 'age' property in ascending order
-    // For descending order, use 'b.age - a.age'
-  });
+export default function GroupQuestion({ groupedData, groupKey }) {
+  const [state, dispatch] = useContext(QuizContext);
 
   const [selectedOptions, setSelectedOptions] = useState([]);
   const groupNumberRef = useRef();
@@ -52,31 +45,39 @@ export default function GroupQuestion() {
         question.lastModified,
         groupNumber
       );
+
+      dispatch({
+        type: "UPDATE_QUESTION_GROUPNUMBERS",
+        selectedOptions,
+        groupNumber,
+      });
     });
   };
 
   return (
     <>
-      <Row>
-        <Col>
-          <Form.Label>{`Question count: ${sortedQuestions.length}`}</Form.Label>
-          <Form.Select
-            multiple
-            // size="lg"
-            htmlSize={8}
-            onChange={handleChange}
-            value={selectedOptions}
-          >
-            {sortedQuestions.map((option) => {
-              // const questionNumber = formatNumber(option.examTopicId);
+      <Row className="mb-3">
+        <Col className="me-3">
+          <div>
+            <div className="d-flex justify-content-between">
+              <Form.Label>{`Group Number: ${groupKey}`}</Form.Label>
+              <Form.Label>{`${groupedData.length} questions`}</Form.Label>
+            </div>
 
-              return (
+            <Form.Select
+              multiple
+              // size="lg"
+              htmlSize={8}
+              onChange={handleChange}
+              value={selectedOptions}
+            >
+              {groupedData.map((option) => (
                 <option key={option.examTopicId} value={option.examTopicId}>
                   {formatNumber(option.examTopicId)}
                 </option>
-              );
-            })}
-          </Form.Select>
+              ))}
+            </Form.Select>
+          </div>
         </Col>
         <Col>
           <Form.Group className="mb-3" controlId="formMoveToGroup">
@@ -97,3 +98,8 @@ export default function GroupQuestion() {
     </>
   );
 }
+
+GroupQuestion.propTypes = {
+  groupedData: PropTypes.array.isRequired,
+  groupKey: PropTypes.string.isRequired,
+};
