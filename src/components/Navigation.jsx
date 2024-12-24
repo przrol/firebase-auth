@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext } from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
@@ -8,12 +8,23 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { QuizContext } from "../contexts/QuizContext";
+import { Check } from "react-bootstrap-icons";
 
 export default function Navigation() {
-  const [error, setError] = useState("");
   const { logout, currentUser } = useAuth();
   const navigate = useNavigate();
   const [state] = useContext(QuizContext);
+  const currentGroupNumber = state.currentGroupNumber.toString();
+  // const uniqueGroupNumbers = [
+  //   ...new Set(state.allQuestions.map((item) => item.groupNumber || 0)),
+  // ].sort((a, b) => a - b);
+  // console.log(uniqueGroupNumbers);
+
+  const groupCounts = state.allQuestions.reduce((counts, item) => {
+    const groupNumber = item.groupNumber || 0; // Use 0 as default
+    counts[groupNumber] = (counts[groupNumber] || 0) + 1; // Increment count
+    return counts;
+  }, {});
 
   async function handleLogout() {
     setError("");
@@ -25,6 +36,8 @@ export default function Navigation() {
       setError("Failed to log out");
     }
   }
+
+  const handleGroupClick = () => {};
 
   return (
     <Navbar
@@ -65,6 +78,27 @@ export default function Navigation() {
               <NavDropdown.Item as={Link} to="/texttospeech">
                 TextToSpeech
               </NavDropdown.Item>
+            </NavDropdown>
+            <NavDropdown title="Group number" id="basic-nav-dropdown">
+              {Object.entries(groupCounts).map(
+                ([groupNumber, count], index) => (
+                  <NavDropdown.Item key={index} onClick={handleGroupClick}>
+                    {/* {state.currentGroupNumber === groupNumber && ( */}
+                    <Check
+                      className="me-2"
+                      visibility={
+                        currentGroupNumber === groupNumber
+                          ? "visible"
+                          : "hidden"
+                      }
+                    />
+                    {/* )} */}
+                    {groupNumber === "0"
+                      ? `All Qs (Count ${state.allQuestions.length})`
+                      : `Grp ${groupNumber} (Count ${count})`}
+                  </NavDropdown.Item>
+                )
+              )}
             </NavDropdown>
           </Nav>
           <Form className="d-flex align-items-center">

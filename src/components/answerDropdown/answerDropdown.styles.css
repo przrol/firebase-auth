@@ -2,11 +2,8 @@
   max-width: 300px;
 } */
 
-a.dropdown-item {
-  /* white-space: pre-wrap; */
-  /* max-width: 300px;
-  overflow-wrap: break-word; */
-
+/* a.dropdown-item { */
+.dropdown-item.question-dropdown-item {
   width: 350px; /* Set the width to 352 pixels */
   word-wrap: break-word; /* This allows the text to wrap onto the next line */
   overflow-wrap: break-word; /* This is the standard property for word-wrapping */

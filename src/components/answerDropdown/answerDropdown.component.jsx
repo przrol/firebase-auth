@@ -47,7 +47,9 @@ export default function AnswerDropdown({
       >
         {quizState.answers[index].map((answer, i) => (
           <React.Fragment key={`answer-${i}`}>
-            <Dropdown.Item eventKey={answer}>{answer}</Dropdown.Item>
+            <Dropdown.Item className="question-dropdown-item" eventKey={answer}>
+              {answer}
+            </Dropdown.Item>
             <Dropdown.Divider key={`divider-${i}`} />
           </React.Fragment>
         ))}
