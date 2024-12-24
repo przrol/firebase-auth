@@ -73,6 +73,25 @@ const quizReducer = (state, action) => {
         allQuestions,
       };
     }
+    case "UPDATE_CURRENT_GROUPNUMBER": {
+      const groupNumberQuestions = state.allQuestions.filter(
+        (q) => q.groupNumber === action.groupNumber
+      );
+
+      const firstQuestion = groupNumberQuestions[0];
+
+      return {
+        ...state,
+        answers: shuffleAnswers(firstQuestion),
+        currentAnswers: [
+          ...new Array(firstQuestion.correctAnswers.length).fill([
+            "Select an item",
+          ]),
+        ],
+        currentGroupNumber: action.groupNumber,
+        questions: groupNumberQuestions,
+      };
+    }
     case "UPDATE_QUESTION_GROUPNUMBERS": {
       const updatedQuestions = state.allQuestions.map((q) => {
         return action.selectedOptions.includes(q.examTopicId.toString())

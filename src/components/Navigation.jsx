@@ -13,7 +13,7 @@ import { Check } from "react-bootstrap-icons";
 export default function Navigation() {
   const { logout, currentUser } = useAuth();
   const navigate = useNavigate();
-  const [state] = useContext(QuizContext);
+  const [state, dispatch] = useContext(QuizContext);
   const currentGroupNumber = state.currentGroupNumber.toString();
   // const uniqueGroupNumbers = [
   //   ...new Set(state.allQuestions.map((item) => item.groupNumber || 0)),
@@ -37,7 +37,13 @@ export default function Navigation() {
     }
   }
 
-  const handleGroupClick = () => {};
+  const handleGroupClick = (groupNumber) => {
+    console.log("handleGroupClick run");
+    dispatch({
+      type: "UPDATE_CURRENT_GROUPNUMBER",
+      groupNumber: parseInt(groupNumber),
+    });
+  };
 
   return (
     <Navbar
@@ -82,8 +88,10 @@ export default function Navigation() {
             <NavDropdown title="Group number" id="basic-nav-dropdown">
               {Object.entries(groupCounts).map(
                 ([groupNumber, count], index) => (
-                  <NavDropdown.Item key={index} onClick={handleGroupClick}>
-                    {/* {state.currentGroupNumber === groupNumber && ( */}
+                  <NavDropdown.Item
+                    key={index}
+                    onClick={() => handleGroupClick(groupNumber)}
+                  >
                     <Check
                       className="me-2"
                       visibility={
@@ -92,7 +100,6 @@ export default function Navigation() {
                           : "hidden"
                       }
                     />
-                    {/* )} */}
                     {groupNumber === "0"
                       ? `All Qs (Count ${state.allQuestions.length})`
                       : `Grp ${groupNumber} (Count ${count})`}
