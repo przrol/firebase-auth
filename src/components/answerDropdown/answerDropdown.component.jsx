@@ -8,6 +8,7 @@ export default function AnswerDropdown({
   currentQuestion,
   index,
   dispatch,
+  currentQuestionIndex,
 }) {
   //   const [selectedItem, setSelectedItem] = useState("Select an item");
   const selectedItem =
@@ -26,6 +27,7 @@ export default function AnswerDropdown({
       payload: eventKey,
       index,
       checked: true,
+      currentQuestionIndex,
     });
   };
 

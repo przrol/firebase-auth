@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
@@ -15,10 +15,16 @@ export default function Navigation() {
   const navigate = useNavigate();
   const [state, dispatch] = useContext(QuizContext);
   const currentGroupNumber = state.currentGroupNumber.toString();
-  // const uniqueGroupNumbers = [
-  //   ...new Set(state.allQuestions.map((item) => item.groupNumber || 0)),
-  // ].sort((a, b) => a - b);
-  // console.log(uniqueGroupNumbers);
+  // const [currentGroupNumber, setCurrentGroupNumber] = useState("");
+
+  // useEffect(() => {
+  //   const initializeGroupNumber = async () => {
+  //     const currentGroupNumber = state.currentGroupNumber.toString();
+  //     setCurrentGroupNumber(currentGroupNumber);
+  //   };
+
+  //   initializeGroupNumber();
+  // }, []);
 
   const groupCounts = state.allQuestions.reduce((counts, item) => {
     const groupNumber = item.groupNumber || 0; // Use 0 as default
@@ -27,18 +33,16 @@ export default function Navigation() {
   }, {});
 
   async function handleLogout() {
-    setError("");
     try {
       await logout();
       navigate("/login");
     } catch (error) {
       console.error(error);
-      setError("Failed to log out");
     }
   }
 
   const handleGroupClick = (groupNumber) => {
-    console.log("handleGroupClick run");
+    // console.log("handleGroupClick run");
     dispatch({
       type: "UPDATE_CURRENT_GROUPNUMBER",
       groupNumber: parseInt(groupNumber),

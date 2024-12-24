@@ -19,7 +19,7 @@ export default function GroupQuestion({ groupedData, groupKey }) {
       event.target.selectedOptions,
       (option) => option.value
     );
-    console.log(selected);
+    // console.log(selected);
     setSelectedOptions(selected);
   };
 

@@ -34,7 +34,7 @@ const quizReducer = (state, action) => {
   switch (action.type) {
     case "SELECT_ANSWER": {
       // payload -> "answerText"
-      const currentQuestion = state.questions[state.currentQuestionIndex];
+      const currentQuestion = state.questions[action.currentQuestionIndex];
 
       const questionCorrectAnswers =
         currentQuestion.correctAnswers[action.index];
@@ -69,14 +69,19 @@ const quizReducer = (state, action) => {
 
       return {
         ...state,
-        questions: allQuestions.filter((q) => q.lastModified),
+        questions: allQuestions.filter(
+          (q) => q.groupNumber === state.currentGroupNumber
+        ),
         allQuestions,
       };
     }
     case "UPDATE_CURRENT_GROUPNUMBER": {
-      const groupNumberQuestions = state.allQuestions.filter(
-        (q) => q.groupNumber === action.groupNumber
-      );
+      const groupNumberQuestions =
+        action.groupNumber === 0
+          ? state.allQuestions
+          : state.allQuestions.filter(
+              (q) => q.groupNumber === action.groupNumber
+            );
 
       const firstQuestion = groupNumberQuestions[0];
 
@@ -112,7 +117,9 @@ const quizReducer = (state, action) => {
             "Select an item",
           ]),
         ],
-        questions: updatedQuestions.filter((q) => q.lastModified),
+        questions: updatedQuestions.filter(
+          (q) => q.groupNumber === state.currentGroupNumber
+        ),
         allQuestions: updatedQuestions,
       };
     }
@@ -145,7 +152,9 @@ const quizReducer = (state, action) => {
             "Select an item",
           ]),
         ],
-        questions: updatedQuestions.filter((q) => q.lastModified),
+        questions: updatedQuestions.filter(
+          (q) => q.groupNumber === state.currentGroupNumber
+        ),
         allQuestions: updatedQuestions,
       };
     }
@@ -248,15 +257,23 @@ const quizReducer = (state, action) => {
       };
     }
     case "RESTART": {
-      const shuffledQuestions = shuffle(action.payload.filteredData);
+      const groupNumberQuestions =
+        state.currentGroupNumber === 0
+          ? action.payload
+          : action.payload.filter(
+              (q) => q.groupNumber === state.currentGroupNumber
+            );
+
+      const shuffledQuestions = shuffle(groupNumberQuestions);
 
       return {
         ...initialState,
+        currentGroupNumber: state.currentGroupNumber,
         examArray: state.examArray,
         currentExamNumber: state.currentExamNumber,
         isDarkMode: state.isDarkMode,
         questions: shuffledQuestions,
-        allQuestions: action.payload.data,
+        allQuestions: action.payload,
         currentAnswers: [
           ...new Array(shuffledQuestions[0].correctAnswers.length).fill([
             "Select an item",
@@ -289,9 +306,8 @@ export const QuizProvider = ({ children }) => {
   useEffect(() => {
     const getQuestions = async () => {
       const data = await getExamQuestions(state.currentExamNumber);
-      const filteredData = data.filter((d) => d.lastModified);
 
-      dispatch({ type: "RESTART", payload: { data, filteredData } });
+      dispatch({ type: "RESTART", payload: data });
     };
 
     if (state.currentExamNumber) {

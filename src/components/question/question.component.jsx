@@ -28,7 +28,12 @@ const Question = () => {
   const [quizState, dispatch] = useContext(QuizContext);
   const [isSkipHovered, setIsSkipHovered] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const currentQuestion = quizState.questions[quizState.currentQuestionIndex];
+  // const currentQuestion = quizState.questions[quizState.currentQuestionIndex];
+  const currentQuestionIndex =
+    quizState.currentQuestionIndex >= quizState.questions.length
+      ? 0
+      : quizState.currentQuestionIndex;
+  const currentQuestion = quizState.questions[currentQuestionIndex];
   const lastModifiedObj = getGermanFormattedTime(currentQuestion?.lastModified);
   const questionWithBr = replaceWithBr(
     currentQuestion ? currentQuestion.question : ""
@@ -123,10 +128,10 @@ const Question = () => {
                 </Button>
               </div>
               <div>
-                <div>{`${quizState.currentQuestionIndex + 1} of ${
+                <div>{`${currentQuestionIndex + 1} of ${
                   quizState.questions.length
                 } (${quizState.currentExamNumber})`}</div>
-                <div>{`G.N. ${currentQuestion.groupNumber}; ${lastModifiedObj.text}`}</div>
+                <div>{`Group ${currentQuestion.groupNumber}; ${lastModifiedObj.text}`}</div>
               </div>
               <div>#{currentQuestion.examTopicId}</div>
             </Card.Header>
@@ -164,6 +169,7 @@ const Question = () => {
                               index={index}
                               dispatch={dispatch}
                               currentQuestion={currentQuestion}
+                              currentQuestionIndex={currentQuestionIndex}
                             />
                           )}
                         </React.Fragment>
@@ -186,6 +192,7 @@ const Question = () => {
                           answerArea={currentQuestion.answerArea}
                           quizState={quizState}
                           dispatch={dispatch}
+                          currentQuestionIndex={currentQuestionIndex}
                           correctAnswers={
                             currentQuestion.correctAnswers[blockindex]
                           }
@@ -206,7 +213,7 @@ const Question = () => {
                       <QuestionCircle />
                     </Button>
                     <div>
-                      {quizState.currentQuestionIndex > 0 && (
+                      {currentQuestionIndex > 0 && (
                         <Button
                           className="text-uppercase me-2"
                           type="button"

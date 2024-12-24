@@ -11,6 +11,7 @@ const Answer = ({
   answerArea,
   quizState,
   dispatch,
+  currentQuestionIndex,
 }) => {
   const letterMapping = ["A", "B", "C", "D", "E", "F"];
   const isCorrectAnswer =
@@ -44,6 +45,7 @@ const Answer = ({
               payload: answerText,
               index: blockindex,
               checked: e.target.checked,
+              currentQuestionIndex,
             });
           }}
           id={`checkRadio-${blockindex}-${index}`}
