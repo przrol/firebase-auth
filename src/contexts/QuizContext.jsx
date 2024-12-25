@@ -5,6 +5,7 @@ import { getExamQuestions, fetchCollectionNames } from "../firebase";
 const initialState = {
   questions: [],
   allQuestions: [],
+  failedQuestions: [],
   currentQuestionIndex: 0,
   showResults: false,
   correctAnswerCount: 0,
@@ -13,10 +14,13 @@ const initialState = {
   showExplanation: false,
   solveQuestion: false,
   isDarkMode: localStorage.getItem("theme") === "dark",
+  restartOnlyFailed: false,
   showDeleteModalDialog: false,
   imageUrl: "",
   examTopicId: 0,
-  currentGroupNumber: 0,
+  currentGroupNumber: localStorage.getItem("currentGroupNumber")
+    ? parseInt(localStorage.getItem("currentGroupNumber"))
+    : 0,
   examArray: [],
   lastModified: "",
   currentExamNumber: localStorage.getItem("currentExamNumber"),
@@ -76,6 +80,8 @@ const quizReducer = (state, action) => {
       };
     }
     case "UPDATE_CURRENT_GROUPNUMBER": {
+      localStorage.setItem("currentGroupNumber", action.groupNumber);
+
       const groupNumberQuestions =
         action.groupNumber === 0
           ? state.allQuestions
@@ -190,19 +196,28 @@ const quizReducer = (state, action) => {
           ? state.answers
           : shuffleAnswers(state.questions[currentQuestionIndex]);
 
-      const correctAnswerCount =
-        action.solveQuestion &&
-        arraysContainSameStrings(
-          state.currentAnswers,
-          state.questions[state.currentQuestionIndex]
-        )
-          ? state.correctAnswerCount + 1
-          : state.correctAnswerCount;
+      let correctAnswerCount = state.correctAnswerCount;
+      const failedQuestions = state.failedQuestions;
+
+      if (action.solveQuestion) {
+        if (
+          arraysContainSameStrings(
+            state.currentAnswers,
+            state.questions[state.currentQuestionIndex]
+          )
+        ) {
+          correctAnswerCount++;
+        } else {
+          failedQuestions.push(state.questions[state.currentQuestionIndex]);
+        }
+      }
+      console.log(failedQuestions);
 
       // console.log("correctAnswerCount: ", correctAnswerCount);
 
       return {
         ...state,
+        failedQuestions,
         currentQuestionIndex,
         showResults,
         solveQuestion: action.solveQuestion,
