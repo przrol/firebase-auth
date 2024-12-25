@@ -208,7 +208,17 @@ const quizReducer = (state, action) => {
         ) {
           correctAnswerCount++;
         } else {
-          failedQuestions.push(state.questions[state.currentQuestionIndex]);
+          const newQuestion = state.questions[state.currentQuestionIndex];
+
+          // Check if a question with the same examtopicId already exists
+          const alreadyExists = failedQuestions.some(
+            (question) => question.examtopicId === newQuestion.examtopicId
+          );
+
+          if (!alreadyExists) {
+            failedQuestions.push(newQuestion);
+          }
+          // failedQuestions.push(state.questions[state.currentQuestionIndex]);
         }
       }
       console.log(failedQuestions);
