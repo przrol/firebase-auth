@@ -60,8 +60,13 @@ export default function EditQuestion({
             {`Question #${question.examTopicId}`}
           </Form.Label>
           <Link to={question.id}>
-            <PencilSquare className="mx-2 editIcon" />
+            <PencilSquare className="ms-2 me-3 editIcon" />
           </Link>
+          <Form.Label
+            className={`fw-bold ${
+              question.groupNumber % 2 === 0 ? "text-primary" : "text-warning"
+            }`}
+          >{`Group ${question.groupNumber}`}</Form.Label>
         </div>
         <div>
           <Form.Label className="ms-1">
