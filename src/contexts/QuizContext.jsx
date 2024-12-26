@@ -197,7 +197,8 @@ const quizReducer = (state, action) => {
           : shuffleAnswers(state.questions[currentQuestionIndex]);
 
       let correctAnswerCount = state.correctAnswerCount;
-      const failedQuestions = state.failedQuestions;
+      let failedQuestions = state.failedQuestions;
+      const currentQuestion = state.questions[state.currentQuestionIndex];
 
       if (action.solveQuestion) {
         if (
@@ -206,24 +207,23 @@ const quizReducer = (state, action) => {
             state.questions[state.currentQuestionIndex]
           )
         ) {
+          failedQuestions = state.failedQuestions.filter(
+            (fq) => fq.examTopicId !== currentQuestion.examTopicId
+          );
           correctAnswerCount++;
         } else {
-          const newQuestion = state.questions[state.currentQuestionIndex];
-
-          // Check if a question with the same examtopicId already exists
+          // Check if a question with the same examTopicId already exists
           const alreadyExists = failedQuestions.some(
-            (question) => question.examtopicId === newQuestion.examtopicId
+            (question) => question.examTopicId === currentQuestion.examTopicId
           );
 
           if (!alreadyExists) {
-            failedQuestions.push(newQuestion);
+            failedQuestions.push(currentQuestion);
           }
-          // failedQuestions.push(state.questions[state.currentQuestionIndex]);
         }
       }
-      console.log(failedQuestions);
-
-      // console.log("correctAnswerCount: ", correctAnswerCount);
+      // console.log(failedQuestions);
+      // console.log(`failedQuestions: ${failedQuestions.length}`);
 
       return {
         ...state,
@@ -282,17 +282,19 @@ const quizReducer = (state, action) => {
       };
     }
     case "RESTART": {
-      const groupNumberQuestions =
-        state.currentGroupNumber === 0
-          ? action.payload
-          : action.payload.filter(
-              (q) => q.groupNumber === state.currentGroupNumber
-            );
+      const groupNumberQuestions = action.onlyFailed
+        ? state.failedQuestions
+        : state.currentGroupNumber === 0
+        ? action.payload
+        : action.payload.filter(
+            (q) => q.groupNumber === state.currentGroupNumber
+          );
 
       const shuffledQuestions = shuffle(groupNumberQuestions);
 
       return {
         ...initialState,
+        failedQuestions: action.onlyFailed ? state.failedQuestions : [],
         currentGroupNumber: state.currentGroupNumber,
         examArray: state.examArray,
         currentExamNumber: state.currentExamNumber,
@@ -332,7 +334,7 @@ export const QuizProvider = ({ children }) => {
     const getQuestions = async () => {
       const data = await getExamQuestions(state.currentExamNumber);
 
-      dispatch({ type: "RESTART", payload: data });
+      dispatch({ type: "RESTART", payload: data, onlyFailed: false });
     };
 
     if (state.currentExamNumber) {
