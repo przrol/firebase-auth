@@ -44,7 +44,12 @@ const quizReducer = (state, action) => {
         currentQuestion.correctAnswers[action.index];
 
       const currentAnswers = [...state.currentAnswers];
-      if (questionCorrectAnswers.length === 1) {
+      if (
+        questionCorrectAnswers.length === 1 &&
+        !currentQuestion.question
+          .toLowerCase()
+          .includes("select yes if the statement is true")
+      ) {
         currentAnswers[action.index] = [action.payload];
       } else {
         // more than one correct answer

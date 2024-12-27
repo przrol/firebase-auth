@@ -189,13 +189,14 @@ const Question = () => {
                           key={index}
                           index={index}
                           blockindex={blockindex}
-                          answerArea={currentQuestion.answerArea}
+                          currentQuestion={currentQuestion}
+                          // answerArea={currentQuestion.answerArea}
                           quizState={quizState}
                           dispatch={dispatch}
                           currentQuestionIndex={currentQuestionIndex}
-                          correctAnswers={
-                            currentQuestion.correctAnswers[blockindex]
-                          }
+                          // correctAnswers={
+                          //   currentQuestion.correctAnswers[blockindex]
+                          // }
                         />
                       ))}
                     </Form.Group>
