@@ -27,11 +27,11 @@ export default function EditQuestions() {
   const handleClose = () => setShow(false);
 
   const handleDeleteQuestion = async () => {
-    await deleteDocument(state.currentExamNumber, currentQuestion.question.id);
+    await deleteDocument(state.currentExamNumber, currentQuestion.id);
 
     dispatch({
       type: "DELETE_QUESTION",
-      currentQuestionId: currentQuestion.question.id,
+      currentQuestionId: currentQuestion.id,
     });
 
     handleClose();
@@ -102,8 +102,8 @@ export default function EditQuestions() {
         show={show}
         onCloseModal={handleClose}
         onDeleteQuestion={handleDeleteQuestion}
-        modalTitle={`Delete ${currentQuestion?.modalText}`}
-        modalBody={`Do you really want to delete: ${currentQuestion?.modalText}?`}
+        modalTitle={`Delete Question ${currentQuestion?.examTopicId}`}
+        modalBody={`Do you really want to delete: Question ${currentQuestion?.examTopicId}?`}
       />
     </>
   );

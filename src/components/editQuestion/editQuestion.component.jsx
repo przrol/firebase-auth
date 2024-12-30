@@ -85,12 +85,7 @@ export default function EditQuestion({
             className="pt-0 deleteButton pe-2 text-danger"
             variant="link"
             title="Delete answer"
-            onClick={() =>
-              onShowDeleteModal({
-                modalText: `Question ${index + 1}`,
-                question,
-              })
-            }
+            onClick={() => onShowDeleteModal(question)}
           >
             <Trash3 />
           </Button>
