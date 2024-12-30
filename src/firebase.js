@@ -10,7 +10,7 @@ import {
   updateDoc,
   getDoc,
   writeBatch,
-  where,
+  deleteDoc,
 } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
@@ -53,6 +53,10 @@ export const formatNumber = (number) => {
   // Convert the number to a string and pad it with leading zeros
   let paddedNumber = number.toString().padStart(3, "0");
   return `question_${paddedNumber}`;
+};
+
+export const deleteDocument = async (collectionName, docId) => {
+  await deleteDoc(doc(db, collectionName, docId));
 };
 
 // adding document

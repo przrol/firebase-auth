@@ -262,10 +262,24 @@ const quizReducer = (state, action) => {
         isDarkMode: action.isDarkMode,
       };
     }
-    case "DELETE_MODALDIALOG": {
+    case "DELETE_QUESTION": {
+      const allQuestions = state.allQuestions.filter(
+        (q) => q.id !== action.questionId
+      );
+
+      const questions = state.questions.filter(
+        (q) => q.id !== action.questionId
+      );
+
+      const failedQuestions = state.failedQuestions.filter(
+        (q) => q.id !== action.questionId
+      );
+
       return {
         ...state,
-        showDeleteModalDialog: action.showDeleteModalDialog,
+        questions,
+        allQuestions,
+        failedQuestions,
       };
     }
     case "GET_ALL_COLLECTIONS": {

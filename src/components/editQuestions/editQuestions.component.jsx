@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import DarkMode from "../darkMode/darkMode.component";
@@ -9,9 +9,10 @@ import EditQuestion from "../editQuestion/editQuestion.component";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import "./editQuestions.styles.css";
+import { deleteDocument } from "../../firebase";
 
 export default function EditQuestions() {
-  const [state] = useContext(QuizContext);
+  const [state, dispatch] = useContext(QuizContext);
 
   const sortedQuestions = [...state.allQuestions].sort((a, b) => {
     return a.examTopicId - b.examTopicId; // Sort by the 'age' property in ascending order
@@ -24,6 +25,24 @@ export default function EditQuestions() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState("");
 
   const handleClose = () => setShow(false);
+
+  const handleDeleteQuestion = async () => {
+    const questionId = state.allQuestions[currentQuestionIndex - 1].id;
+
+    await deleteDocument(state.currentExamNumber, questionId);
+
+    dispatch({
+      type: "DELETE_QUESTION",
+      questionId,
+    });
+
+    handleClose();
+    // Delete the question
+    // const newQuestions = state.allQuestions.filter(
+    //   (q) => q.examTopicId !== currentQuestionIndex
+    // );
+  };
+
   const handleShow = (questionIndex) => {
     setCurrentQuestionIndex(questionIndex);
     setShow(true);
@@ -84,6 +103,7 @@ export default function EditQuestions() {
       <ModalDialog
         show={show}
         onCloseModal={handleClose}
+        onDeleteQuestion={handleDeleteQuestion}
         modalTitle={`Delete ${currentQuestionIndex}`}
         modalBody={`Do you really want to delete: ${currentQuestionIndex}?`}
       />
