@@ -70,7 +70,7 @@ export default function AddOrUpdateQuestion() {
     const resetForm = () => {
       questionRef.current.value = "";
       examTopicIdRef.current.value = "";
-      groupNumberRef.current.value = "0";
+      groupNumberRef.current.value = "1";
       questionBelowImgRef.current.value = "";
       explanationRef.current.value = "";
       answerAreaRef.current.value = "";
@@ -276,7 +276,8 @@ export default function AddOrUpdateQuestion() {
             newImageUrl,
             examTopicId,
             answerAreaRef.current.value,
-            lastModified
+            lastModified,
+            groupNumber
           );
 
           dispatch({

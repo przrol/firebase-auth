@@ -70,7 +70,8 @@ export const addNewDocument = async (
   imageUrl,
   examTopicId,
   answerArea,
-  lastModified
+  lastModified,
+  groupNumber
 ) => {
   // const collectionRef = collection(db, collectionName);
   const newDocId = formatNumber(examTopicId);
@@ -85,6 +86,7 @@ export const addNewDocument = async (
     examTopicId,
     answerArea,
     lastModified,
+    groupNumber,
   });
 
   return newDocId;
