@@ -85,7 +85,12 @@ export default function EditQuestion({
             className="pt-0 deleteButton pe-2 text-danger"
             variant="link"
             title="Delete answer"
-            onClick={() => onShowDeleteModal(`Question ${index + 1}`)}
+            onClick={() =>
+              onShowDeleteModal({
+                modalText: `Question ${index + 1}`,
+                question,
+              })
+            }
           >
             <Trash3 />
           </Button>
@@ -174,6 +179,7 @@ EditQuestion.propTypes = {
     incorrectAnswers: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
       .isRequired,
     explanation: PropTypes.string,
+    groupNumber: PropTypes.number,
   }).isRequired,
   onShowDeleteModal: PropTypes.func.isRequired,
   showAllExplanations: PropTypes.bool.isRequired,

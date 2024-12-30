@@ -264,15 +264,15 @@ const quizReducer = (state, action) => {
     }
     case "DELETE_QUESTION": {
       const allQuestions = state.allQuestions.filter(
-        (q) => q.id !== action.questionId
+        (q) => q.id !== action.currentQuestionId
       );
 
       const questions = state.questions.filter(
-        (q) => q.id !== action.questionId
+        (q) => q.id !== action.currentQuestionId
       );
 
       const failedQuestions = state.failedQuestions.filter(
-        (q) => q.id !== action.questionId
+        (q) => q.id !== action.currentQuestionId
       );
 
       return {

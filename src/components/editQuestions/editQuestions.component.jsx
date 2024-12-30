@@ -22,18 +22,16 @@ export default function EditQuestions() {
   const [show, setShow] = useState(false);
   const [showAllExplanations, setShowAllExplanations] = useState(false);
   const [showAllAnswers, setShowAllAnswers] = useState(false);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState("");
+  const [currentQuestion, setCurrentQuestion] = useState({});
 
   const handleClose = () => setShow(false);
 
   const handleDeleteQuestion = async () => {
-    const questionId = state.allQuestions[currentQuestionIndex - 1].id;
-
-    await deleteDocument(state.currentExamNumber, questionId);
+    await deleteDocument(state.currentExamNumber, currentQuestion.question.id);
 
     dispatch({
       type: "DELETE_QUESTION",
-      questionId,
+      currentQuestionId: currentQuestion.question.id,
     });
 
     handleClose();
@@ -43,8 +41,8 @@ export default function EditQuestions() {
     // );
   };
 
-  const handleShow = (questionIndex) => {
-    setCurrentQuestionIndex(questionIndex);
+  const handleShow = (question) => {
+    setCurrentQuestion(question);
     setShow(true);
   };
 
@@ -104,8 +102,8 @@ export default function EditQuestions() {
         show={show}
         onCloseModal={handleClose}
         onDeleteQuestion={handleDeleteQuestion}
-        modalTitle={`Delete ${currentQuestionIndex}`}
-        modalBody={`Do you really want to delete: ${currentQuestionIndex}?`}
+        modalTitle={`Delete ${currentQuestion?.modalText}`}
+        modalBody={`Do you really want to delete: ${currentQuestion?.modalText}?`}
       />
     </>
   );
