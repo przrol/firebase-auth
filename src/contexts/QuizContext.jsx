@@ -306,11 +306,14 @@ const quizReducer = (state, action) => {
         isDarkMode: state.isDarkMode,
         questions: shuffledQuestions,
         allQuestions: action.payload,
-        currentAnswers: [
-          ...new Array(shuffledQuestions[0].correctAnswers.length).fill([
-            "Select an item",
-          ]),
-        ],
+        currentAnswers:
+          shuffledQuestions.length > 0
+            ? [
+                ...new Array(shuffledQuestions[0].correctAnswers.length).fill([
+                  "Select an item",
+                ]),
+              ]
+            : [],
         answers: shuffleAnswers(shuffledQuestions[0]),
       };
     }

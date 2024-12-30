@@ -53,7 +53,7 @@ const Question = () => {
       : "question-not-solved";
   }
 
-  const text = `${currentQuestion.question} ${quizState.answers.join(" ")}`;
+  const text = `${currentQuestion?.question} ${quizState.answers.join(" ")}`;
   const { speak, pause, stop, isPaused, isPlaying } = useSpeech(text);
 
   const handleSpeak_2 = () => {
