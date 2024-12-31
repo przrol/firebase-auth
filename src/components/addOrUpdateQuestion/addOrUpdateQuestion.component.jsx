@@ -14,7 +14,7 @@ import { QuizContext } from "../../contexts/QuizContext";
 import DarkMode from "../darkMode/darkMode.component";
 import "./addOrUpdateQuestion.styles.css";
 import { Trash3, Stickies } from "react-bootstrap-icons";
-import { getGermanFormattedTime } from "../../helpers";
+import { getGermanFormattedTime, getHighestExamTopicId } from "../../helpers";
 
 export default function AddOrUpdateQuestion() {
   const { questionId } = useParams();
@@ -67,9 +67,9 @@ export default function AddOrUpdateQuestion() {
       setLastModified(lastModifiedObj);
     };
 
-    const resetForm = () => {
+    const resetForm = (defaultExamTopicId) => {
       questionRef.current.value = "";
-      examTopicIdRef.current.value = "";
+      examTopicIdRef.current.value = defaultExamTopicId;
       groupNumberRef.current.value = "1";
       questionBelowImgRef.current.value = "";
       explanationRef.current.value = "";
@@ -84,7 +84,8 @@ export default function AddOrUpdateQuestion() {
         initializeForm(editQuestion);
       }
     } else {
-      resetForm();
+      const highestExamTopicId = getHighestExamTopicId(state.allQuestions);
+      resetForm(highestExamTopicId + 1);
     }
   }, [questionId, state.questions]); // Added state.questions as dependency
 

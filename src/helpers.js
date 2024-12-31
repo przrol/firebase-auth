@@ -22,6 +22,22 @@ export const shuffleAnswers = (question) => {
   return shuffledAnswers;
 };
 
+export const getHighestExamTopicId = (items) => {
+  if (!items || items.length === 0) {
+    return 0; // Handle empty or null input
+  }
+
+  let highestItem = items[0]; // Initialize with the first item
+
+  for (let i = 1; i < items.length; i++) {
+    if (items[i].examTopicId > highestItem.examTopicId) {
+      highestItem = items[i];
+    }
+  }
+
+  return highestItem.examTopicId;
+};
+
 export const replaceWithBr = (text) => {
   return text ? text.replace(/\n/g, "<br />") : "";
 };
