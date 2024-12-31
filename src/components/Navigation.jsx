@@ -31,6 +31,7 @@ export default function Navigation() {
     counts[groupNumber] = (counts[groupNumber] || 0) + 1; // Increment count
     return counts;
   }, {});
+  groupCounts["0"] = state.allQuestions.length; // Add total count
 
   async function handleLogout() {
     try {
@@ -105,7 +106,7 @@ export default function Navigation() {
                       }
                     />
                     {groupNumber === "0"
-                      ? `All Qs (Count ${state.allQuestions.length})`
+                      ? `All Qs (Count ${count})`
                       : `Grp ${groupNumber} (Count ${count})`}
                   </NavDropdown.Item>
                 )
