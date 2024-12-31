@@ -67,10 +67,10 @@ export default function AddOrUpdateQuestion() {
       setLastModified(lastModifiedObj);
     };
 
-    const resetForm = (defaultExamTopicId) => {
+    const resetForm = (defaultExamTopicId, defaultGroupNumber) => {
       questionRef.current.value = "";
       examTopicIdRef.current.value = defaultExamTopicId;
-      groupNumberRef.current.value = "1";
+      groupNumberRef.current.value = defaultGroupNumber;
       questionBelowImgRef.current.value = "";
       explanationRef.current.value = "";
       answerAreaRef.current.value = "";
@@ -84,8 +84,10 @@ export default function AddOrUpdateQuestion() {
         initializeForm(editQuestion);
       }
     } else {
-      const highestExamTopicId = getHighestExamTopicId(state.allQuestions);
-      resetForm(highestExamTopicId + 1);
+      const newExamTopicId = getHighestExamTopicId(state.allQuestions) + 1;
+      const defaultGroupNumber = Math.floor(newExamTopicId / 20) + 1;
+
+      resetForm(newExamTopicId, defaultGroupNumber);
     }
   }, [questionId, state.questions]); // Added state.questions as dependency
 
