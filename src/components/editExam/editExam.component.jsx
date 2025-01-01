@@ -1,4 +1,3 @@
-import React from "react";
 import { Trash3, ArrowDownSquare, ArrowUpSquare } from "react-bootstrap-icons";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
@@ -6,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import "./editExam.styles.css";
 import { exportCollectionAsJSON } from "../../firebase";
+import PropTypes from "prop-types";
 
 export default function EditExam({
   examTitle,
@@ -18,11 +18,12 @@ export default function EditExam({
   const handleExport = async () => {
     await exportCollectionAsJSON(examNumber);
   };
+
   return (
     <Row>
       <Col xs={7} className="exam-column d-flex align-items-center pe-0">
         <Form.Check
-          className="w-100 hover-border py-3"
+          className={`w-100 hover-border py-3 ${checked && "bg-success"}`}
           type="radio"
           checked={checked}
           label={`${examTitle} (${examNumber})`}
@@ -65,3 +66,12 @@ export default function EditExam({
     </Row>
   );
 }
+
+EditExam.propTypes = {
+  examTitle: PropTypes.string.isRequired,
+  examNumber: PropTypes.number.isRequired,
+  index: PropTypes.number.isRequired,
+  onChangeRadio: PropTypes.func.isRequired,
+  checked: PropTypes.bool.isRequired,
+  onImportClick: PropTypes.func.isRequired,
+};
