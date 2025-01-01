@@ -23,7 +23,9 @@ const initialState = {
     : 0,
   examArray: [],
   lastModified: "",
-  currentExamNumber: localStorage.getItem("currentExamNumber"),
+  currentExamNumber: localStorage.getItem("currentExamNumber")
+    ? localStorage.getItem("currentExamNumber")
+    : "AI-900",
   selectedVoices: window.speechSynthesis
     .getVoices()
     .filter(
@@ -283,13 +285,14 @@ const quizReducer = (state, action) => {
       };
     }
     case "GET_ALL_COLLECTIONS": {
+      const exam = action.examArray.find(
+        (name) => name.number === state.currentExamNumber
+      );
+
       return {
         ...state,
-        examArray: action.payload,
-        currentExamNumber:
-          state.currentExamNumber ??
-          action.payload.find((name) => name.number.startsWith("AI-900"))
-            .number,
+        examArray: action.examArray,
+        currentExamNumber: exam?.number ?? action.examArray[0].number,
       };
     }
     case "SELECT_EXAM": {
@@ -345,8 +348,8 @@ export const QuizProvider = ({ children }) => {
 
   useEffect(() => {
     const getAllCollections = async () => {
-      const data = await fetchCollectionNames();
-      dispatch({ type: "GET_ALL_COLLECTIONS", payload: data });
+      const examArray = await fetchCollectionNames();
+      dispatch({ type: "GET_ALL_COLLECTIONS", examArray });
     };
 
     getAllCollections();

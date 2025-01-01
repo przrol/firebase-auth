@@ -30,7 +30,7 @@ export default function EditExams() {
 
     dispatch({
       type: "GET_ALL_COLLECTIONS",
-      payload: [...state.examArray, { number: examNumber, title: examTitle }],
+      examArray: [...state.examArray, { number: examNumber, title: examTitle }],
     });
 
     setShow(false);

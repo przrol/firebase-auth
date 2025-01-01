@@ -62,13 +62,13 @@ export const deleteDocument = async (collectionName, docId) => {
 export const addNewCollection = async (collectionName, collectionTitle) => {
   const data = {
     answerArea: "",
-    correctAnswers: '["Azure AI Speech"]',
+    correctAnswers: '[["Azure AI Speech"]]',
     examTopicId: 1,
     explanation: "Erklärung",
     groupNumber: 1,
     imageUrl: "",
     incorrectAnswers:
-      '["conversational language understanding (CLU)","question answering models","text analysis"]',
+      '[["conversational language understanding (CLU)","question answering models","text analysis"]]',
     lastModified: new Date().toISOString(),
     question:
       "Welche natürliche Sprachverarbeitung (NLP)-Arbeitsauslastung wird verwendet, um Untertiteltexte für Live-Präsentationen zu generieren?",
@@ -97,6 +97,34 @@ export const addNewCollection = async (collectionName, collectionTitle) => {
   const collectionRef = collection(db, collectionName);
 
   return collectionRef;
+};
+
+export const deleteCollection = async (collectionName) => {
+  getDoc(doc(db, "_metadata", "collections")).then((docSnap) => {
+    if (docSnap.exists()) {
+      const collectionsArray = docSnap
+        .data()
+        .names.filter((n) => n.number !== collectionName);
+
+      setDoc(doc(db, "_metadata", "collections"), {
+        names: collectionsArray,
+      });
+    } else {
+      console.error("No metadata found");
+    }
+  });
+
+  const collectionRef = collection(db, collectionName);
+  const batch = writeBatch(db);
+
+  const querySnapshot = await getDocs(collectionRef);
+
+  // deleting all docs of a collection also deletes the collection itself automatically!!
+  querySnapshot.forEach((doc) => {
+    batch.delete(doc.ref);
+  });
+
+  await batch.commit();
 };
 
 // adding document

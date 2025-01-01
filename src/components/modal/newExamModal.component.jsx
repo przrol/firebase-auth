@@ -43,8 +43,8 @@ export default function NewExamModal({ show, onCloseModal, onCreateExam }) {
             variant="primary"
             onClick={() =>
               onCreateExam(
-                examTitleRef.current.value,
-                examNumberRef.current.value
+                examNumberRef.current.value,
+                examTitleRef.current.value
               )
             }
           >
