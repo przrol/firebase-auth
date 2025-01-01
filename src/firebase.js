@@ -59,6 +59,46 @@ export const deleteDocument = async (collectionName, docId) => {
   await deleteDoc(doc(db, collectionName, docId));
 };
 
+export const addNewCollection = async (collectionName, collectionTitle) => {
+  const data = {
+    answerArea: "",
+    correctAnswers: '["Azure AI Speech"]',
+    examTopicId: 1,
+    explanation: "Erklärung",
+    groupNumber: 1,
+    imageUrl: "",
+    incorrectAnswers:
+      '["conversational language understanding (CLU)","question answering models","text analysis"]',
+    lastModified: new Date().toISOString(),
+    question:
+      "Welche natürliche Sprachverarbeitung (NLP)-Arbeitsauslastung wird verwendet, um Untertiteltexte für Live-Präsentationen zu generieren?",
+    questionBelowImg: "",
+  };
+
+  await setDoc(doc(db, collectionName, "question_001"), data);
+
+  getDoc(doc(db, "_metadata", "collections")).then((docSnap) => {
+    if (docSnap.exists()) {
+      const collectionsArray = docSnap.data().names;
+      collectionsArray.push({ number: collectionName, title: collectionTitle });
+
+      setDoc(doc(db, "_metadata", "collections"), {
+        names: collectionsArray,
+      });
+    } else {
+      console.error("No metadata found");
+    }
+  });
+
+  // await setDoc(doc(db, "_metadata", "collections"), {
+  //   names: [...collectionName, collectionTitle],
+  // });
+
+  const collectionRef = collection(db, collectionName);
+
+  return collectionRef;
+};
+
 // adding document
 export const addNewDocument = async (
   collectionName,

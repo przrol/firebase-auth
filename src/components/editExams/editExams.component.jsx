@@ -1,20 +1,40 @@
-import React, { useContext, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import Navigation from "../Navigation";
 import { QuizContext } from "../../contexts/QuizContext";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
+import Button from "react-bootstrap/Button";
 import DarkMode from "../darkMode/darkMode.component";
 import EditExam from "../editExam/editExam.component";
-import { importDataToFirestore } from "../../firebase";
+import { addNewCollection, importDataToFirestore } from "../../firebase";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import NewExamModal from "../modal/newExamModal.component";
 
 export default function EditExams() {
   const [state, dispatch] = useContext(QuizContext);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [show, setShow] = useState(false);
   const [importExamName, setImportExamName] = useState("");
   const hiddenFileInput = useRef(null);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const handleCreateExam = async (examNumber, examTitle) => {
+    console.log("Create new exam: ", examNumber, examTitle);
+
+    await addNewCollection(examNumber, examTitle);
+
+    dispatch({
+      type: "GET_ALL_COLLECTIONS",
+      payload: [...state.examArray, { number: examNumber, title: examTitle }],
+    });
+
+    setShow(false);
+  };
 
   const handleImportClick = (collectionName) => {
     setImportExamName(collectionName);
@@ -74,6 +94,17 @@ export default function EditExams() {
                 }}
               />
             ))}
+            <Row className="mt-4">
+              <Col xs={7} className="ms-1">
+                <Button
+                  className="w-100"
+                  variant="primary"
+                  onClick={handleShow}
+                >
+                  Add new Exam
+                </Button>
+              </Col>
+            </Row>
           </Form>
           <input
             hidden
@@ -85,6 +116,11 @@ export default function EditExams() {
       </Card>
 
       <DarkMode />
+      <NewExamModal
+        show={show}
+        onCloseModal={handleClose}
+        onCreateExam={handleCreateExam}
+      />
     </>
   );
 }
