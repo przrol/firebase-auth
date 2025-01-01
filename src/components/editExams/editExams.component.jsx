@@ -24,8 +24,6 @@ export default function EditExams() {
   const handleShow = () => setShow(true);
 
   const handleCreateExam = async (examNumber, examTitle) => {
-    console.log("Create new exam: ", examNumber, examTitle);
-
     await addNewCollection(examNumber, examTitle);
 
     dispatch({
