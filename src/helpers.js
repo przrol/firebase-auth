@@ -70,7 +70,8 @@ export const getGermanFormattedTime = (isoString) => {
 
     const date = new Date(isoString);
     const now = new Date();
-    const diffInMs = now - date;
+
+    const diffInMs = now.getTime() - date.getTime(); // Use getTime() for consistency
     const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
     const options = {
@@ -93,14 +94,19 @@ export const getGermanFormattedTime = (isoString) => {
     const formattedTime = date.toLocaleString("de-DE", timeOptions);
 
     if (diffInDays === 0) {
-      return { tooltip: formattedDate, text: `Today, ${formattedTime}` };
+      // Check if it's within the last 24 hours, not just the same day
+      const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+      if (diffInHours < 24 && date.getDate() === now.getDate()) {
+        return { tooltip: formattedDate, text: `TDA, ${formattedTime}` };
+      } else {
+        return { tooltip: formattedDate, text: `YD, ${formattedTime}` }; // It's technically yesterday
+      }
     } else if (diffInDays === 1) {
-      return { tooltip: formattedDate, text: `Yesterday, ${formattedTime}` };
+      return { tooltip: formattedDate, text: `YD, ${formattedTime}` };
     } else if (diffInDays < 15) {
-      // Up to 14 days ago
       return {
         tooltip: formattedDate,
-        text: `${diffInDays} days ago ${formattedTime}`,
+        text: `${diffInDays} DA, ${formattedTime}`,
       };
     } else {
       return { tooltip: formattedDate, text: formattedDate };
