@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext } from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
@@ -9,6 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { QuizContext } from "../contexts/QuizContext";
 import { Check } from "react-bootstrap-icons";
+import { getExamQuestions } from "../firebase";
 
 export default function Navigation() {
   const { logout, currentUser } = useAuth();
@@ -50,6 +51,14 @@ export default function Navigation() {
     });
   };
 
+  const handleReloadQuestions = async () => {
+    const data = await getExamQuestions(state.currentExamNumber);
+
+    dispatch({ type: "RESTART", payload: data, onlyFailed: state.onlyFailed });
+    // dispatch({ type: 'RELOAD_QUESTIONS', payload: { /* any payload data*/ } });
+    // navigate('/groupquestion'); // Navigate after dispatch
+  };
+
   return (
     <Navbar
       bg={state.isDarkMode ? "dark" : "light"}
@@ -82,6 +91,9 @@ export default function Navigation() {
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/groupquestion">
                 Group Questions
+              </NavDropdown.Item>
+              <NavDropdown.Item onClick={handleReloadQuestions}>
+                Reload Questions
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/editexam">
                 Manage Exams

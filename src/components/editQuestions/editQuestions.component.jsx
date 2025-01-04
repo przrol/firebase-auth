@@ -63,7 +63,7 @@ export default function EditQuestions() {
         style={{ maxWidth: "800px" }}
       >
         <Card.Header className="text-center">
-          <div>{`Edit Questions (${state.currentExamNumber})`}</div>
+          <div>{`Edit ${state.allQuestions.length} Questions (${state.currentExamNumber})`}</div>
         </Card.Header>
         <Card.Body>
           <Form>
