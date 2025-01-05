@@ -149,7 +149,7 @@ const quizReducer = (state, action) => {
               imageUrl: action.imageUrl,
               examTopicId: action.examTopicId,
               answerArea: action.answerArea,
-              lastModified: action.lastModified,
+              lastModified: action.newLastModified,
               groupNumber: action.groupNumber,
             }
           : q;

@@ -230,7 +230,8 @@ export default function AddOrUpdateQuestion() {
         const groupNumber = Number(groupNumberRef.current.value);
 
         let newImageUrl = imageUrl ?? "";
-        const lastModified = new Date().toISOString();
+        const newLastModifiedDate = new Date();
+        const newLastModified = newLastModifiedDate.toISOString();
 
         if (questionId) {
           if (fileInputRef.current && fileInputRef.current.files.length > 0) {
@@ -250,7 +251,7 @@ export default function AddOrUpdateQuestion() {
             newImageUrl,
             examTopicId,
             answerAreaRef.current.value,
-            lastModified,
+            newLastModified,
             groupNumber
           );
 
@@ -265,7 +266,7 @@ export default function AddOrUpdateQuestion() {
             imageUrl: newImageUrl,
             examTopicId,
             answerArea: answerAreaRef.current.value,
-            lastModified,
+            newLastModified,
             groupNumber,
           });
         } else {
@@ -279,7 +280,7 @@ export default function AddOrUpdateQuestion() {
             newImageUrl,
             examTopicId,
             answerAreaRef.current.value,
-            lastModified,
+            newLastModified,
             groupNumber
           );
 
@@ -295,7 +296,7 @@ export default function AddOrUpdateQuestion() {
               imageUrl: newImageUrl,
               examTopicId,
               answerArea: answerAreaRef.current.value,
-              lastModified,
+              lastModified: newLastModified,
               groupNumber,
             },
           });
@@ -310,9 +311,22 @@ export default function AddOrUpdateQuestion() {
           handleDeleteImg();
         }
 
+        const timeOptions = {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          timeZone: "Europe/Berlin",
+        };
+        const formattedTime = newLastModifiedDate.toLocaleString(
+          "de-DE",
+          timeOptions
+        );
+
         setSuccess(
-          `The question was successful ${
-            questionId ? `updated in '${state.currentExamNumber}'` : "added"
+          `The question was successfully ${
+            questionId
+              ? `updated in '${state.currentExamNumber}' at ${formattedTime}`
+              : `added at ${formattedTime}`
           }`
         );
       }
