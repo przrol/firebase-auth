@@ -9,7 +9,6 @@ import { replaceWithBr, getGermanFormattedTime } from "../../helpers";
 import PropTypes from "prop-types";
 
 export default function EditQuestion({
-  index,
   question,
   onShowDeleteModal,
   showAllExplanations,
@@ -161,7 +160,6 @@ export default function EditQuestion({
 }
 
 EditQuestion.propTypes = {
-  index: PropTypes.number.isRequired,
   question: PropTypes.shape({
     examTopicId: PropTypes.number.isRequired,
     id: PropTypes.string.isRequired,

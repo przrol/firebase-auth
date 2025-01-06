@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
 import DarkMode from "../darkMode/darkMode.component";
 import { QuizContext } from "../../contexts/QuizContext";
 import Navigation from "../Navigation";
@@ -10,6 +11,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import "./editQuestions.styles.css";
 import { deleteDocument, getExamQuestions } from "../../firebase";
+import { ArrowDown, ArrowUp } from "react-bootstrap-icons";
 
 export default function EditQuestions() {
   const [state, dispatch] = useContext(QuizContext);
@@ -17,11 +19,7 @@ export default function EditQuestions() {
   const [showAllExplanations, setShowAllExplanations] = useState(false);
   const [showAllAnswers, setShowAllAnswers] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState({});
-
-  const sortedQuestions = [...state.allQuestions].sort((a, b) => {
-    return a.examTopicId - b.examTopicId; // Sort by the 'age' property in ascending order
-    // For descending order, use 'b.age - a.age'
-  });
+  const [sortedUpwards, setSortedUpwards] = useState(false);
 
   useEffect(() => {
     const reloadQuestions = async () => {
@@ -31,11 +29,22 @@ export default function EditQuestions() {
         payload: data,
         onlyFailed: state.onlyFailed,
       });
+
       // console.log("EditQuestions: useEffect");
     };
 
     reloadQuestions();
   }, [dispatch, state.currentExamNumber, state.onlyFailed]);
+
+  const sortedQuestions = [...state.allQuestions].sort((a, b) => {
+    const comparison = a.examTopicId - b.examTopicId; // Default comparison
+
+    return sortedUpwards ? comparison : -comparison; // Reverse if sortedUpwards is false
+  });
+
+  const toggleSortDirection = () => {
+    setSortedUpwards(!sortedUpwards);
+  };
 
   const handleClose = () => setShow(false);
 
@@ -48,10 +57,6 @@ export default function EditQuestions() {
     });
 
     handleClose();
-    // Delete the question
-    // const newQuestions = state.allQuestions.filter(
-    //   (q) => q.examTopicId !== currentQuestionIndex
-    // );
   };
 
   const handleShow = (question) => {
@@ -75,8 +80,19 @@ export default function EditQuestions() {
         className="mx-auto"
         style={{ maxWidth: "800px" }}
       >
-        <Card.Header className="text-center">
-          <div>{`Edit ${state.allQuestions.length} Questions (${state.currentExamNumber})`}</div>
+        <Card.Header className="d-flex align-items-center">
+          <div className="flex-grow-1 text-center">{`Edit ${state.allQuestions.length} Questions (${state.currentExamNumber})`}</div>
+          <Button
+            variant="link"
+            title="change question order"
+            onClick={toggleSortDirection}
+          >
+            {sortedUpwards ? (
+              <ArrowUp fill="white" />
+            ) : (
+              <ArrowDown fill="white" />
+            )}
+          </Button>
         </Card.Header>
         <Card.Body>
           <Form>
@@ -101,7 +117,6 @@ export default function EditQuestions() {
               <EditQuestion
                 onShowDeleteModal={handleShow}
                 key={index}
-                index={index}
                 showAllExplanations={showAllExplanations}
                 showAllAnswers={showAllAnswers}
                 question={q}
