@@ -477,7 +477,7 @@ export default function AddOrUpdateQuestion() {
               <Form.Label>Question</Form.Label>
               <Form.Control
                 as="textarea"
-                rows={3}
+                rows={7}
                 ref={questionRef}
                 required
                 isInvalid={isQuestionInvalid}
@@ -642,7 +642,7 @@ export default function AddOrUpdateQuestion() {
 
               <Form.Control
                 as="textarea"
-                rows={3}
+                rows={14}
                 placeholder="e.g. explanation of ChatGPT"
                 ref={explanationRef}
               />

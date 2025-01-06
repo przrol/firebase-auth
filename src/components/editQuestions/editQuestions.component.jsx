@@ -36,11 +36,9 @@ export default function EditQuestions() {
     reloadQuestions();
   }, [dispatch, state.currentExamNumber, state.onlyFailed]);
 
-  const sortedQuestions = [...state.allQuestions].sort((a, b) => {
-    const comparison = a.examTopicId - b.examTopicId; // Default comparison
-
-    return sortedUpwards ? comparison : -comparison; // Reverse if sortedUpwards is false
-  });
+  const sortedQuestions = sortedUpwards
+    ? [...state.allQuestions].sort((a, b) => a.examTopicId - b.examTopicId)
+    : [...state.allQuestions].sort((a, b) => b.examTopicId - a.examTopicId);
 
   const toggleSortDirection = () => {
     setSortedUpwards(!sortedUpwards);
@@ -113,10 +111,10 @@ export default function EditQuestions() {
                 />
               </Col>
             </Row>
-            {sortedQuestions.map((q, index) => (
+            {sortedQuestions.map((q) => (
               <EditQuestion
                 onShowDeleteModal={handleShow}
-                key={index}
+                key={q.examTopicId}
                 showAllExplanations={showAllExplanations}
                 showAllAnswers={showAllAnswers}
                 question={q}

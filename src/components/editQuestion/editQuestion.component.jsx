@@ -93,7 +93,7 @@ export default function EditQuestion({
 
       <Form.Control
         as="textarea"
-        rows={3}
+        rows={7}
         disabled
         defaultValue={question.question}
       />
