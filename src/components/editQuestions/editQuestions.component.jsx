@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import DarkMode from "../darkMode/darkMode.component";
@@ -9,20 +9,33 @@ import EditQuestion from "../editQuestion/editQuestion.component";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import "./editQuestions.styles.css";
-import { deleteDocument } from "../../firebase";
+import { deleteDocument, getExamQuestions } from "../../firebase";
 
 export default function EditQuestions() {
   const [state, dispatch] = useContext(QuizContext);
+  const [show, setShow] = useState(false);
+  const [showAllExplanations, setShowAllExplanations] = useState(false);
+  const [showAllAnswers, setShowAllAnswers] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState({});
 
   const sortedQuestions = [...state.allQuestions].sort((a, b) => {
     return a.examTopicId - b.examTopicId; // Sort by the 'age' property in ascending order
     // For descending order, use 'b.age - a.age'
   });
 
-  const [show, setShow] = useState(false);
-  const [showAllExplanations, setShowAllExplanations] = useState(false);
-  const [showAllAnswers, setShowAllAnswers] = useState(false);
-  const [currentQuestion, setCurrentQuestion] = useState({});
+  useEffect(() => {
+    const reloadQuestions = async () => {
+      const data = await getExamQuestions(state.currentExamNumber);
+      dispatch({
+        type: "RESTART",
+        payload: data,
+        onlyFailed: state.onlyFailed,
+      });
+      // console.log("EditQuestions: useEffect");
+    };
+
+    reloadQuestions();
+  }, [dispatch, state.currentExamNumber, state.onlyFailed]);
 
   const handleClose = () => setShow(false);
 
