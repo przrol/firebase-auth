@@ -18,6 +18,9 @@ const initialState = {
   showDeleteModalDialog: false,
   imageUrl: "",
   examTopicId: 0,
+  questionsSortedUpwards: localStorage.getItem("questionsSortedUpwards")
+    ? localStorage.getItem("questionsSortedUpwards") === "true"
+    : false,
   currentGroupNumber: localStorage.getItem("currentGroupNumber")
     ? parseInt(localStorage.getItem("currentGroupNumber"))
     : 0,
@@ -134,6 +137,15 @@ const quizReducer = (state, action) => {
           (q) => q.groupNumber === state.currentGroupNumber
         ),
         allQuestions: updatedQuestions,
+      };
+    }
+    case "UPDATE_QUESTION_SORTING": {
+      localStorage.setItem("questionsSortedUpwards", action.sortedUpwards);
+
+      return {
+        ...state,
+        // allQuestions: action.sortedQuestions,
+        questionsSortedUpwards: action.sortedUpwards,
       };
     }
     case "UPDATE_QUESTION": {
@@ -318,6 +330,7 @@ const quizReducer = (state, action) => {
         ...initialState,
         failedQuestions: action.onlyFailed ? state.failedQuestions : [],
         currentGroupNumber: state.currentGroupNumber,
+        questionsSortedUpwards: state.questionsSortedUpwards,
         examArray: state.examArray,
         currentExamNumber: state.currentExamNumber,
         isDarkMode: state.isDarkMode,

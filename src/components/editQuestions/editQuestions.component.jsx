@@ -19,7 +19,6 @@ export default function EditQuestions() {
   const [showAllExplanations, setShowAllExplanations] = useState(false);
   const [showAllAnswers, setShowAllAnswers] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState({});
-  const [sortedUpwards, setSortedUpwards] = useState(false);
 
   useEffect(() => {
     const reloadQuestions = async () => {
@@ -29,19 +28,20 @@ export default function EditQuestions() {
         payload: data,
         onlyFailed: state.onlyFailed,
       });
-
-      // console.log("EditQuestions: useEffect");
     };
 
     reloadQuestions();
   }, [dispatch, state.currentExamNumber, state.onlyFailed]);
 
-  const sortedQuestions = sortedUpwards
+  const sortedQuestions = state.questionsSortedUpwards
     ? [...state.allQuestions].sort((a, b) => a.examTopicId - b.examTopicId)
     : [...state.allQuestions].sort((a, b) => b.examTopicId - a.examTopicId);
 
   const toggleSortDirection = () => {
-    setSortedUpwards(!sortedUpwards);
+    dispatch({
+      type: "UPDATE_QUESTION_SORTING",
+      sortedUpwards: !state.questionsSortedUpwards,
+    });
   };
 
   const handleClose = () => setShow(false);
@@ -85,7 +85,7 @@ export default function EditQuestions() {
             title="change question order"
             onClick={toggleSortDirection}
           >
-            {sortedUpwards ? (
+            {state.questionsSortedUpwards ? (
               <ArrowUp fill="white" />
             ) : (
               <ArrowDown fill="white" />
