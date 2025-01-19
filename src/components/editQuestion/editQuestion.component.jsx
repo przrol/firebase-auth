@@ -27,6 +27,8 @@ export default function EditQuestion({
 
   const answers = shuffleAnswers(question);
 
+  const newlineMatches = question.question.match(/\n/g); // Find all '\n' occurrences
+
   useEffect(() => {
     setShowExplanation(showAllExplanations);
   }, [showAllExplanations]);
@@ -102,7 +104,7 @@ export default function EditQuestion({
 
       <Form.Control
         as="textarea"
-        rows={7}
+        rows={newlineMatches ? newlineMatches.length + 3 : 5}
         disabled
         defaultValue={question.question}
       />
