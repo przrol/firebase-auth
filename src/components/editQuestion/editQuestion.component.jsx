@@ -134,8 +134,8 @@ export default function EditQuestion({
       </Button>
       {showAnswers && question.answerArea && (
         <>
-          <Card.Text className="ps-2 mb-1 mt-1 fw-bold">Answer Area</Card.Text>
-          <div className="ps-2">
+          <Card.Text className="ps-2 mb-1 mt-3 fw-bold">Answer Area</Card.Text>
+          <div className="ps-2 mb-4">
             {answerAreaParts.map((part, index) => (
               <React.Fragment key={index}>
                 <em dangerouslySetInnerHTML={{ __html: part }}></em>
