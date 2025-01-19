@@ -102,12 +102,19 @@ export default function EditQuestion({
         </div>
       </div>
 
-      <Form.Control
+      {/* <Form.Control
         as="textarea"
         rows={newlineMatches ? newlineMatches.length + 3 : 5}
         disabled
         defaultValue={question.question}
-      />
+      /> */}
+      <div
+        className="bg-body-secondary pt-3 px-3 pb-4 mt-2 rounded-2"
+        style={{ whiteSpace: "pre-line" }}
+        dangerouslySetInnerHTML={{
+          __html: replaceWithBr(question.question),
+        }}
+      ></div>
       {question.imageUrl && (
         <Image className="mt-2" src={question.imageUrl} fluid />
       )}
@@ -121,14 +128,14 @@ export default function EditQuestion({
         />
       )}
       <Button
-        className="mt-3 mb-2 me-3"
+        className="mt-3 mb-4 me-3"
         variant="primary"
         onClick={handleShowAnswers}
       >
         Answers
       </Button>
       <Button
-        className="mt-3 mb-2"
+        className="mt-3 mb-4"
         variant="warning"
         onClick={handleShowExplanation}
       >
@@ -192,6 +199,8 @@ export default function EditQuestion({
         ))}
       {showExplanation && (
         <div
+          className="bg-warning-subtle pt-3 px-3 pb-4 mt-2 rounded-2"
+          style={{ whiteSpace: "pre-line" }}
           dangerouslySetInnerHTML={{
             __html: replaceWithBr(
               question.explanation || "No explanation available!"
