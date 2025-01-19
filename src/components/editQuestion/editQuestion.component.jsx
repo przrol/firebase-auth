@@ -109,23 +109,42 @@ export default function EditQuestion({
         defaultValue={question.question}
       /> */}
       <div
-        className="bg-body-secondary pt-3 px-3 pb-4 mt-2 rounded-2"
+        className={
+          `bg-body-secondary pt-3 px-3 pb-4 mt-2 border border-secondary ` +
+          (question.imageUrl
+            ? " rounded-top-2 border-bottom-0"
+            : "rounded-2 border-1")
+        }
         style={{ whiteSpace: "pre-line" }}
         dangerouslySetInnerHTML={{
           __html: replaceWithBr(question.question),
         }}
       ></div>
       {question.imageUrl && (
-        <Image className="mt-2" src={question.imageUrl} fluid />
+        <Image
+          className={
+            `border-1 border-secondary border-start border-end ` +
+            (question.questionBelowImg ? "" : "border-bottom rounded-bottom-2")
+          }
+          src={question.imageUrl}
+          fluid
+        />
       )}
       {question.questionBelowImg && (
-        <Form.Control
-          className="mt-2"
-          as="textarea"
-          rows={2}
-          disabled
-          defaultValue={question.questionBelowImg}
-        />
+        <div
+          className="bg-body-secondary pt-2 px-3 pb-3 rounded-bottom-2 border border-secondary border-1"
+          style={{ whiteSpace: "pre-line" }}
+          dangerouslySetInnerHTML={{
+            __html: replaceWithBr(question.questionBelowImg),
+          }}
+        ></div>
+        // <Form.Control
+        //   className="mt-2"
+        //   as="textarea"
+        //   rows={2}
+        //   disabled
+        //   defaultValue={question.questionBelowImg}
+        // />
       )}
       <Button
         className="mt-3 mb-4 me-3"
@@ -199,7 +218,7 @@ export default function EditQuestion({
         ))}
       {showExplanation && (
         <div
-          className="bg-warning-subtle pt-3 px-3 pb-4 mt-2 rounded-2"
+          className="bg-warning-subtle pt-3 px-3 pb-4 mt-2 rounded-2 border border-secondary border-1"
           style={{ whiteSpace: "pre-line" }}
           dangerouslySetInnerHTML={{
             __html: replaceWithBr(
