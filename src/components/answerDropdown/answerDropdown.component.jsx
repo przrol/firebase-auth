@@ -2,6 +2,7 @@ import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import "./answerDropdown.styles.css";
+import PropTypes from "prop-types";
 
 export default function AnswerDropdown({
   quizState,
@@ -62,3 +63,11 @@ export default function AnswerDropdown({
     </>
   );
 }
+
+AnswerDropdown.propTypes = {
+  quizState: PropTypes.object.isRequired,
+  currentQuestion: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  currentQuestionIndex: PropTypes.number.isRequired,
+};

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
@@ -7,6 +7,10 @@ import { Link } from "react-router-dom";
 import { PencilSquare, Trash3 } from "react-bootstrap-icons";
 import { replaceWithBr, getGermanFormattedTime } from "../../helpers";
 import PropTypes from "prop-types";
+import Card from "react-bootstrap/Card";
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
+import { shuffleAnswers } from "../../helpers";
 
 export default function EditQuestion({
   question,
@@ -17,6 +21,11 @@ export default function EditQuestion({
   const [showExplanation, setShowExplanation] = useState(false);
   const [showAnswers, setShowAnswers] = useState(false);
   const lastModifiedObj = getGermanFormattedTime(question?.lastModified);
+
+  const answerAreaWithBr = replaceWithBr(question ? question.answerArea : "");
+  const answerAreaParts = answerAreaWithBr.split("_dropdown_");
+
+  const answers = shuffleAnswers(question);
 
   useEffect(() => {
     setShowExplanation(showAllExplanations);
@@ -123,6 +132,40 @@ export default function EditQuestion({
       >
         Explanation
       </Button>
+      {showAnswers && question.answerArea && (
+        <>
+          <Card.Text className="ps-2 mb-1 mt-1 fw-bold">Answer Area</Card.Text>
+          <div className="ps-2">
+            {answerAreaParts.map((part, index) => (
+              <React.Fragment key={index}>
+                <em dangerouslySetInnerHTML={{ __html: part }}></em>
+                {index < answerAreaParts.length - 1 && ( // Only render a button if it's not the last part
+                  <DropdownButton
+                    size="sm"
+                    // onSelect={handleSelect}
+                    className="d-inline-flex mx-2 mb-1"
+                    id={`dropdown-basic-button${index + 1}`}
+                    title={question.correctAnswers[index][0]}
+                    variant="success"
+                  >
+                    {answers[index].map((answer, i) => (
+                      <React.Fragment key={`answer-${i}`}>
+                        <Dropdown.Item
+                          className="question-dropdown-item"
+                          eventKey={answer}
+                        >
+                          {answer}
+                        </Dropdown.Item>
+                        <Dropdown.Divider key={`divider-${i}`} />
+                      </React.Fragment>
+                    ))}
+                  </DropdownButton>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        </>
+      )}
       {showAnswers &&
         allAnswers.map((answerblock, blockindex) => (
           <Form.Group key={blockindex} className="mb-3">
@@ -167,6 +210,7 @@ EditQuestion.propTypes = {
     question: PropTypes.string.isRequired,
     imageUrl: PropTypes.string,
     questionBelowImg: PropTypes.string,
+    answerArea: PropTypes.string,
     correctAnswers: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
       .isRequired,
     incorrectAnswers: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
