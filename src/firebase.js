@@ -27,8 +27,14 @@ export const db = getFirestore();
 
 const storage = getStorage();
 
-export const addNewImage = async (file) => {
-  const storageRef = ref(storage, file.name);
+export const addNewImage = async (
+  currentExamNumber,
+  questionId,
+  examTopicId,
+  file
+) => {
+  const docId = questionId ?? formatNumber(examTopicId);
+  const storageRef = ref(storage, `${currentExamNumber}-${docId}-file.name`);
 
   // 'file' comes from the Blob or File API
   const snapshot = await uploadBytes(storageRef, file);

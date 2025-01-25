@@ -9,3 +9,9 @@
 .question-img {
   padding-right: 0.3rem;
 }
+
+.sticky-top-custom {
+  position: sticky;
+  top: 57px;
+  z-index: 920; /* Ensures it stays on top of other content if needed */
+}

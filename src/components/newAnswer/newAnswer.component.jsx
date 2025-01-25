@@ -2,6 +2,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import { Trash3 } from "react-bootstrap-icons";
+import PropTypes from "prop-types";
 // import "./answer.styles.css";
 
 const NewAnswer = ({
@@ -51,6 +52,17 @@ const NewAnswer = ({
       </Form.Control.Feedback>
     </InputGroup>
   );
+};
+NewAnswer.propTypes = {
+  index: PropTypes.number.isRequired,
+  blockindex: PropTypes.number.isRequired,
+  onDeleteAnswer: PropTypes.func.isRequired,
+  onChangeAnswer: PropTypes.func.isRequired,
+  onChangeCheckbox: PropTypes.func.isRequired,
+  answerText: PropTypes.string.isRequired,
+  checked: PropTypes.bool.isRequired,
+  isLastAnswer: PropTypes.bool.isRequired,
+  isCheckboxInvalid: PropTypes.bool.isRequired,
 };
 
 export default NewAnswer;

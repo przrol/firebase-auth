@@ -20,29 +20,51 @@ export default function AddOrUpdateQuestion() {
   const { questionId } = useParams();
   const [state, dispatch] = useContext(QuizContext);
   const questionRef = useRef();
-  const examTopicIdRef = useRef();
-  const groupNumberRef = useRef();
+  const [examTopicId, setExamTopicId] = useState(0);
+  const [groupNumber, setGroupNumber] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState(null);
   const questionBelowImgRef = useRef();
   const answerAreaRef = useRef();
   const explanationRef = useRef();
   const defaultAnswer = { checked: false, answerText: "" };
+  // all answers (answersblock => answers of correct + incorrect) of the question are stored in an array of arrays (answersblock)
   const [answers, setAnswers] = useState([[defaultAnswer]]);
   const [imageUrl, setImageUrl] = useState("");
   const fileInputRef = useRef(null);
   const [isExamTopicIdInvalid, setIsExamTopicIdInvalid] = useState(false);
+  const [isGroupNumberInvalid, setIsGroupNumberInvalid] = useState(false);
   const [isQuestionInvalid, setIsQuestionInvalid] = useState(false);
   const [isCheckboxInvalid, setIsCheckboxInvalid] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [lastModified, setLastModified] = useState({});
   const [loading, setLoading] = useState(false);
+  const [seconds, setSeconds] = useState(15);
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
+
+  useEffect(() => {
+    let intervalId;
+
+    intervalId = setInterval(() => {
+      setSeconds((prevSeconds) => {
+        if (prevSeconds > 0) {
+          return prevSeconds - 1;
+        } else {
+          // Reset the timer when it reaches 0
+          handleTimerComplete();
+          return 15; // Reset to the initial value
+        }
+      });
+    }, 1000);
+
+    // Cleanup function: This is important to prevent memory leaks!
+    return () => clearInterval(intervalId);
+  }, []); // Empty dependency array: This effect runs only once on component mount
 
   useEffect(() => {
     // Extract this to a separate function for clarity
     const initializeForm = (question) => {
       questionRef.current.value = question.question;
-      examTopicIdRef.current.value = question.examTopicId;
-      groupNumberRef.current.value = question.groupNumber ?? "1";
       questionBelowImgRef.current.value = question.questionBelowImg ?? "";
       answerAreaRef.current.value = question.answerArea ?? "";
       explanationRef.current.value = question.explanation;
@@ -62,6 +84,8 @@ export default function AddOrUpdateQuestion() {
 
       setAnswers(allAnswers);
       setImageUrl(question.imageUrl);
+      setExamTopicId(question.examTopicId);
+      setGroupNumber(question.groupNumber ?? "1");
 
       const lastModifiedObj = getGermanFormattedTime(question.lastModified);
       setLastModified(lastModifiedObj);
@@ -69,19 +93,20 @@ export default function AddOrUpdateQuestion() {
 
     const resetForm = (defaultExamTopicId, defaultGroupNumber) => {
       questionRef.current.value = "";
-      examTopicIdRef.current.value = defaultExamTopicId;
-      groupNumberRef.current.value = defaultGroupNumber;
       questionBelowImgRef.current.value = "";
       explanationRef.current.value = "";
       answerAreaRef.current.value = "";
       setAnswers([[defaultAnswer]]);
       setImageUrl("");
+      setExamTopicId(defaultExamTopicId);
+      setGroupNumber(defaultGroupNumber);
     };
 
     if (questionId) {
       const editQuestion = state.allQuestions.find((q) => q.id === questionId);
       if (editQuestion) {
         initializeForm(editQuestion);
+        setCurrentQuestion(editQuestion);
       }
     } else {
       const newExamTopicId = getHighestExamTopicId(state.allQuestions) + 1;
@@ -90,6 +115,79 @@ export default function AddOrUpdateQuestion() {
       resetForm(newExamTopicId, defaultGroupNumber);
     }
   }, [questionId, state.questions]); // Added state.questions as dependency
+
+  const handleTimerComplete = async () => {
+    if (questionId) {
+      const correctAnswers = answers
+        .map((answerBlock) =>
+          answerBlock
+            .filter((element) => element.checked)
+            .map((answer) => answer.answerText)
+        )
+        .filter((block) => block.length > 0); // Filter out empty sub-arrays
+      const editQuestion = state.allQuestions.find((q) => q.id === questionId);
+
+      if (
+        correctAnswers.length === answers.length &&
+        examTopicId !== 0 &&
+        examTopicId !== editQuestion.examTopicId &&
+        groupNumber !== 0 &&
+        groupNumber !== editQuestion.groupNumber &&
+        questionRef.current.value !== "" &&
+        questionRef.current.value !== editQuestion.question &&
+        questionBelowImgRef.current.value !== editQuestion.questionBelowImg &&
+        answerAreaRef.current.value !== editQuestion.explanation &&
+        explanationRef.current.value !== editQuestion.explanation
+      ) {
+        const incorrectAnswers = answers.map(
+          (answerBlock) =>
+            answerBlock
+              .filter((element) => !element.checked) // Filter out only checked answers within this block
+              .map((answer) => answer.answerText) // Map to their answerText
+        );
+
+        let newImageUrl = imageUrl ?? "";
+        const newLastModifiedDate = new Date();
+        const newLastModified = newLastModifiedDate.toISOString();
+
+        if (imageUrl !== editQuestion.imageUrl) {
+          const file = fileInputRef.current.files[0];
+
+          newImageUrl = await addNewImage(file);
+        }
+
+        await updateDocument(
+          state.currentExamNumber,
+          questionId,
+          questionRef.current.value,
+          questionBelowImgRef.current.value,
+          correctAnswers,
+          incorrectAnswers,
+          explanationRef.current.value,
+          newImageUrl,
+          examTopicId,
+          answerAreaRef.current.value,
+          newLastModified,
+          groupNumber
+        );
+
+        dispatch({
+          type: "UPDATE_QUESTION",
+          questionId,
+          question: questionRef.current.value,
+          questionBelowImg: questionBelowImgRef.current.value,
+          correctAnswers,
+          incorrectAnswers,
+          explanation: explanationRef.current.value,
+          imageUrl: newImageUrl,
+          examTopicId,
+          answerArea: answerAreaRef.current.value,
+          newLastModified,
+          groupNumber,
+        });
+      }
+    }
+  };
 
   const handleNewAnswerBlock = () => {
     setAnswers((prevAnswers) => [...prevAnswers, [defaultAnswer]]);
@@ -184,22 +282,15 @@ export default function AddOrUpdateQuestion() {
     });
   };
 
+  const updateQuestion = async () => {};
+
   async function handleSubmit(event) {
     event.preventDefault();
     event.stopPropagation();
-    // const form = event.currentTarget;
-    // if (form.checkValidity() === false) {
-    //   setValidated(true);
-    //   return;
-    // }
 
     setLoading(true);
     setError("");
     setSuccess("");
-
-    // const correctAnswers = answers
-    //   .filter((element) => element.checked)
-    //   .map((answer) => answer.answerText);
 
     const correctAnswers = answers
       .map((answerBlock) =>
@@ -209,14 +300,15 @@ export default function AddOrUpdateQuestion() {
       )
       .filter((block) => block.length > 0); // Filter out empty sub-arrays
 
-    setIsExamTopicIdInvalid(examTopicIdRef.current.value === "");
+    setIsExamTopicIdInvalid(examTopicId === 0 || examTopicId === "");
+    setIsGroupNumberInvalid(groupNumber === 0 || groupNumber === "");
     setIsQuestionInvalid(questionRef.current.value === "");
     setIsCheckboxInvalid(correctAnswers.length < answers.length);
 
     try {
       if (
         correctAnswers.length === answers.length &&
-        examTopicIdRef.current.value !== "" &&
+        examTopicId !== 0 &&
         questionRef.current.value !== ""
       ) {
         const incorrectAnswers = answers.map(
@@ -226,8 +318,20 @@ export default function AddOrUpdateQuestion() {
               .map((answer) => answer.answerText) // Map to their answerText
         );
 
-        const examTopicId = Number(examTopicIdRef.current.value);
-        const groupNumber = Number(groupNumberRef.current.value);
+        if (selectedImageFile) {
+          newImageUrl = await addNewImage(
+            state.currentExamNumber,
+            questionId,
+            examTopicId,
+            selectedImageFile
+          );
+        }
+
+        if (imageUrl !== currentQuestion?.imageUrl) {
+          const file = fileInputRef.current.files[0];
+
+          setImageUrl(await addNewImage(file));
+        }
 
         let newImageUrl = imageUrl ?? "";
         const newLastModifiedDate = new Date();
@@ -302,12 +406,13 @@ export default function AddOrUpdateQuestion() {
           });
 
           questionRef.current.value = "";
-          examTopicIdRef.current.value = "";
-          groupNumberRef.current.value = "0";
           questionBelowImgRef.current.value = "";
           explanationRef.current.value = "";
           answerAreaRef.current.value = "";
           setAnswers([[defaultAnswer]]);
+          setImageUrl("");
+          setExamTopicId(0);
+          setGroupNumber(0);
           handleDeleteImg();
         }
 
@@ -337,7 +442,7 @@ export default function AddOrUpdateQuestion() {
 
       if (
         correctAnswers.length < answers.length &&
-        examTopicIdRef.current.value !== "" &&
+        examTopicId !== 0 &&
         questionRef.current.value !== ""
       ) {
         answerAreaRef.current.scrollIntoView({
@@ -413,15 +518,17 @@ export default function AddOrUpdateQuestion() {
   const handleChangeImage = async () => {
     // Get a reference to the selected file
     const file = fileInputRef.current.files[0];
-    const reader = new FileReader();
+    setSelectedImageFile(file);
 
-    reader.onload = function (e) {
+    if (file) {
+      // Optional: display preview or perform other file validation
+      // Example: using FileReader to preview image
+      const reader = new FileReader();
       // e.target.result contains the Data URL which can be used as a source of the image
-      setImageUrl(e.target.result);
-    };
-
-    // Read the file as a Data URL
-    reader.readAsDataURL(file);
+      reader.onload = (e) => setImageUrl(e.target.result);
+      // Read the file as a Data URL
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleDeleteImg = () => {
@@ -439,9 +546,12 @@ export default function AddOrUpdateQuestion() {
         className="mx-auto"
         style={{ maxWidth: "800px" }}
       >
-        <Card.Header className="d-flex justify-content-between align-items-center">
+        <Card.Header className="d-flex justify-content-between align-items-center sticky-top-custom bg-body-secondary">
+          <div>{seconds < 10 ? `0${seconds}` : seconds}s</div>
           <div className="flex-grow-1 text-center">{`${
-            questionId ? "Edit Question" : "Add Single Question"
+            questionId
+              ? `Edit Question #${examTopicId} / Grp ${groupNumber}`
+              : "Add Single Question"
           } (${state.currentExamNumber})`}</div>
           <div
             className={
@@ -461,7 +571,9 @@ export default function AddOrUpdateQuestion() {
             <Form.Group className="mb-3">
               <Form.Label>ExamTopics ID</Form.Label>
               <Form.Control
-                ref={examTopicIdRef}
+                value={examTopicId}
+                onChange={(e) => setExamTopicId(parseInt(e.target.value) || "")}
+                type="number"
                 required
                 isInvalid={isExamTopicIdInvalid}
               />
@@ -471,7 +583,16 @@ export default function AddOrUpdateQuestion() {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Group number</Form.Label>
-              <Form.Control ref={groupNumberRef} type="number" />
+              <Form.Control
+                value={groupNumber}
+                onChange={(e) => setGroupNumber(parseInt(e.target.value) || "")}
+                type="number"
+                required
+                isInvalid={isGroupNumberInvalid}
+              />
+              <Form.Control.Feedback type="invalid">
+                Please provide a Group number.
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group id="singleQuestion" className="mb-3">
               <Form.Label>Question</Form.Label>
