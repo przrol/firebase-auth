@@ -325,12 +325,10 @@ export default function AddOrUpdateQuestion() {
             examTopicId,
             selectedImageFile
           );
-        }
 
-        if (imageUrl !== currentQuestion?.imageUrl) {
-          const file = fileInputRef.current.files[0];
-
-          setImageUrl(await addNewImage(file));
+          setSelectedImageFile(null);
+          fileInputRef.current.value = null;
+          setImageUrl(newImageUrl);
         }
 
         let newImageUrl = imageUrl ?? "";
@@ -338,12 +336,6 @@ export default function AddOrUpdateQuestion() {
         const newLastModified = newLastModifiedDate.toISOString();
 
         if (questionId) {
-          if (fileInputRef.current && fileInputRef.current.files.length > 0) {
-            const file = fileInputRef.current.files[0];
-
-            newImageUrl = await addNewImage(file);
-          }
-
           await updateDocument(
             state.currentExamNumber,
             questionId,
