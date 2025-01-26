@@ -155,12 +155,6 @@ export default function AddOrUpdateQuestion() {
         const newLastModifiedDate = new Date();
         const newLastModified = newLastModifiedDate.toISOString();
 
-        if (imageUrl !== editQuestion.imageUrl) {
-          const file = fileInputRef.current.files[0];
-
-          newImageUrl = await addNewImage(file);
-        }
-
         await updateDocument(
           state.currentExamNumber,
           questionId,
@@ -336,6 +330,7 @@ export default function AddOrUpdateQuestion() {
           setSelectedImageFile(null);
           fileInputRef.current.value = null;
           setImageUrl(newImageUrl);
+          deleteStorageFile(currentQuestion?.imageUrl);
         } else if (!imageUrl && currentQuestion?.imageUrl) {
           deleteStorageFile(currentQuestion.imageUrl);
           newImageUrl = "";

@@ -74,8 +74,10 @@ export const deleteDocument = async (collectionName, question) => {
 };
 
 export const deleteStorageFile = async (imageUrl) => {
-  const storageRef = ref(storage, imageUrl);
-  await deleteObject(storageRef);
+  if (imageUrl) {
+    const storageRef = ref(storage, imageUrl);
+    await deleteObject(storageRef);
+  }
 };
 
 export const addNewCollection = async (collectionName, collectionTitle) => {
