@@ -9,7 +9,12 @@ import Row from "react-bootstrap/Row";
 import { Link, useParams } from "react-router-dom";
 import Navigation from "../Navigation";
 import NewAnswer from "../newAnswer/newAnswer.component";
-import { addNewDocument, addNewImage, updateDocument } from "../../firebase";
+import {
+  addNewDocument,
+  addNewImage,
+  deleteStorageFile,
+  updateDocument,
+} from "../../firebase";
 import { QuizContext } from "../../contexts/QuizContext";
 import DarkMode from "../darkMode/darkMode.component";
 import "./addOrUpdateQuestion.styles.css";
@@ -318,6 +323,8 @@ export default function AddOrUpdateQuestion() {
               .map((answer) => answer.answerText) // Map to their answerText
         );
 
+        let newImageUrl = currentQuestion?.imageUrl;
+
         if (selectedImageFile) {
           newImageUrl = await addNewImage(
             state.currentExamNumber,
@@ -329,9 +336,11 @@ export default function AddOrUpdateQuestion() {
           setSelectedImageFile(null);
           fileInputRef.current.value = null;
           setImageUrl(newImageUrl);
+        } else if (!imageUrl && currentQuestion?.imageUrl) {
+          deleteStorageFile(currentQuestion.imageUrl);
+          newImageUrl = "";
         }
 
-        let newImageUrl = imageUrl ?? "";
         const newLastModifiedDate = new Date();
         const newLastModified = newLastModifiedDate.toISOString();
 

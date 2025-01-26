@@ -12,7 +12,13 @@ import {
   writeBatch,
   deleteDoc,
 } from "firebase/firestore";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+  deleteObject,
+} from "firebase/storage";
 
 const app = initializeApp({
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -34,7 +40,7 @@ export const addNewImage = async (
   file
 ) => {
   const docId = questionId ?? formatNumber(examTopicId);
-  const storageRef = ref(storage, `${currentExamNumber}-${docId}-file.name`);
+  const storageRef = ref(storage, `${currentExamNumber}/${docId}-${file.name}`);
 
   // 'file' comes from the Blob or File API
   const snapshot = await uploadBytes(storageRef, file);
@@ -61,8 +67,15 @@ export const formatNumber = (number) => {
   return `question_${paddedNumber}`;
 };
 
-export const deleteDocument = async (collectionName, docId) => {
+export const deleteDocument = async (collectionName, question) => {
+  const docId = question.id;
   await deleteDoc(doc(db, collectionName, docId));
+  await deleteStorageFile(question.imageUrl);
+};
+
+export const deleteStorageFile = async (imageUrl) => {
+  const storageRef = ref(storage, imageUrl);
+  await deleteObject(storageRef);
 };
 
 export const addNewCollection = async (collectionName, collectionTitle) => {

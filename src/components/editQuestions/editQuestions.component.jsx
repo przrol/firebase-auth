@@ -47,7 +47,7 @@ export default function EditQuestions() {
   const handleClose = () => setShow(false);
 
   const handleDeleteQuestion = async () => {
-    await deleteDocument(state.currentExamNumber, currentQuestion.id);
+    await deleteDocument(state.currentExamNumber, currentQuestion);
 
     dispatch({
       type: "DELETE_QUESTION",

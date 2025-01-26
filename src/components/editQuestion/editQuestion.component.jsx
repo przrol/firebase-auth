@@ -27,8 +27,6 @@ export default function EditQuestion({
 
   const answers = shuffleAnswers(question);
 
-  const newlineMatches = question.question.match(/\n/g); // Find all '\n' occurrences
-
   useEffect(() => {
     setShowExplanation(showAllExplanations);
   }, [showAllExplanations]);
@@ -123,11 +121,10 @@ export default function EditQuestion({
       {question.imageUrl && (
         <Image
           className={
-            `border-1 border-secondary border-start border-end ` +
+            `border-1 border-secondary border-start border-end w-100 ` +
             (question.questionBelowImg ? "" : "border-bottom rounded-bottom-2")
           }
           src={question.imageUrl}
-          fluid
         />
       )}
       {question.questionBelowImg && (
