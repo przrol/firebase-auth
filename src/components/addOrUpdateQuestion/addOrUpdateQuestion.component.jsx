@@ -33,8 +33,8 @@ export default function AddOrUpdateQuestion() {
   const answerAreaRef = useRef();
   const explanationRef = useRef();
   const defaultAnswer = { checked: false, answerText: "" };
-  // all answers (answersblock => answers of correct + incorrect) of the question are stored in an array of arrays (answersblock)
   const [answers, setAnswers] = useState([[defaultAnswer]]);
+  const answersRef = useRef(answers); // <- ADDED THIS
   const [imageUrl, setImageUrl] = useState("");
   const fileInputRef = useRef(null);
   const [isExamTopicIdInvalid, setIsExamTopicIdInvalid] = useState(false);
@@ -58,7 +58,7 @@ export default function AddOrUpdateQuestion() {
         } else {
           // Reset the timer when it reaches 0
           handleTimerComplete();
-          return 15; // Reset to the initial value
+          return 15;
         }
       });
     }, 1000);
@@ -123,13 +123,12 @@ export default function AddOrUpdateQuestion() {
   }, [questionId, state.questions]); // Added state.questions as dependency
 
   useEffect(() => {
-    // console.log("State after dispatch:", state);
     setAllQuestions(state.allQuestions);
   }, [state]);
 
   const handleTimerComplete = async () => {
     if (questionId) {
-      const correctAnswers = answers
+      const correctAnswers = answersRef.current // <- USE REF HERE
         .map((answerBlock) =>
           answerBlock
             .filter((element) => element.checked)
@@ -142,7 +141,7 @@ export default function AddOrUpdateQuestion() {
           : state.allQuestions.find((q) => q.id === questionId);
 
       if (
-        (correctAnswers.length === answers.length &&
+        (correctAnswers.length === answersRef.length &&
           examTopicId !== 0 &&
           groupNumber !== 0 &&
           examTopicId !== editQuestion.examTopicId) ||
@@ -153,11 +152,10 @@ export default function AddOrUpdateQuestion() {
         answerAreaRef.current.value !== editQuestion.explanation ||
         explanationRef.current.value !== editQuestion.explanation
       ) {
-        const incorrectAnswers = answers.map(
-          (answerBlock) =>
-            answerBlock
-              .filter((element) => !element.checked) // Filter out only checked answers within this block
-              .map((answer) => answer.answerText) // Map to their answerText
+        const incorrectAnswers = answersRef.current.map((answerBlock) =>
+          answerBlock
+            .filter((element) => !element.checked)
+            .map((answer) => answer.answerText)
         );
 
         const newImageUrl = await updateImage();
@@ -216,90 +214,99 @@ export default function AddOrUpdateQuestion() {
   };
 
   const handleNewAnswerBlock = () => {
-    setAnswers((prevAnswers) => [...prevAnswers, [defaultAnswer]]);
+    setAnswers((prevAnswers) => {
+      answersRef.current = [...prevAnswers, [defaultAnswer]];
+      return [...prevAnswers, [defaultAnswer]];
+    });
   };
 
   const handleNewAnswer = (blockindex) => {
-    setAnswers((prevAnswers) =>
-      prevAnswers.map((answerBlock, index) => {
+    setAnswers((prevAnswers) => {
+      const newAnswers = prevAnswers.map((answerBlock, index) => {
         if (index === blockindex) {
-          // Add defaultAnswer to the sub-array at the specified blockindex
           return [...answerBlock, defaultAnswer];
         }
-        // For other indices, return the answerBlock as is
         return answerBlock;
-      })
-    );
+      });
+      answersRef.current = newAnswers;
+      return newAnswers;
+    });
   };
 
   const handleNewAnswerChange = (blockindex, index, newText) => {
-    setAnswers((prevAnswers) =>
-      prevAnswers.map((answerBlock, idx) => {
+    setAnswers((prevAnswers) => {
+      const newAnswers = prevAnswers.map((answerBlock, idx) => {
         if (idx === blockindex) {
-          // Only update the sub-array at the specified blockindex
           return answerBlock.map((element, i) => {
             return i === index ? { ...element, answerText: newText } : element;
           });
         } else {
-          // Return other answer blocks unmodified
           return answerBlock;
         }
-      })
-    );
+      });
+      answersRef.current = newAnswers;
+      return newAnswers;
+    });
   };
-
   const handleDeleteAnswerBlock = (blockindexToRemove) => {
-    setAnswers((prevAnswers) =>
-      prevAnswers.filter((element, index) => index !== blockindexToRemove)
-    );
+    setAnswers((prevAnswers) => {
+      const newAnswers = prevAnswers.filter(
+        (element, index) => index !== blockindexToRemove
+      );
+      answersRef.current = newAnswers;
+      return newAnswers;
+    });
   };
 
   const handleDuplicateAnswerBlock = (blockindex) => {
-    setAnswers((prevAnswers) => [
-      ...prevAnswers.slice(0, blockindex + 1),
-      prevAnswers[blockindex],
-      ...prevAnswers.slice(blockindex + 1),
-    ]);
+    setAnswers((prevAnswers) => {
+      const newAnswers = [
+        ...prevAnswers.slice(0, blockindex + 1),
+        prevAnswers[blockindex],
+        ...prevAnswers.slice(blockindex + 1),
+      ];
+      answersRef.current = newAnswers;
+      return newAnswers;
+    });
   };
-
   const handleDeleteAnswer = (blockindex, indexToRemove) => {
-    setAnswers((prevAnswers) =>
-      prevAnswers.reduce((newAnswers, currentBlock, idx) => {
-        // When we reach the block from which we want to remove an answer
+    setAnswers((prevAnswers) => {
+      const newAnswers = prevAnswers.reduce((newAnswers, currentBlock, idx) => {
         if (idx === blockindex) {
           const updatedBlock = currentBlock.filter(
             (_, index) => index !== indexToRemove
           );
-          // Only add the updatedBlock if it still has elements after the removal
           if (updatedBlock.length > 0) {
             newAnswers.push(updatedBlock);
           }
-          // If the block is empty, it's not pushed to newAnswers, effectively removing it
         } else {
-          // For all other blocks, just add them to newAnswers
           newAnswers.push(currentBlock);
         }
         return newAnswers;
-      }, [])
-    );
+      }, []);
+      answersRef.current = newAnswers;
+      return newAnswers;
+    });
   };
 
   const handleCheckboxChange = (blockindex, index, checked) => {
-    setAnswers((prevAnswers) =>
-      prevAnswers.map((answerBlock, idx) => {
+    setAnswers((prevAnswers) => {
+      const newAnswers = prevAnswers.map((answerBlock, idx) => {
         if (idx === blockindex) {
-          // Only update the sub-array at the specified blockindex
           return answerBlock.map((element, i) => {
             return i === index ? { ...element, checked } : element;
           });
         } else {
-          // Return other answer blocks unmodified
           return answerBlock;
         }
-      })
-    );
+      });
+      answersRef.current = newAnswers;
+      return newAnswers;
+    });
   };
-
+  useEffect(() => {
+    answersRef.current = answers;
+  }, [answers]);
   const scrollToTop = () => {
     // For scrolling to the top of the page
     window.scrollTo({
@@ -339,7 +346,7 @@ export default function AddOrUpdateQuestion() {
     setError("");
     setSuccess("");
 
-    const correctAnswers = answers
+    const correctAnswers = answersRef.current // <- USE REF HERE
       .map((answerBlock) =>
         answerBlock
           .filter((element) => element.checked)
@@ -350,19 +357,18 @@ export default function AddOrUpdateQuestion() {
     setIsExamTopicIdInvalid(examTopicId === 0 || examTopicId === "");
     setIsGroupNumberInvalid(groupNumber === 0 || groupNumber === "");
     setIsQuestionInvalid(questionRef.current.value === "");
-    setIsCheckboxInvalid(correctAnswers.length < answers.length);
+    setIsCheckboxInvalid(correctAnswers.length < answersRef.current.length); // USE REF HERE
 
     try {
       if (
-        correctAnswers.length === answers.length &&
+        correctAnswers.length === answersRef.current.length && // USE REF HERE
         examTopicId !== 0 &&
         questionRef.current.value !== ""
       ) {
-        const incorrectAnswers = answers.map(
-          (answerBlock) =>
-            answerBlock
-              .filter((element) => !element.checked) // Filter out only checked answers within this block
-              .map((answer) => answer.answerText) // Map to their answerText
+        const incorrectAnswers = answersRef.current.map((answerBlock) =>
+          answerBlock
+            .filter((element) => !element.checked)
+            .map((answer) => answer.answerText)
         );
 
         const newImageUrl = await updateImage();
@@ -468,7 +474,7 @@ export default function AddOrUpdateQuestion() {
       setLoading(false);
 
       if (
-        correctAnswers.length < answers.length &&
+        correctAnswers.length < answersRef.current.length &&
         examTopicId !== 0 &&
         questionRef.current.value !== ""
       ) {
@@ -684,7 +690,7 @@ export default function AddOrUpdateQuestion() {
                 size="sm"
                 variant="light"
                 title="Insert Space"
-                onClick={() => insertAtCursor("&emsp;&emsp;")}
+                onClick={() => insertAtCursor("  ")}
                 className="mb-2 mx-3 fw-bold fs-6 py-1"
               >
                 S
