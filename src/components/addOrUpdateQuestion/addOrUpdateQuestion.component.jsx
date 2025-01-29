@@ -28,6 +28,7 @@ export default function AddOrUpdateQuestion() {
   const [examTopicId, setExamTopicId] = useState(0);
   const [groupNumber, setGroupNumber] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [allQuestions, setAllQuestions] = useState([]);
   const questionBelowImgRef = useRef();
   const answerAreaRef = useRef();
   const explanationRef = useRef();
@@ -121,6 +122,11 @@ export default function AddOrUpdateQuestion() {
     }
   }, [questionId, state.questions]); // Added state.questions as dependency
 
+  useEffect(() => {
+    // console.log("State after dispatch:", state);
+    setAllQuestions(state.allQuestions);
+  }, [state]);
+
   const handleTimerComplete = async () => {
     if (questionId) {
       const correctAnswers = answers
@@ -130,18 +136,21 @@ export default function AddOrUpdateQuestion() {
             .map((answer) => answer.answerText)
         )
         .filter((block) => block.length > 0); // Filter out empty sub-arrays
-      const editQuestion = state.allQuestions.find((q) => q.id === questionId);
+      const editQuestion =
+        allQuestions.length > 0
+          ? allQuestions.find((q) => q.id === questionId)
+          : state.allQuestions.find((q) => q.id === questionId);
 
       if (
-        correctAnswers.length === answers.length &&
-        examTopicId !== 0 &&
-        examTopicId !== editQuestion.examTopicId &&
-        groupNumber !== 0 &&
-        groupNumber !== editQuestion.groupNumber &&
-        questionRef.current.value !== "" &&
-        questionRef.current.value !== editQuestion.question &&
-        questionBelowImgRef.current.value !== editQuestion.questionBelowImg &&
-        answerAreaRef.current.value !== editQuestion.explanation &&
+        (correctAnswers.length === answers.length &&
+          examTopicId !== 0 &&
+          groupNumber !== 0 &&
+          examTopicId !== editQuestion.examTopicId) ||
+        groupNumber !== editQuestion.groupNumber ||
+        questionRef.current.value !== "" ||
+        questionRef.current.value !== editQuestion.question ||
+        questionBelowImgRef.current.value !== editQuestion.questionBelowImg ||
+        answerAreaRef.current.value !== editQuestion.explanation ||
         explanationRef.current.value !== editQuestion.explanation
       ) {
         const incorrectAnswers = answers.map(
@@ -151,7 +160,8 @@ export default function AddOrUpdateQuestion() {
               .map((answer) => answer.answerText) // Map to their answerText
         );
 
-        let newImageUrl = imageUrl ?? "";
+        const newImageUrl = await updateImage();
+
         const newLastModifiedDate = new Date();
         const newLastModified = newLastModifiedDate.toISOString();
 
@@ -184,6 +194,23 @@ export default function AddOrUpdateQuestion() {
           newLastModified,
           groupNumber,
         });
+
+        const timeOptions = {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          timeZone: "Europe/Berlin",
+        };
+        const formattedTime = newLastModifiedDate.toLocaleString(
+          "de-DE",
+          timeOptions
+        );
+
+        setSuccess(
+          `The question was successfully ${`updated in '${state.currentExamNumber}' at ${formattedTime}`}`
+        );
+      } else {
+        setSuccess("");
       }
     }
   };
@@ -281,7 +308,28 @@ export default function AddOrUpdateQuestion() {
     });
   };
 
-  const updateQuestion = async () => {};
+  const updateImage = async () => {
+    let newImageUrl = currentQuestion ? currentQuestion.imageUrl : "";
+
+    if (selectedImageFile) {
+      newImageUrl = await addNewImage(
+        state.currentExamNumber,
+        questionId,
+        examTopicId,
+        selectedImageFile
+      );
+
+      setSelectedImageFile(null);
+      fileInputRef.current.value = null;
+      setImageUrl(newImageUrl);
+      deleteStorageFile(currentQuestion?.imageUrl);
+    } else if (!imageUrl && currentQuestion?.imageUrl) {
+      deleteStorageFile(currentQuestion.imageUrl);
+      newImageUrl = "";
+    }
+
+    return newImageUrl;
+  };
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -317,24 +365,7 @@ export default function AddOrUpdateQuestion() {
               .map((answer) => answer.answerText) // Map to their answerText
         );
 
-        let newImageUrl = currentQuestion?.imageUrl;
-
-        if (selectedImageFile) {
-          newImageUrl = await addNewImage(
-            state.currentExamNumber,
-            questionId,
-            examTopicId,
-            selectedImageFile
-          );
-
-          setSelectedImageFile(null);
-          fileInputRef.current.value = null;
-          setImageUrl(newImageUrl);
-          deleteStorageFile(currentQuestion?.imageUrl);
-        } else if (!imageUrl && currentQuestion?.imageUrl) {
-          deleteStorageFile(currentQuestion.imageUrl);
-          newImageUrl = "";
-        }
+        const newImageUrl = await updateImage();
 
         const newLastModifiedDate = new Date();
         const newLastModified = newLastModifiedDate.toISOString();
