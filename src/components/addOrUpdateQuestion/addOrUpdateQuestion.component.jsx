@@ -27,8 +27,9 @@ export default function AddOrUpdateQuestion() {
   const questionRef = useRef();
   const [examTopicId, setExamTopicId] = useState(0);
   const [groupNumber, setGroupNumber] = useState(0);
+  const examTopicIdRef = useRef(examTopicId);
+  const groupNumberRef = useRef(groupNumber);
   const [currentQuestion, setCurrentQuestion] = useState(null);
-  const [allQuestions, setAllQuestions] = useState([]);
   const questionBelowImgRef = useRef();
   const answerAreaRef = useRef();
   const explanationRef = useRef();
@@ -45,27 +46,35 @@ export default function AddOrUpdateQuestion() {
   const [success, setSuccess] = useState("");
   const [lastModified, setLastModified] = useState({});
   const [loading, setLoading] = useState(false);
-  const [seconds, setSeconds] = useState(15);
+  // const [seconds, setSeconds] = useState(15);
   const [selectedImageFile, setSelectedImageFile] = useState(null);
 
+  // useEffect(() => {
+  //   let intervalId;
+
+  //   intervalId = setInterval(() => {
+  //     setSeconds((prevSeconds) => {
+  //       if (prevSeconds > 0) {
+  //         return prevSeconds - 1;
+  //       } else {
+  //         // Reset the timer when it reaches 0
+  //         handleTimerComplete();
+  //         return 15;
+  //       }
+  //     });
+  //   }, 1000);
+
+  //   // Cleanup function: This is important to prevent memory leaks!
+  //   return () => clearInterval(intervalId);
+  // }, []); // Empty dependency array: This effect runs only once on component mount
+
   useEffect(() => {
-    let intervalId;
+    examTopicIdRef.current = examTopicId;
+  }, [examTopicId]);
 
-    intervalId = setInterval(() => {
-      setSeconds((prevSeconds) => {
-        if (prevSeconds > 0) {
-          return prevSeconds - 1;
-        } else {
-          // Reset the timer when it reaches 0
-          handleTimerComplete();
-          return 15;
-        }
-      });
-    }, 1000);
-
-    // Cleanup function: This is important to prevent memory leaks!
-    return () => clearInterval(intervalId);
-  }, []); // Empty dependency array: This effect runs only once on component mount
+  useEffect(() => {
+    groupNumberRef.current = groupNumber;
+  }, [groupNumber]);
 
   useEffect(() => {
     // Extract this to a separate function for clarity
@@ -122,96 +131,95 @@ export default function AddOrUpdateQuestion() {
     }
   }, [questionId, state.questions]); // Added state.questions as dependency
 
-  useEffect(() => {
-    setAllQuestions(state.allQuestions);
-  }, [state]);
+  // const handleTimerComplete = async () => {
+  //   if (questionId) {
+  //     const correctAnswers = answersRef.current // <- USE REF HERE
+  //       .map((answerBlock) =>
+  //         answerBlock
+  //           .filter((element) => element.checked)
+  //           .map((answer) => answer.answerText)
+  //       )
+  //       .filter((block) => block.length > 0); // Filter out empty sub-arrays
+  //     const editQuestion =
+  //       allQuestions.length > 0
+  //         ? allQuestions.find((q) => q.id === questionId)
+  //         : state.allQuestions.find((q) => q.id === questionId);
 
-  const handleTimerComplete = async () => {
-    if (questionId) {
-      const correctAnswers = answersRef.current // <- USE REF HERE
-        .map((answerBlock) =>
-          answerBlock
-            .filter((element) => element.checked)
-            .map((answer) => answer.answerText)
-        )
-        .filter((block) => block.length > 0); // Filter out empty sub-arrays
-      const editQuestion =
-        allQuestions.length > 0
-          ? allQuestions.find((q) => q.id === questionId)
-          : state.allQuestions.find((q) => q.id === questionId);
+  //     const currentExamTopicId = examTopicIdRef.current;
+  //     const currentGroupNumber = groupNumberRef.current;
 
-      if (
-        (correctAnswers.length === answersRef.length &&
-          examTopicId !== 0 &&
-          groupNumber !== 0 &&
-          examTopicId !== editQuestion.examTopicId) ||
-        groupNumber !== editQuestion.groupNumber ||
-        questionRef.current.value !== "" ||
-        questionRef.current.value !== editQuestion.question ||
-        questionBelowImgRef.current.value !== editQuestion.questionBelowImg ||
-        answerAreaRef.current.value !== editQuestion.explanation ||
-        explanationRef.current.value !== editQuestion.explanation
-      ) {
-        const incorrectAnswers = answersRef.current.map((answerBlock) =>
-          answerBlock
-            .filter((element) => !element.checked)
-            .map((answer) => answer.answerText)
-        );
+  //     if (
+  //       (correctAnswers.length === answersRef.current.length &&
+  //         currentExamTopicId !== 0 &&
+  //         currentGroupNumber !== 0 &&
+  //         currentExamTopicId !== editQuestion.examTopicId) ||
+  //       currentGroupNumber !== editQuestion.groupNumber ||
+  //       questionRef.current.value !== "" ||
+  //       questionRef.current.value !== editQuestion.question ||
+  //       questionBelowImgRef.current.value !== editQuestion.questionBelowImg ||
+  //       answerAreaRef.current.value !== editQuestion.explanation ||
+  //       explanationRef.current.value !== editQuestion.explanation
+  //     ) {
+  //       const incorrectAnswers = answersRef.current.map((answerBlock) =>
+  //         answerBlock
+  //           .filter((element) => !element.checked)
+  //           .map((answer) => answer.answerText)
+  //       );
 
-        const newImageUrl = await updateImage();
+  //       const newImageUrl = await updateImage();
 
-        const newLastModifiedDate = new Date();
-        const newLastModified = newLastModifiedDate.toISOString();
+  //       const newLastModifiedDate = new Date();
+  //       const newLastModified = newLastModifiedDate.toISOString();
 
-        await updateDocument(
-          state.currentExamNumber,
-          questionId,
-          questionRef.current.value,
-          questionBelowImgRef.current.value,
-          correctAnswers,
-          incorrectAnswers,
-          explanationRef.current.value,
-          newImageUrl,
-          examTopicId,
-          answerAreaRef.current.value,
-          newLastModified,
-          groupNumber
-        );
+  //       await updateDocument(
+  //         state.currentExamNumber,
+  //         questionId,
+  //         questionRef.current.value,
+  //         questionBelowImgRef.current.value,
+  //         correctAnswers,
+  //         incorrectAnswers,
+  //         explanationRef.current.value,
+  //         newImageUrl,
+  //         currentExamTopicId,
+  //         answerAreaRef.current.value,
+  //         newLastModified,
+  //         currentGroupNumber
+  //       );
 
-        dispatch({
-          type: "UPDATE_QUESTION",
-          questionId,
-          question: questionRef.current.value,
-          questionBelowImg: questionBelowImgRef.current.value,
-          correctAnswers,
-          incorrectAnswers,
-          explanation: explanationRef.current.value,
-          imageUrl: newImageUrl,
-          examTopicId,
-          answerArea: answerAreaRef.current.value,
-          newLastModified,
-          groupNumber,
-        });
+  //       dispatch({
+  //         type: "UPDATE_QUESTION",
+  //         questionId,
+  //         question: questionRef.current.value,
+  //         questionBelowImg: questionBelowImgRef.current.value,
+  //         correctAnswers,
+  //         incorrectAnswers,
+  //         explanation: explanationRef.current.value,
+  //         imageUrl: newImageUrl,
+  //         currentExamTopicId,
+  //         answerArea: answerAreaRef.current.value,
+  //         newLastModified,
+  //         currentGroupNumber,
+  //       });
 
-        const timeOptions = {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          timeZone: "Europe/Berlin",
-        };
-        const formattedTime = newLastModifiedDate.toLocaleString(
-          "de-DE",
-          timeOptions
-        );
+  //       const timeOptions = {
+  //         hour: "2-digit",
+  //         minute: "2-digit",
+  //         second: "2-digit",
+  //         timeZone: "Europe/Berlin",
+  //       };
+  //       const formattedTime = newLastModifiedDate.toLocaleString(
+  //         "de-DE",
+  //         timeOptions
+  //       );
 
-        setSuccess(
-          `The question was successfully ${`updated in '${state.currentExamNumber}' at ${formattedTime}`}`
-        );
-      } else {
-        setSuccess("");
-      }
-    }
-  };
+  //       setSuccess(
+  //         `The question was successfully ${`updated in '${state.currentExamNumber}' at ${formattedTime}`}`
+  //       );
+  //     } else {
+  //       setSuccess("");
+  //     }
+  //   }
+  // };
 
   const handleNewAnswerBlock = () => {
     setAnswers((prevAnswers) => {
@@ -580,7 +588,7 @@ export default function AddOrUpdateQuestion() {
         style={{ maxWidth: "800px" }}
       >
         <Card.Header className="d-flex justify-content-between align-items-center sticky-top-custom bg-body-secondary">
-          <div>{seconds < 10 ? `0${seconds}` : seconds}s</div>
+          {/* <div>{seconds < 10 ? `0${seconds}` : seconds}s</div> */}
           <div className="flex-grow-1 text-center">{`${
             questionId
               ? `Edit Question #${examTopicId} / Grp ${groupNumber}`
