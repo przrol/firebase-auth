@@ -25,32 +25,62 @@ export default function AddOrUpdateQuestion() {
   const { questionId } = useParams();
   const [state, dispatch] = useContext(QuizContext);
 
+  let questionInit = "";
+  let questionBelowImgInit = "";
+  let answerAreaInit = "";
+  let explanationInit = "";
+  let examTopicIdInit = 0;
+  let groupNumberInit = 0;
+  let currentQuestion = null;
+  let imageUrlInit = "";
+  let lastModifiedInit = {
+    tooltip: "no change date",
+    text: "no change date",
+  };
+  const defaultAnswer = { checked: false, answerText: "" };
+  let answersInit = [[defaultAnswer]];
+
   if (questionId) {
-    const editQuestion = state.allQuestions.find((q) => q.id === questionId);
-    if (editQuestion) {
-      initializeForm(editQuestion);
-      setCurrentQuestion(editQuestion);
-    }
+    currentQuestion = state.allQuestions.find((q) => q.id === questionId);
+
+    questionInit = currentQuestion.question;
+    questionBelowImgInit = currentQuestion.questionBelowImg ?? "";
+    answerAreaInit = currentQuestion.answerArea ?? "";
+    explanationInit = currentQuestion.explanation;
+    imageUrlInit = currentQuestion.imageUrl;
+    examTopicIdInit = currentQuestion.examTopicId;
+    groupNumberInit = currentQuestion.groupNumber ?? "1";
+    lastModifiedInit = getGermanFormattedTime(currentQuestion.lastModified);
+
+    answersInit = currentQuestion.correctAnswers.map((correctAns, index) => {
+      const correct = correctAns.map((text) => ({
+        checked: true,
+        answerText: text,
+      }));
+      const incorrect = currentQuestion.incorrectAnswers[index].map((text) => ({
+        checked: false,
+        answerText: text,
+      }));
+      return [...correct, ...incorrect];
+    });
   } else {
-    const newExamTopicId = getHighestExamTopicId(state.allQuestions) + 1;
-    const defaultGroupNumber = Math.floor(newExamTopicId / 20) + 1;
+    examTopicIdInit = getHighestExamTopicId(state.allQuestions) + 1;
+    groupNumberInit = Math.floor(examTopicIdInit / 20) + 1;
     // resetForm(newExamTopicId, defaultGroupNumber);
   }
 
-  const questionRef = useRef("");
-
-  const [examTopicId, setExamTopicId] = useState(0);
-  const [groupNumber, setGroupNumber] = useState(0);
+  const questionRef = useRef(questionInit);
+  const [examTopicId, setExamTopicId] = useState(examTopicIdInit);
+  const [groupNumber, setGroupNumber] = useState(groupNumberInit);
   // const examTopicIdRef = useRef(examTopicId);
   // const groupNumberRef = useRef(groupNumber);
-  const [currentQuestion, setCurrentQuestion] = useState(null);
-  const questionBelowImgRef = useRef();
-  const answerAreaRef = useRef();
-  const explanationRef = useRef();
-  const defaultAnswer = { checked: false, answerText: "" };
-  const [answers, setAnswers] = useState([[defaultAnswer]]);
+  // const [currentQuestion, setCurrentQuestion] = useState(currentQuestionInit);
+  const questionBelowImgRef = useRef(questionBelowImgInit);
+  const answerAreaRef = useRef(answerAreaInit);
+  const explanationRef = useRef(explanationInit);
+  const [answers, setAnswers] = useState(answersInit);
   const answersRef = useRef(answers); // <- ADDED THIS
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState(imageUrlInit);
   const fileInputRef = useRef(null);
   const [isExamTopicIdInvalid, setIsExamTopicIdInvalid] = useState(false);
   const [isGroupNumberInvalid, setIsGroupNumberInvalid] = useState(false);
@@ -58,7 +88,7 @@ export default function AddOrUpdateQuestion() {
   const [isCheckboxInvalid, setIsCheckboxInvalid] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [lastModified, setLastModified] = useState({});
+  const [lastModified, setLastModified] = useState(lastModifiedInit);
   const [loading, setLoading] = useState(false);
   const [seconds, setSeconds] = useState(15);
   const [selectedImageFile, setSelectedImageFile] = useState(null);
